@@ -1,0 +1,47 @@
+﻿body {
+
+}
+.formcontainer {
+    padding-top:20px;
+}
+.formcontainers {
+    padding-top: 30px;
+}
+/*.customcontainer {
+    height: 873px;
+}*/
+
+.vat_summary {
+    max-width: 980px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+    .branch label.date-from {
+        padding-right: 56px;
+    }
+
+.branch select, .branch input {
+    width: 240px;
+    height: 30px;
+}
+
+.get_report_PDF_excel_word a, .buttons button {
+    height: 36px;
+    font-size: 16px;
+    line-height: 22px;
+}
+
+.buttons input {
+    margin-left: 30px;
+}
+
+.summary_detail {
+    max-width: 1000px;
+    width: 100%;
+}
+
+#example tr:last-child td:nth-child(5), #example tr:last-child td:nth-child(6), #example tr:last-child td:nth-child(7), #example tr:last-child td:nth-child(4),
+#example tr:last-child td:nth-child(8), #example tr:last-child td:nth-child(9), #example tr:last-child td:nth-child(2), #example tr:last-child td:nth-child(3) {
+    font-weight: 700;
+}

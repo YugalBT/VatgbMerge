@@ -1,0 +1,79 @@
+﻿@model List<Standing_Order_Vat_App.Common.ViewModels.StandingOrder_VM>
+<link rel="stylesheet" href="/css/CustomStyle.css" />
+<div class="container summary_detail">
+  
+    <div>
+@*        <a asp-action="ExportListUsingEPPlus" asp-controller="StandingOrderVat"  asp-route-branche="0" asp-route-report="" asp-route-fdate="" asp-route-tdate="" class="btn btn-primary">Export to excel</a>*@        <table id="example" class="table table-striped table-bordered dt-responsive nowrap tblsize" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Branch Number</th>
+                    <th>Date</th>
+                    <th>Acct</th>
+                    <th>Off set Acct Number</th>
+                    <th>Total</th>
+                    <th>National Fees</th>
+                    <th>Vat</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.BranchNumber</td>
+                        <td>@item.DateActive?.ToString("MM/dd/yyyy")</td>
+                        <td>@item.Acct</td>
+                        <td>@item.OffsetAcctNumber</td>
+                        <td>@item.TotalFees</td>
+                        <td>@item.NationalFees</td>
+                        <td>@item.Vat</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @if (Model.Count() <= 0)
+        {
+            <div class="">
+                <div class="text-center alert alert-danger_inner">
+                    <p class="m-3">no record found!</p>
+                </div>
+            </div>
+        }
+
+        @if (Model.Count() > 0)
+        {
+            <div class="col-md-12">
+                <div class="row">
+                    <ul class="pagination" style="margin-left: 12px">
+                        @Html.Raw(ViewBag.Paging)
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#example').dataTable({
+        });
+    }
+        $(document).ready(function() {
+        $("#example").datatable();
+    });
+ 
+    function exported(e) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ExportExcel", "Home")', //call your controller and action
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+        }).done(function (data) {
+ 
+            //get the file name for download
+            if (data.fileName != "") {
+                //use window.location.href for redirect to download action for download the file
+                window.location.href = "@Url.RouteUrl(new { Controller = "Home", Action = "Download" })/?fileName=" + data.fileName;
+            }
+        });
+    }
+</script>

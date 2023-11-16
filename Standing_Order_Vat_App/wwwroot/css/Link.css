@@ -1,0 +1,36 @@
+﻿body {
+}
+
+.side_bar_custom {
+    background-color: #002b36;
+    height: 100vh;
+    display: block;
+    min-width: 200px;
+    margin-right: 15px;
+}
+
+.side_bar_custom a {
+        padding: 6px 12px;
+        text-decoration: none;
+        font-size: 16px;
+        color: blanchedalmond;
+        display: block;
+    }
+
+.right_side_content {
+    /*  margin-left: 160px;*/
+    overflow: hidden;
+
+    padding:10px;
+}
+
+.sidebar-wrapper a:hover {
+    color: black;
+}
+.bg-lightorangecolor {
+    background-color: #ffedd9;
+}
+.date_from label {
+    flex: 0 0 60px;
+    font-size: 12px;
+}

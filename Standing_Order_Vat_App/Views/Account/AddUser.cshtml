@@ -1,0 +1,217 @@
+﻿@model Standing_Order_Vat_App.Common.ViewModels.AddUserVm;
+
+<style>
+    .tblsize {
+        /*display: block;*/
+        width: 100%;
+        /*overflow: scroll;*/
+        /*overflow-y: scroll;*/
+        /*height: 550px;*/
+    }
+
+    .vat_summary {
+        max-width: 980px;
+        width: 100%;
+        margin: 0 auto;
+        padding-top: 32px;
+    }
+    /*.max-660{
+            max-width: 600px;
+        }*/
+
+    .branch label {
+        width: 180px;
+    }
+
+        .branch label.date-from {
+            padding-right: 56px;
+        }
+
+    .branch select, .branch input {
+        width: 240px;
+        height: 30px;
+        line-height: 14px;
+    }
+
+    .get_report_PDF_excel_word a, .buttons button {
+        height: 36px;
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .buttons input {
+        margin-left: 30px;
+    }
+
+    .non_select {
+        flex-direction: row-reverse;
+        justify-content: start;
+    }
+
+    .multi_section .btn-default {
+        padding: 0.375rem 0.75rem;
+        width: 100%;
+        display: block;
+        text-align: left;
+        border: 1px solid #ced4da;
+    }
+
+    .multi_section .btn-group {
+        width: 100%;
+    }
+
+        .multi_section .btn-group .dropdown-menu {
+            margin-top: 37px;
+            width: 100%;
+        }
+
+        .multi_section .btn-group li a {
+            display: block;
+        }
+
+            .multi_section .btn-group li a label {
+                display: block;
+                padding: 7px 13px;
+            }
+
+        .multi_section .btn-group .dropdown-toggle::after {
+            top: 50%;
+            transform: translateY(-50%);
+            position: absolute;
+            right: 10px;
+        }
+
+</style>
+<div>
+    <form asp-action="AddUser">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="userId" hidden />
+
+        @*<div class="vat_summary">
+        <div class="row mb-3">
+        <div class="col-lg-6">
+        <div class="d-flex branch">
+        <label asp-for="UserName">User Name</label>
+        <div>
+        <input asp-for="UserName" type="text" class="form-control">
+        <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+        </div>
+        </div>
+        <div class="col-lg-6">
+        <div class="d-flex branch align-items-center">
+        <label asp-for="DisplayName">Display Name</label>
+        <div>
+        <input type="text" class="form-control" asp-for="DisplayName">
+        <span asp-validation-for="DisplayName" class="text-danger"></span>
+        </div>
+        </div>
+        </div>
+        </div>
+
+        </div>
+        <div class="row mb-2">
+        <div class="col-lg-5">
+        <div class="d-flex branch align-items-center">
+        <label asp-for="RoleId">User Role</label>
+        <div class="col-md-5 mb-2 multi_section">
+
+        <div class="mutliSelect">
+        @Html.ListBoxFor(model => model.UserPermissionId,new MultiSelectList(Model?.ProcessDropDown, "Id", "Name",@Model.UserPermissionIds), new { @class = "form-control", multiple = "multiple", id = "Subjects_dropdown" })
+        <span asp-validation-for="UserPermissionId" class="text-danger"></span>
+        </div>
+        <div class="row mb-2">
+        <select class="form-select" asp-for="RoleId" aria-label="Default select example"
+        asp-items="@(new SelectList(Model?.UserRoles,"RoleID", "RoleName"))">
+        <option value="Select Role">Select Role</option>
+        </select>
+        </div>
+
+        </div>
+        </div>
+        </div>
+        <div class="row mb-3">
+        <div class="col-lg-6">
+        <div class="d-flex branch">
+        <label></label>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        </div>
+
+        </div>
+        </div>
+        <div>
+        </div>*@
+
+        @*/sandeep*@
+
+        <div class="vat_summary max-660">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-lg-3 mb-md-3 mb-3">
+                    <label asp-for="UserName" class="mb-2">User Name</label>
+                    <div>
+                        <input asp-for="UserName" type="text" class="form-control">
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-lg-3 mb-md-3 mb-3">
+                    <label asp-for="DisplayName" class="mb-2">Display Name</label>
+                    <div>
+                        <input type="text" class="form-control" asp-for="DisplayName">
+                        <span asp-validation-for="DisplayName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-lg-3 mb-md-3 mb-3">
+                    <label asp-for="RoleId" class="mb-2">User Role</label>
+                    <div class="multi_section">
+                        <div class="non_select">
+                            <select class="form-select" asp-for="RoleId" aria-label="Default select example"
+                                    asp-items="@(new SelectList(Model?.UserRoles,"RoleID", "RoleName"))">
+                                <option value="Select Role">Select Role</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-lg-3 mb-md-3 mb-3">
+                    <label asp-for="RoleId" class="mb-2">Application Role</label>
+                    <div class="multi_section">
+                        <div class="non_select">
+                            <div class="mutliSelect">
+                                @Html.ListBoxFor(model => model.UserPermissionId,new MultiSelectList(Model?.ProcessDropDown, "Id", "Name",@Model.UserPermissionIds), new { @class = "form-control", multiple = "multiple", id = "Subjects_dropdown" })
+                                <span asp-validation-for="UserPermissionId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-12">
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </form>
+</div>
+
+
+@*<script type="text/javascript">
+    $(function () {
+
+        $('.select-list').multiselect({
+            includeSelectAllOption: true
+        });
+    });
+</script>
+   *@
+<script>
+    $(document).ready(function () {
+        $('#Subjects_dropdown').multiselect();
+
+    });
+</script>

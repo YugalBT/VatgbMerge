@@ -1,0 +1,98 @@
+﻿@model Standing_Order_Vat_App.Common.ViewModels.onlineBankingVm
+@{
+    ViewData["Title"] = "Online Banking";
+
+}
+<style>
+    .tblsize {
+        /*display: block;*/
+        width: 100%;
+        /*overflow: scroll;*/
+        /*overflow-y: scroll;*/
+        /*height: 550px;*/
+    }
+
+    .vat_summary {
+        max-width: 980px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .branch label {
+        padding-right: 80px;
+    }
+
+        .branch label.date-from {
+            padding-right: 56px;
+        }
+
+    .branch select, .branch input {
+        width: 240px;
+        height: 30px;
+    }
+
+    .get_report_PDF_excel_word a, .buttons button {
+        height: 36px;
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .buttons input {
+        margin-left: 30px;
+    }
+
+</style>
+<section>
+    <form class="formcontainer" asp-controller="OnlineBanking" asp-action="onlineBanking" method="post">
+        <div class="loadingDiv"></div>
+            <div class="row mb-3">
+                <div class="col-lg-6">
+                    <div class="d-flex branch">
+                        <label class="date-from" for="inlineFormCustomSelect"> Date:</label>
+                        <input type="date" asp-for="Date" />
+                    </div>
+               @* <div class="form-group">
+                    <input type="checkbox" asp-for="IsChecked" for="inlineFormCustomSelect" />
+                    <label>Upload FTP</label>
+                </div>*@
+            </div>
+            <div class="col-lg-6">
+                <div class="formcontainers">
+                    <label>Upload FTP</label>
+                    <input type="checkbox" asp-for="IsChecked" />
+                </div>
+            </div>
+            </div>
+            <div class="buttons d-flex justify-content-between">
+                <div class="col-auto my-1">
+                <button type="submit" id="setmodel" class="btn btn-primary" style="margin-left: 133px;">Submit</button>
+                </div>
+            </div>
+        <div id="divLoader" style="text-align: center; display:none;vertical-align: middle;"> <img src="~/Image/Spinner-3.gif" alt="Loader" /> </div>
+
+    </form>
+</section>
+<script>
+    $("#setmodel").click(function() {
+        $("#divLoader").css("display", "block")
+    });
+</script>
+
+@*@if (ViewBag.errormsg != null)
+{
+    <script type="text/javascript">
+
+        window.onload = function() {
+            alert("@ViewBag.errormsg");
+        };
+    </script>
+}
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+
+        window.onload = function() {
+            alert("@ViewBag.Message");
+        };
+    </script>
+}*@

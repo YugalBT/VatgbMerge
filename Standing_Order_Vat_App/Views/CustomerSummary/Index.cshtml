@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Customer Summary";
+}
+<section>
+<form>
+  <div >
+    <div class="row">
+      <label class="col-sm-1" for="inlineFormCustomSelect">Report:</label>
+      <div class="col-sm-3">
+      <select id="inputState" class="select-list" style="width:100%">
+        <option selected>Select One</option>
+        <option value="1">Standing Order Customer Report</option>
+        <option value="2">DDA Service Charge Customer Report</option>
+        <option value="3">Loan Customer Late Charges Summary</option>
+        <option value="3">Stop Pay Customer Report </option>
+        <option value="3">Transfer Charges Report </option>
+        <option value="3">SafeKeeping Charges Report </option>
+      </select>
+      </div>
+      <div class="col-sm-1"></div>
+       <label class="col-sm-1" for="inlineFormCustomSelect">Customer:</label>
+      <div class="col-sm-3">
+      <select class="select-list" id="inputState" style="width:100%">
+        <option selected>Select One</option>
+      </select>
+      </div>
+    </div>
+    </br>
+     <div class="row">
+      <label class="col-sm-1" for="inlineFormCustomSelect">Date From:</label>
+      <div class="col-sm-3">
+      <input type="date"  style="width:100%"/>
+      </div>
+      <div class="col-sm-1"></div>
+       <label class="col-sm-1" for="inlineFormCustomSelect">Date To:</label>
+      <div class="col-sm-3">
+     <input type="date" placeholder="dd/MM/yyyy" style="width:100%" />
+      </div>
+    </div>
+    <div class="col-auto my-1">
+      <button type="submit" class="btn btn-primary">Get Report</button>
+    </div>
+  </div>
+</form>
+<div>
+    <table id="standigntable"></table>
+</div>
+</section>
+<script >
+$(document).ready(function() {
+    $("#standigntable").datatable();
+});
+
+</script>

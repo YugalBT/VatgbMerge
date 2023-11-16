@@ -1,0 +1,117 @@
+﻿@model Standing_Order_Vat_App.Models.CustomService
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <style>
+
+
+        .body {
+            margin: 0;
+            padding: 0;
+            background-color: #6abadeba;
+            font-family: 'Arial';
+        }
+
+        .login {
+            width: 382px;
+            overflow: hidden;
+            margin: auto;
+            margin: 20 0 0 450px;
+            padding: 80px;
+            background: #23463f;
+            border-radius: 15px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #277582;
+            padding: 20px;
+        }
+
+        label {
+            color: #08ffd1;
+            font-size: 17px;
+        }
+
+        #Uname {
+            width: 300px;
+            height: 30px;
+            border: none;
+            border-radius: 3px;
+            padding-left: 8px;
+        }
+
+        #Pass {
+            width: 300px;
+            height: 30px;
+            border: none;
+            border-radius: 3px;
+            padding-left: 8px;
+        }
+
+        #log {
+            width: 300px;
+            height: 30px;
+            border: none;
+            border-radius: 17px;
+            padding-left: 7px;
+            color: blue;
+        }
+
+        span {
+            color: white;
+            font-size: 17px;
+        }
+
+    </style>
+
+
+</head>
+<body>
+    <h2>Standing Order Vat File Import</h2>
+    <br>
+    <div id="divLoader" style="text-align: center;vertical-align: middle;"> 
+      
+        <img src="~/Image/Spinner-3.gif" id="loadingImage" style="display: none;" /> 
+        
+    </div>
+    <div class="login">
+        <form method="post">
+            @*<asp:Label ID="lblstatus" runat="server"></asp:Label><br>*@
+
+            <label></label>
+            <select class="select-list" asp-for="month" id="inputStatebranch">
+                <option Value="01">01</option>
+                <option Value="02">02</option>
+                <option Value="03">03</option>
+                <option Value="04">04</option>
+                <option Value="05">05</option>
+                <option Value="06">06</option>
+                <option Value="07">07</option>
+                <option Value="08">08</option>
+                <option Value="09">09</option>
+                <option Value="10">10</option>
+                <option Value="11">11</option>
+                <option Value="12">12</option>
+            </select>
+
+
+            @*<asp:Button runat="server" ID="btnsubmit" Text="Import" OnClick="btnsubmit_Click" />*@
+
+            <button id="button1" type="submit">Import Record</button>
+        </form>
+    </div>
+    @*<div class="loading" align="center">
+    Loading. Please wait.<br />
+    <br />
+    <img src="images/loading.gif" alt="" />
+    </div>*@
+</body>
+</html>
+<script>
+$("#button1").click(function() {
+    // show loading image
+    $("#loadingImage").show();
+
+});</script>

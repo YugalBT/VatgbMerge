@@ -1,0 +1,130 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Standing_Order_Vat_App</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+   @* <link rel="stylesheet" href="~/css/site.css" />*@
+    <link rel="stylesheet" href="~/css/CustomStyle.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Standing_Order_Vat_App.styles.css" asp-append-version="true" />
+    <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
+    @*<link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/bootstrap-multiselect.css" />
+    <link rel="stylesheet" href="~/css/icofont.min.css">
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true">
+  @*  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">*@
+    <link rel="stylesheet" href="~/lib/jquery-toast-plugin/jquery.toast.min.css">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/themes/smoothness/jquery-ui.css" />
+  
+
+
+</head>
+<style>
+    .clrclass{
+        background - color: #3e8b8b;
+    }
+    .notyf{
+        justify-content: space-around!important;
+    }
+</style>
+<body style="background:#6a4e4fc9; width:100%; border-top:4px solid #897374">
+    <div class="main" style="max-width:1143px; width:100%; margin:0 auto;position: relative;">
+        <header>
+            <div style="width: 100%;padding: 2px;background: #fff;">
+                <img src="~/image/vat.jpg" style="width:100%;border: 1px solid #897374;border-bottom: 4px solid #897374;" />
+            </div>
+            <nav class="navbar navbarset navbar-expand-lg navbar-light bg-light align-items-center ps-2" style="height:26px;border: 1px solid #897374;">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0" style="height: 28px;">
+                        <li class="nav-item1 active clrclass" style="border: 1px solid #d3c621;padding: 0 4px;font-size: 14px;height: 26px;">
+                            <a class="navbar-brand" asp-area="" asp-controller="StandingOrderVat" asp-action="TotalSummaryReport" style="line-height:30px;font-size: 14px;">Total Summary Report</a>
+                        </li>
+                        <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="CustomerSummary" asp-action="CustomerSummaryReport" style="line-height:30px;font-size: 14px;padding: 1px 13px;">Customer Summary Report</a>
+                        </li>
+                        @*@if (Convert.ToInt32(User.FindFirst("uCount")?.Value) > 0)*@
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("ucount") != null && Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("ucount").ToString()) > 0)
+                        {
+                            @if (HttpContextAccessor.HttpContext.Session.GetString("urole").ToString().ToLower() == "admin")
+                            @*@if (User.FindFirst("RoleName")?.Value == "Admin")*@
+                                    {
+                                <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ManageUser" style="line-height:30px;font-size: 14px;padding: 1px 13px;">Manage User</a>
+
+                               
+                                </li>
+                                <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="CustomServiceVAT" asp-action="InsertRecord" style="line-height:30px;font-size: 14px;padding: 1px 13px;">Services</a>
+                                </li>
+                            }
+                        }
+                        </li>
+                        
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("ucount") != null && Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("ucount").ToString()) > 0)
+                        @*@if (Convert.ToInt32(User.FindFirst("uCount")?.Value) > 0)*@
+                        {
+                            @if (HttpContextAccessor.HttpContext.Session.GetString("urole").ToString().ToLower() == "e-banking" || HttpContextAccessor.HttpContext.Session.GetString("urole").ToString().ToLower() == "admin")
+                            @*@if (User.FindFirst("RoleName")?.Value == "Admin" || User.FindFirst("RoleName")?.Value == "E-Banking")*@
+                            {
+                                <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="OnlineBanking" asp-action="Index" style="line-height:30px;font-size: 14px;padding: 1px 13px;"> E-Banking</a>
+                                </li>
+                                <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="GBRegister" asp-action="Index" style="line-height:30px;font-size: 14px;padding: 1px 13px;">GB Register</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </nav>
+
+        </header>
+        <div class="container customcontainer" style="background:#fff;height: 820px;">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2022 - Standing_Order_Vat_App - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="https://cdn.tiny.cloud/1/c7k279i01d7tsc0gpthvyhrvmx25esc4qvsez3vulspnr05h/tinymce/6/tinymce.min.js"></script>
+    <script src="~/lib/jquery-toast-plugin/jquery.toast.min.js"></script>
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/css/bootstrap-multiselect.js"></script>
+    <script src="~/js/popper.min.js" asp-append-version="true"></script>
+    <script src="~/js/custom.js" asp-append-version="true"></script>
+    <script src="~/js/site.js"></script>
+
+    @await Component.InvokeAsync("Notyf")
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+
+
+<link href="~/css/custom.css" rel="stylesheet" />
+<script type="text/javascript">
+
+</script>

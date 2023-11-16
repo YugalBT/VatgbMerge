@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Standing_Order_Vat_App.DAL.SKNAB
+{
+    public partial class Ora25230
+    {
+        public string EmpidI { get; set; } = null!;
+        public short SeqorderI { get; set; }
+        public byte OrcompletedcbI { get; set; }
+        public string OrientationitemI { get; set; } = null!;
+        public string PersonresponsibleI { get; set; } = null!;
+        public DateTime EventstartdateI { get; set; }
+        public string EventstarttimeI { get; set; } = null!;
+        public DateTime EventenddateI { get; set; }
+        public string EventendtimeI { get; set; } = null!;
+        public int DexRowId { get; set; }
+    }
+}

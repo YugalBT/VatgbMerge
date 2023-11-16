@@ -1,0 +1,62 @@
+﻿@model List<Standing_Order_Vat_App.Common.ViewModels.DDASCReport_VM>
+
+<div class="container">
+    
+    <div style="width:90%; margin:0 auto;">
+        <table id="example" class="table table-striped table-bordered dt-responsive nowrap tblsize" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    @*<th>DDASCJ ID</th>*@
+                    <th>Branch number</th>
+                    <th>ACCT</th>
+                    <th>Customer Name</th>
+                    <th>RptDate</th>
+                    <th>Charged</th>
+                    <th>VAT</th>
+                    <th>National Fees</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        @*<td>@item.DDASCJ_ID</td>*@
+                        <td>@item.Branch_number</td>
+                        <td>@item.ACCT</td>
+                        <td>@item.Customer_Name</td>
+                        <td>@item.RptDate?.ToString("MM/dd/yyyy")</td>
+                        <td>@item.Charged</td>
+                        <td>@String.Format("{0:0.00}", item.VAT)</td>
+                        <td>@String.Format("{0:0.00}", item.National_Fees)</td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+        @if (Model.Count() <= 0)
+        {
+            <div class="">
+                <div class="text-center alert alert-danger_inner">
+                    <p class="m-3">no record found!</p>
+                </div>
+            </div>
+        }
+
+        @if (Model.Count() > 0)
+        {
+            <div class="col-md-12">
+                <div class="row">
+                    <ul class="pagination" style="margin-left: 12px">
+                        @Html.Raw(ViewBag.Paging)
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $("#example").datatable();
+    });
+</script>

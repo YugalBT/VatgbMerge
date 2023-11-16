@@ -1,0 +1,102 @@
+﻿@model Standing_Order_Vat_App.Common.ViewModels.AddUserVm;
+
+<style>
+    .tblsize {
+        /*display: block;*/
+        width: 100%;
+        /*overflow: scroll;*/
+        /*overflow-y: scroll;*/
+        /*height: 550px;*/
+    }
+
+    .vat_summary {
+        max-width: 980px;
+        width: 100%;
+        margin: 0 auto;
+        padding-top: 32px;
+    }
+
+    .branch label {
+        width: 180px;
+    }
+
+        .branch label.date-from {
+            padding-right: 56px;
+        }
+
+    .branch select, .branch input {
+        width: 240px;
+        height: 30px;
+        line-height:14px;
+    }
+
+    .get_report_PDF_excel_word a, .buttons button {
+        height: 36px;
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .buttons input {
+        margin-left: 30px;
+    }
+
+</style>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+    function SetDept() {
+        $("#Rolename").val($("#ddlDept option:selected").text());
+    }
+</script>
+<div>
+    <form asp-action="UpdateUser">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+       <input type="hidden" name="DeptName" id="DeptName" />
+        <div class="vat_summary">
+            <div class="row mb-3">
+                <div class="col-lg-6">
+                    <div class="d-flex branch align-items-center">
+                        <input asp-for="userId" hidden />
+                        <label asp-for="UserName">User Name</label>
+                        <div>
+                            <input asp-for="UserName" type="text" class="form-control">
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="d-flex branch align-items-center">
+                        <label asp-for="DisplayName">Display Name</label>
+                        <div>
+                            <input type="text" class="form-control" asp-for="DisplayName">
+                         <span asp-validation-for="DisplayName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-lg-6">
+                    <div class="d-flex branch align-items-center">
+                       <label asp-for="RoleId">User Role</label>
+                        <div>
+                            <select class="form-select" asp-for="RoleId" aria-label="Default select example" 
+                                    asp-items="@(new SelectList(Model?.UserRoles,"RoleID", "RoleName"))">
+                                <option value="Select Role">Select Role</option>
+                            </select>
+                            <span asp-validation-for="RoleId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-lg-6">
+                    <div class="d-flex branch">
+                        <label></label>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

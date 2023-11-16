@@ -1,0 +1,260 @@
+﻿@model Standing_Order_Vat_App.Common.ViewModels.CustomerSummary_VM
+@{
+    ViewData["Title"] = "Customer Summary";
+
+    DateTime abc = Model.Startdate;
+}
+<style>
+    .tblsize {
+        /*display: block;*/
+        width: 100%;
+        /*overflow: scroll;*/
+        /*overflow-y: scroll;*/
+        /*height: 550px;*/
+    }
+
+    .vat_summary {
+        max-width: 980px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .branch label {
+        padding-right: 80px;
+    }
+
+        .branch label.date-from {
+            padding-right: 56px;
+        }
+
+    .branch select, .branch input {
+        width: 240px;
+        height: 30px;
+    }
+
+    .get_report_PDF_excel_word a, .buttons button {
+        height: 36px;
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .buttons input {
+        margin-left: 30px;
+    }
+
+</style>
+<section>
+    <form class="formcontainer" method="get">
+        <div class="vat_summary">
+            <div class="row mb-3">
+                <div class="col-lg-6">
+                    <div class="d-flex branch">
+                        <label class="" for="inlineFormCustomSelect">Report:</label>
+                        <select id="inputState" asp-for="Report" class="select-list" onchange="getcustomer()">
+                            <option selected>Select One</option>
+                            <option value="1">Standing Order Customer Report</option>
+                            <option value="2">DDA Service Charge Customer Report</option>
+                            <option value="3">Loan Customer Late Charges Summary</option>
+                            <option value="4">Stop Pay Customer Report </option>
+                            <option value="5">Transfer Charges Report </option>
+                            <option value="6">SafeKeeping Charges Report </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="d-flex branch">
+                        <label class="ms-auto" for="inlineFormCustomSelect">Customer:</label>
+                        <select class="select-list" asp-for="acct" id="customerlist" asp-items=@(new SelectList(@ViewBag.ddlrec,"Acct", "Customer"))>
+                            <option selected>Select One</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-lg-6">
+                    <div class="d-flex branch">
+                        <label class="date-from" for="inlineFormCustomSelect">Date From:</label>
+                        <input type="date" asp-for="Startdate" />
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="d-flex branch">
+                        <label class="ms-auto" for="inlineFormCustomSelect">Date To:</label>
+                        <input type="date" asp-for="Enddate" />
+                    </div>
+                </div>
+            </div>
+            <div class="buttons d-flex justify-content-between">
+                <div class="col-auto my-1">
+                    <button type="submit" id="setmodel" class="btn btn-primary" style="margin-left: 133px;">Get Report</button>
+                </div>
+            </div>
+            @{
+                int customer = Model.acct != 0 ? Model.acct : 0;
+            }
+            <div id="divLoader" style="text-align: center; display:none;vertical-align: middle;"> <img src="~/Image/Spinner-3.gif" alt="Loader" /> </div>
+            @if (Model.isvalue == true)
+            {
+                <br />
+                <div class="buttons d-flex justify-content-between">
+
+                    @if (Model.Report == 1)
+                    {
+                        <div>
+                            <h2 style="display: flex;">Standing Orders &amp; VAT Fees Summary</h2>
+                        </div>
+
+                    }
+                    else if (Model.Report == 2)
+                    {
+                        <div>
+                            <h2 style="display: flex;">DDA Customer Summary</h2>
+                        </div>
+                    }
+                    else if (Model.Report == 3)
+                    {
+                        <div>
+                            <h2 style="display: flex;">Loan Customer Late Charges and Fees</h2>
+                        </div>
+                    }
+                    else if (Model.Report == 4)
+                    {
+                        <div>
+                            <h2 style="display: flex;">Customer Stop Pay Fees &amp; VAT</h2>
+                        </div>
+                    }
+                    else if (Model.Report == 5)
+                    {
+                        <div>
+                            <h2 style="display: flex;">Customer Transfer Charges Summary</h2>
+                        </div>
+                    }
+                    else if (Model.Report == 6)
+                    {
+                        <div>
+                            <h2 style="display: flex;">Customer Safe Keeping Charges</h2>
+                        </div>
+                    }
+                    
+
+                        <div class="get_report_PDF_excel_word" style="margin-top: 10px;">
+                            <input id="searchbox" on asp-for=search />
+                            <button type="submit" id="setmodel" class="btn btn-primary" style="height: 30px;">Search</button>
+                            <a asp-action="ExportListUsingEPPlus" asp-controller="CustomerSummary" asp-route-report="@Model.Report" asp-route-fdate="@Model.Startdate" asp-route-tdate="@Model.Enddate" asp-route-brchno="@customer" asp-route-doctype="1" asp-route-search="@Model.search" class=""><img style="width: 20px;" src="~/image/excel.png" /></a>
+                            <a asp-action="ExportListUsingEPPlus" asp-controller="CustomerSummary" asp-route-report="@Model.Report" asp-route-fdate="@Model.Startdate" asp-route-tdate="@Model.Enddate" asp-route-brchno="@customer" asp-route-doctype="2" asp-route-search="@Model.search" class=" "><img style="width: 20px;" src="~/image/pdf.png" /></a>
+                            <a asp-action="ExportListUsingEPPlus" asp-controller="CustomerSummary" asp-route-report="@Model.Report" asp-route-fdate="@Model.Startdate" asp-route-tdate="@Model.Enddate" asp-route-brchno="@customer" asp-route-doctype="3" asp-route-search="@Model.search" class=" "><img style="width: 20px;" src="~/image/word.png" /></a>
+                        </div>
+                    
+                </div>
+            }
+        </div>
+    </form>
+    <div>
+        <table id="standigntable"></table>
+    </div>
+
+
+    @if (Model.isvalue == true)
+    {
+        if (Model.Report == 1)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_standingOrderSummary" model="Model.StandingOrder" />
+            </div>
+        }
+        else if (Model.Report == 2)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_customerDDASCReport" model="Model.DDASCReport_VMs" />
+            </div>
+        }
+        else if (Model.Report == 3)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_customerLoanCharge" model="Model.LoanCharge_VMs" />
+            </div>
+        }
+        else if (Model.Report == 4)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_customerStopPayCharge" model="Model.StopPayCharge_VMs" />
+            </div>
+        }
+
+        else if (Model.Report == 5)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_customerTransChargeBranch" model="Model.TansChargeBranch_VMs" />
+            </div>
+        }
+        else if (Model.Report == 6)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_customerSafekeepingPayment" model="Model.SafekeepingPayment_VMs" />
+            </div>
+        }
+    }
+</section>
+
+
+
+
+<script type="text/javascript">
+
+    $("#setmodel").click(function() {
+        $("#divLoader").css("display", "block")
+    });
+    function getcustomer() {
+        let reportval = $('#inputState option:selected').val();
+        $('#customerlist option:not(:first)').remove;
+        debugger;
+        $.ajax({
+            url: '@Url.Action("GetCustomer","CustomerSummary")',
+            type: "POST",
+            data: { reportid: reportval },
+            success: function(result) {
+                $.each(result, function(data, value) {
+                    let name = value.customer;
+                    $("#customerlist").append($("<option></option>").val(value.acct).html(name));
+                });
+            }
+        });
+    }
+</script>
+
+@if (ViewBag.errormsg != null)
+{
+    <script type="text/javascript">
+
+        window.onload = function() {
+            alert("@ViewBag.errormsg");
+        };
+    </script>
+}
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+
+        window.onload = function() {
+            alert("@ViewBag.Message");
+        };
+    </script>
+}

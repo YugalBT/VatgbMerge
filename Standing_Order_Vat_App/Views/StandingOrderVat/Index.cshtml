@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewData["Title"] = "Standing Order Vat";
+}
+<section>
+<form>
+  <div >
+    <div class="row">
+      <label class="col-sm-1" for="inlineFormCustomSelect">Branch:</label>
+      <div class="col-sm-3">
+      <select id="inputState" class="select-list" style="width:100%">
+        <option selected>Choose...</option>
+        <option value="1">Main lirjbfjbk Branch</option>
+        <option value="2">NB Navis</option>
+        <option value="3">Pelican Mail</option>
+        <option value="3">Sandy Point</option>
+      </select>
+      </div>
+      <div class="col-sm-1"></div>
+       <label class="col-sm-1" for="inlineFormCustomSelect">Branch:Report:</label>
+      <div class="col-sm-3">
+      <select class="select-list" id="inputState" style="width:100%">
+        <option selected>Select One</option>
+        <option value="1">Standing Orders</option>
+        <option value="2">DDA Service Charge</option>
+        <option value="3">Late Charges Report</option>
+        <option value="3">Stop Pay Charges</option>
+        <option value="3">Transfer Charges</option>
+        <option value="3">Safekeeping Charges</option>
+        <option value="3">VAT On Fraud Charges</option>
+        <option value="3">VAT On Transaction Charge</option>
+      </select>
+      </div>
+    </div>
+    </br>
+     <div class="row">
+      <label class="col-sm-1" for="inlineFormCustomSelect">DateFrom:</label>
+      <div class="col-sm-3">
+      <input type="date"  style="width:100%"/>
+      </div>
+      <div class="col-sm-1"></div>
+       <label class="col-sm-1" for="inlineFormCustomSelect">Date To:</label>
+      <div class="col-sm-3">
+     <input type="date" style="width:100%" />
+      </div>
+    </div>
+    <div class="col-auto my-1">
+      <button type="submit" class="btn btn-primary">Get Report</button>
+    </div>
+  </div>
+</form>
+<div>
+    <table id="standigntable"></table>
+</div>
+</section>
+<script >
+$(document).ready(function() {
+    $("#standigntable").datatable();
+});
+
+</script>

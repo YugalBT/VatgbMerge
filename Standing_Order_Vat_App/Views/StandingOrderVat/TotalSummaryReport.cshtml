@@ -1,0 +1,316 @@
+﻿@model Standing_Order_Vat_App.Common.ViewModels.Summery_VM
+@{
+    ViewData["Title"] = "Standing Order Vat";
+}
+
+<style>
+    .tblsize {
+        /*display: block;*/
+        width: 100%;
+        /*        overflow: scroll;
+                                    overflow-y: scroll;*/
+        /*height: 550px;*/
+    }
+
+    .vat_summary {
+        max-width: 980px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .branch label {
+        padding-right: 80px;
+    }
+
+        .branch label.date-from {
+            padding-right: 56px;
+        }
+
+    .branch select, .branch input {
+        width: 240px;
+        height: 30px;
+    }
+
+    .get_report_PDF_excel_word a, .buttons button {
+        height: 36px;
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .buttons input {
+        margin-left: 30px;
+    }
+
+</style>
+
+<section>
+    <form class="formcontainer" method="get">
+        <div class="vat_summary">
+            <div class="">
+                @*@if (ViewBag.pageno != 1)
+                {*@
+                <input type="hidden" id="branch" asp-for=Branch />
+                <input type="hidden" id="report" asp-for=Report />
+                <input type="hidden" id="datefrom" asp-for=dateFrom />
+                <input type="hidden" id="dateto" asp-for=DateTo />
+                @*}*@
+                <div class="row mb-3">
+                    @if (Model.RoleType != "Executive")
+                    {
+                        <div class="col-lg-6">
+                            <div class="d-flex branch">
+                                <label class="" for="inlineFormCustomSelect">Branch:</label>
+                                <select class="select-list" asp-for=Branch id="inputStatebranch">
+                                    <option value="0">Basseterre</option>
+                                    <option value="1">Nevis</option>
+                                    <option value="4">Pelican Mail</option>
+                                    <option value="2">Sandy Point</option>
+                                </select>
+                            </div>
+                        </div>
+                    }
+                    <div class="col-lg-6">
+                        <div class="d-flex branch">
+                            <label class="ms-auto" for="inlineFormCustomSelect">Report:</label>
+                            <select class="select-list" asp-for=Report id="inputStatereport">
+                                <option selected>Select One</option>
+                                <option value="1">Standing Orders</option>
+                                <option value="2">DDA Service Charge</option>
+                                <option value="3">Late Charges Report</option>
+                                <option value="4">Stop Pay Charges</option>
+                                <option value="5">Transfer Charges</option>
+                                <option value="6">Safekeeping Charges</option>
+                                <option value="7">VAT On Fraud Charges</option>
+                                <option value="8">VAT On Transaction Charge</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-lg-6">
+                        <div class="d-flex branch">
+                            <label class="date-from" for="inlineFormCustomSelect">Date From:</label>
+                            <input type="date" asp-for=dateFrom />
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="d-flex branch">
+                            <label class="ms-auto" for="inlineFormCustomSelect">Date To:</label>
+                            <input type="date" asp-for=DateTo />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="class=" col-lg-6">
+                    <div class="d-flex branch">
+                        <button type="submit" id="setmodel" style="margin-left: 133px;" class="btn btn-primary">Get Report</button>
+                    </div>
+                </div>
+                <div id="divLoader" style="text-align: center; display:none;vertical-align: middle;"> <img src="~/Image/Spinner-3.gif" alt="Loader" /> </div>
+                @if (Model.isvalue == true)
+                {
+                    <br />
+                    <div class="buttons d-flex justify-content-between">
+                        @if (Model.Report == 1)
+                        {
+                            <div>
+                                <h2 style="display: flex;">Standing Orders &amp; VAT Fees Summary</h2>
+                            </div>
+
+                        }
+                        else if (Model.Report == 2)
+                        {
+                            <div>
+                                <h2 style="display: flex;">DDA Service Charges</h2>
+                            </div>
+                        }
+                        else if (Model.Report == 3)
+                        {
+                            <div>
+                                <h2 style="display: flex;">Loan Charges Fees &amp; VAT Summary</h2>
+                            </div>
+                        }
+                        else if (Model.Report == 4)
+                        {
+                            <div>
+                                <h2 style="display: flex;">Stop Pay Fees &amp; VAT</h2>
+                            </div>
+                        }
+                        else if (Model.Report == 5)
+                        {
+                            <div>
+                                <h2 style="display: flex;">Transfer Charges Summary Report</h2>
+                            </div>
+                        }
+                        else if (Model.Report == 6)
+                        {
+                            <div>
+                                <h2 style="display: flex;">Safe Keeping Summary</h2>
+                            </div>
+                        }
+                        else if (Model.Report == 7)
+                        {
+                            <div>
+                                <h2 style="display: flex;">VAT on Fraud Charge</h2>
+                            </div>
+                            <div class="get_report_PDF_excel_word" style="margin-top: 10px;">
+                               <a id="btnExport12"    onclick="Export12()" > <img style="width: 20px;" src="~/image/excel.png" /></a>
+                                <a id="btnExport"   onclick="Export()" ><img style="width: 20px;" src="~/image/pdf.png"/></a>
+                                <a id="btnExportword"   onclick="ExportToDoc()" ><img style="width: 20px;" src="~/image/word.png"/></a>
+                            </div>
+                        }
+                        else if (Model.Report == 8)
+                        {
+                            <div>
+                                <h2 style="display: flex;">VAT on Transaction Charge</h2>
+                            </div>
+                            <div class="get_report_PDF_excel_word" style="margin-top: 10px;">
+                               <a id="btnExport123"    onclick="Export12()" > <img style="width: 20px;" src="~/image/excel.png" /></a>
+                                <a id="btnExport1234"   onclick="Export()" ><img style="width: 20px;" src="~/image/pdf.png"/></a>
+                                <a id="btnExport1234"   onclick="ExportToDoc()" ><img style="width: 20px;" src="~/image/word.png"/></a>
+                            </div>
+                        }
+                        @if (Model.Report != 7 && Model.Report != 8)
+                        {
+                            <div class="get_report_PDF_excel_word" style="margin-top: 10px;">
+                                <input id="searchbox" on asp-for=search />
+                                <button type="submit" id="setmodel" class="btn btn-primary" style="height: 30px;">Search</button>
+                                <a asp-action="ExportListUsingEPPlus" asp-controller="StandingOrderVat" asp-route-report="@Model.Report" asp-route-fdate="@Model.dateFrom" asp-route-tdate="@Model.DateTo" asp-route-brchno="@Model.Branch" asp-route-doctype="1" asp-route-search="@Model.search" class=""><img style="width: 20px;" src="~/image/excel.png" /></a>
+                                <a asp-action="ExportListUsingEPPlus" asp-controller="StandingOrderVat" asp-route-report="@Model.Report" asp-route-fdate="@Model.dateFrom" asp-route-tdate="@Model.DateTo" asp-route-brchno="@Model.Branch" asp-route-doctype="2" asp-route-search="@Model.search" class=" "><img style="width: 20px;" src="~/image/pdf.png" /></a>
+                                <a asp-action="ExportListUsingEPPlus" asp-controller="StandingOrderVat" asp-route-report="@Model.Report" asp-route-fdate="@Model.dateFrom" asp-route-tdate="@Model.DateTo" asp-route-brchno="@Model.Branch" asp-route-doctype="3" asp-route-search="@Model.search" class=" "><img style="width: 20px;" src="~/image/word.png" /></a>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </form>
+    @{
+        int brch = 0;
+    }
+    <div>
+    </div>
+    <div>
+        <table id="standigntable"></table>
+    </div>
+    @if (Model.isvalue == true)
+    {
+        brch = Model.Branch;
+        if (Model.Report == 1)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_summaryReport" model="Model.StandingOrder" />
+            </div>
+        }
+        else if (Model.Report == 2)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_DDAReports" model="Model.DDASCReport_VMs" />
+            </div>
+        }
+        else if (Model.Report == 3)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_LoanCharge" model="Model.LoanCharge_VMs" />
+            </div>
+        }
+        else if (Model.Report == 4)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_StopPayCharge" model="Model.StopPayCharge_VMs" />
+            </div>
+        }
+        else if (Model.Report == 5)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_TansChargeBranch" model="Model.TansChargeBranch_VMs" />
+            </div>
+        }
+        else if (Model.Report == 6)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_SafekeepingPayment" model="Model.SafekeepingPayment_VMs" />
+            </div>
+        }
+        else if (Model.Report == 7)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_vatOnFraudChargeReport" />
+            </div>
+        }
+        else if (Model.Report == 8)
+        {
+            <script>
+                $("#divLoader").css("display", "none")
+            </script>
+            <div>
+                <partial name="_transactionCharge" model="Model.VATOnTransacactionVMs" />
+            </div>
+        }
+    }
+</section>
+
+@if (ViewBag.errormsg != null)
+{
+    <script type="text/javascript">
+
+        window.onload = function() {
+            alert("@ViewBag.errormsg");
+        };
+    </script>
+}
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+
+
+        window.onload = function() {
+            alert("@ViewBag.Message");
+        };
+
+    </script>
+}
+
+<script>
+
+    $("#setmodel").click(function() {
+        $("#divLoader").css("display", "block")
+    });
+
+    $(document).on('click', '#setmodel', function() {
+        debugger;
+        let branchval = $('#inputStatebranch').val();
+        let repo = $("#inputStatereport").val();
+        let datef = $('#dateFrom').val();
+        let dateto = $('#DateTo').val();
+        $('#branch').val(branchval);
+        $('#report').val(repo);
+        $('#datefrom').val(datef);
+        $('#dateto').val(dateto);
+    });
+
+
+
+</script>
