@@ -1,4 +1,5 @@
 ﻿using GbRegister.Core.ViewModel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols;
@@ -35,32 +36,44 @@ namespace Standing_Order_Vat_App.Common.Services
             var banks = _sknanbLiveContext.Banks.FromSqlRaw("exec getBank").ToList();
             return banks;
         }
-        public async Task<ForeignCheckVm> AddFrgnCheack(ForeignCheckVm foreignCheckVm)
+        public async Task <String> AddFrgnCheack(ForeignCheckVm foreignCheckVm)
         {
-
-            ForeignCheckVm dormantRegisters = new ForeignCheckVm();
-
-            var btchId = new SqlParameter("@btchId", foreignCheckVm.BatchId);
-            var chkNum = new SqlParameter("@chkNum", foreignCheckVm.CheckNumber);
-            var payAcctNum = new SqlParameter("@payAcctNum", foreignCheckVm.PayerAcctNumber);
-            var payAcctName = new SqlParameter("@payAcctName", foreignCheckVm.PayerAcctName);
-            var depAcctNum = new SqlParameter("@depAcctNum", foreignCheckVm.DepositAcctNumber);
-            var depAcctName = new SqlParameter("@depAcctName", foreignCheckVm.DepositAcctName);
-            var chkAmt = new SqlParameter("@chkAmt", foreignCheckVm.CheckAmount);
+            var result = "";
             try
             {
+                ForeignCheckBatchVm vm = new ForeignCheckBatchVm();
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.StoredProcedure;
+               
+                cmd.CommandText = "NewFrgnChkDetails";
+                
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@btchId", foreignCheckVm.BatchId);
+                cmd.Parameters.AddWithValue("@chkNum", foreignCheckVm.CheckNumber);
+                cmd.Parameters.AddWithValue("@payAcctNum", foreignCheckVm.PayerAcctNumber);
+                cmd.Parameters.AddWithValue("@payAcctName", foreignCheckVm.PayerAcctName);
+                cmd.Parameters.AddWithValue("@depAcctNum", foreignCheckVm.DepositAcctNumber);
+                cmd.Parameters.AddWithValue("@depAcctName", foreignCheckVm.DepositAcctName);
+                cmd.Parameters.AddWithValue("@chkAmt", Convert.ToDouble(foreignCheckVm.CheckAmount));
 
-                var data = _generalBankingRegistersContext.ForeignChecksDetails.FromSqlRaw("exec NewFrgnChkDetails @btchId,@chkNum,@payAcctNum,@payAcctName,@depAcctNum,@depAcctName,@chkAmt", btchId, chkNum, payAcctNum, payAcctName, depAcctNum, depAcctName, chkAmt);
-
+                conn.Open();
+                int i=  cmd.ExecuteNonQuery();
             }
-
             catch (Exception ex)
             {
+                 result = "Error saving checks for batch: " + foreignCheckVm.BatchId + ": " + ex.Message;
 
             }
 
-            return foreignCheckVm;
+            finally
+            {
+               
+            }
 
+            return result;
         }
 
         public ForeignCheckVm UpdateFrgn(ForeignCheckVm model)

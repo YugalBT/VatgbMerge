@@ -18,7 +18,7 @@ namespace GbRegister.Core.ViewModel
         public string DepositAcctNumber { get; set; } = null!;
         public string DepositAcctName { get; set; } = null!;
         public decimal CheckAmount { get; set; }
-        public long BatchId { get; set; } = 24;
+        public long BatchId { get; set; } 
         public DateTime DateRecived { get; set; }
 
     }

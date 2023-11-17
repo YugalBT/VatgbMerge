@@ -41,6 +41,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IActionResult> AddFrgnCheckAsync(ForeignCheckVm foreignChecksDetail)
         {
+            foreignChecksDetail.BatchId = 24;
             if (foreignChecksDetail == null)
             {
                 return BadRequest();

@@ -15,7 +15,7 @@ namespace Standing_Order_Vat_App.Common.Interfaces
     {
         List<Bank> GetBanks();
 
-        public Task<ForeignCheckVm> AddFrgnCheack(ForeignCheckVm foreignCheckVm);
+        public Task<string> AddFrgnCheack(ForeignCheckVm foreignCheckVm);
         ForeignCheckVm UpdateFrgn(ForeignCheckVm model);
         public IEnumerable<ForeignCheckBatchVm> GetFrgnChksBatchByStatus(int status,string branch);
 
