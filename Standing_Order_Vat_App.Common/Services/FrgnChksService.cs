@@ -76,30 +76,45 @@ namespace Standing_Order_Vat_App.Common.Services
             return result;
         }
 
-        public ForeignCheckVm UpdateFrgn(ForeignCheckVm model)
+        public async Task<String> UpdateFrgn(ForeignCheckVm model)
         {
-           
-            ForeignCheckVm dormantRegisters = new ForeignCheckVm();
-            var recId = new SqlParameter("@recId", model.RecordId);
-            var chkNum = new SqlParameter("@chkNum", model.CheckNumber);
-            var chkAmt = new SqlParameter("@chkAmt", model.CheckAmount);
-            var payAcctNum = new SqlParameter("@payAcctNum", model.PayerAcctNumber);
-            var payAcctName = new SqlParameter("@payAcctName", model.PayerAcctName);
-            var depAcctNum = new SqlParameter("@depAcctNum", model.DepositAcctNumber);
-            var depAcctName = new SqlParameter("@depAcctName", model.DepositAcctName);
-            var btchId = new SqlParameter("@btchId", model.BatchId);
 
+         var   result = "Update Successful";
             try
             {
-                 var data = _generalBankingRegistersContext.ForeignChecksDetails.FromSqlRaw("exec UpdFrgnChkDtls @recId,@chkNum,@chkAmt,@payAcctNum,@payAcctName,@depAcctNum,@depAcctName,@btchId", recId, chkNum, chkAmt, payAcctNum, payAcctName, depAcctNum, depAcctName, btchId);
-            }
+                ForeignCheckBatchVm vm = new ForeignCheckBatchVm();
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "UpdFrgnChkDtls";
 
-            catch (Exception ex)
+                
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@btchId", Convert.ToInt16(model.BatchId));
+                cmd.Parameters.AddWithValue("@chkNum", model.CheckNumber);
+                cmd.Parameters.AddWithValue("@payAcctNum", model.PayerAcctNumber);
+                cmd.Parameters.AddWithValue("@payAcctName", model.PayerAcctName);
+                cmd.Parameters.AddWithValue("@depAcctNum", model.DepositAcctNumber);
+                cmd.Parameters.AddWithValue("@depAcctName", model.DepositAcctName);
+                cmd.Parameters.AddWithValue("@chkAmt", Convert.ToDouble(model.CheckAmount));
+                cmd.Parameters.AddWithValue("@recId", Convert.ToInt16(model.RecordId));
+
+                conn.Open();
+                int i = cmd.ExecuteNonQuery();
+               var  batchTotal = Convert.ToDecimal(cmd.ExecuteScalar());
+
+            }
+            catch (SqlException ex)
             {
-
+                result = "Error updating check recordID- " + model.RecordId + ": " + ex.Message;
             }
-
-            return model;
+            finally
+            {
+                
+            }
+            return result;
         }
 
         public IEnumerable<ForeignCheckBatchVm> GetFrgnChksBatchByStatus(int status, string branch)
