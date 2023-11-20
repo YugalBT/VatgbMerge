@@ -117,22 +117,36 @@ namespace Standing_Order_Vat_App.Common.Services
             return result;
         }
 
-        public IEnumerable<ForeignCheckBatchVm> GetFrgnChksBatchByStatus(int status, string branch)
+        public IEnumerable<string> GetFrgnChksBatchByStatus(int status, string branch)
         {
-            List<ForeignCheckBatchVm> foreignCheckBatchVms = new List<ForeignCheckBatchVm>();
-            var stat = new SqlParameter("@status", status);
-            var branc = new SqlParameter("@branch", branch);
+           var result = "success";
             try
             {
-                var data = _generalBankingRegistersContext.ForeignChecksDetails.FromSqlRaw("exec FindFrgnChkBatchByStatus @status,@branch", stat, branc);
-            }
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.StoredProcedure;
+                using (conn)
+                {
+                    cmd.CommandText = "FindFrgnChkBatchByStatus";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@status", status);
+                    cmd.Parameters.AddWithValue("@branch", branch);
 
-            catch (Exception ex)
+                    if (conn.State != ConnectionState.Open)
+                        conn.Open();
+                }
+            }
+            catch (SqlException ex)
             {
-
+                result = "Error retreiving batch by stats: " + status + ": " + ex.Message;
             }
-
-            return foreignCheckBatchVms;
+            finally
+            {
+             
+            }
+            yield return result;
         }
 
         public async Task<ForeignCheckBatchVm> SaveFrgnBatch(FrgnCheckVm frgnCheckVm )
@@ -164,6 +178,109 @@ namespace Standing_Order_Vat_App.Common.Services
             List<ForeignChecksDetail> frgn=new List<ForeignChecksDetail>();
             
             return frgn;
+        }
+
+        public async Task<string> DeleteFrgnChksBatch(int batchId)
+        {
+          var result = "record deleted";
+
+            try
+            {
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "DelFrgnChkBatchAndChks";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@batchId", batchId);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                result = "Error deleting batch id = " + batchId + ": " + ex.Message;
+            }
+            finally
+            {
+               
+            }
+
+            return result;
+        }
+        public async Task<string> GetFrgnChksBatchByDate(int status, string branch, DateTime dateFrom, DateTime dateTo)
+        {
+           var result = "success";
+           
+            SqlConnection conn = new SqlConnection();
+            SqlCommand cmd = new SqlCommand();
+            conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+            cmd.Connection = conn;
+            cmd.CommandType = CommandType.StoredProcedure;
+            try
+            {
+                using (conn)
+                {
+                    cmd.CommandText = "FindFrgnChkBatchByDate";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@status", status);
+                    cmd.Parameters.AddWithValue("@branch", branch);
+                    cmd.Parameters.AddWithValue("@dateFrom", dateFrom);
+                    cmd.Parameters.AddWithValue("@dateTo", dateTo);
+
+                    if (conn.State != ConnectionState.Open)
+                        conn.Open();
+                }
+            }
+            catch (SqlException ex)
+            {
+                result = "Error retreiving batch by stats: " + status + ": " + ex.Message;
+            }
+            finally
+            {
+                cmd.Dispose();
+                conn.Close();
+            }
+            return result;
+        }
+
+        public async Task<string> GetFrgnChksBatchByBank(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo)
+        {
+           var result = "success";
+            SqlConnection conn = new SqlConnection();
+            SqlCommand cmd = new SqlCommand();
+            conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+            cmd.Connection = conn;
+            cmd.CommandType = CommandType.StoredProcedure;
+            try
+            {
+                using (conn)
+                {
+                    cmd.CommandText = "FindFrgnChkBatchByBank";
+                   
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@status", status);
+                    cmd.Parameters.AddWithValue("@branch", branch);
+                    cmd.Parameters.AddWithValue("@bankId", bankId);
+                    cmd.Parameters.AddWithValue("@dateFrom", dateFrom);
+                    cmd.Parameters.AddWithValue("@dateTo", dateTo);
+
+                    if (conn.State != ConnectionState.Open)
+                        conn.Open();
+                }
+            }
+            catch (SqlException ex)
+            {
+                result = "Error retreiving batch by bank: " + bankId + ": " + ex.Message;
+            }
+            finally
+            {
+                cmd.Dispose();
+                conn.Close();
+            }
+            return result;
         }
     }
     }

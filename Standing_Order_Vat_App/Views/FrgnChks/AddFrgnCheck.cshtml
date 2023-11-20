@@ -251,13 +251,87 @@
 
                         </div>
                     </div>
-
-                   
-                 
                 </form>
             </div>
         </div>
     </div>
+</div>
+
+
+
+
+<div class="row">
+    <form asp-action="UpdateFrgnCheck" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row" style="text-align:center">
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label asp-for="RecordId"></label>
+                    <input asp-for="RecordId" class="form-control" />
+                    <span asp-validation-for="RecordId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label asp-for="CheckNumber"></label>
+                    <input asp-for="CheckNumber" class="form-control" />
+                    <span asp-validation-for="CheckNumber" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label asp-for="PayerAcctNumber"></label>
+                    <input asp-for="PayerAcctNumber" class="form-control" />
+                    <span asp-validation-for="PayerAcctNumber" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label asp-for="PayerAcctName"></label>
+                    <input asp-for="PayerAcctName" class="form-control" />
+                    <span asp-validation-for="PayerAcctName" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label asp-for="DepositAcctNumber"></label>
+                    <input asp-for="DepositAcctNumber" class="form-control" />
+                    <span asp-validation-for="DepositAcctNumber" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label asp-for="DepositAcctName"></label>
+                    <input asp-for="DepositAcctName" class="form-control" />
+                    <span asp-validation-for="DepositAcctName" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label asp-for="CheckAmount"></label>
+                    <input asp-for="CheckAmount" class="form-control" />
+                    <span asp-validation-for="CheckAmount" class="text-danger"></span>
+                </div>
+            </div>
+
+        </div>
+        <br />
+
+        <div class="form-group">
+            <input type="submit" value="Submit" class="btn btn-primary" style="margin-left:315px" />
+        </div>
+    </form>
 </div>
 <footer class="customfooter">&copy;St.Kitts-Nevis-Anguilla National Bank 2017</footer>
 <script src="~/js/frgncheck.js"></script>

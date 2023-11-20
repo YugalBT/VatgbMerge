@@ -97,9 +97,6 @@ namespace Standing_Order_Vat_App.Controllers
             var banks = _sKNANBLIVEContext.Banks.ToList();
             return Json(banks);
         }
-
-       
-
         [HttpPost]
         public async Task<bool> SaveFrgnBatchHeader(FrgnCheckVm frgnCheckVm)
         {
@@ -120,6 +117,11 @@ namespace Standing_Order_Vat_App.Controllers
         {
             var res=_frgnchks.GetAllforeign();
             return Json(res);
+        }
+        [HttpGet]
+        public IActionResult View()
+        {
+            return View();
         }
     }
 }

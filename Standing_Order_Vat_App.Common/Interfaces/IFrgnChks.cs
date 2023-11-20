@@ -17,10 +17,16 @@ namespace Standing_Order_Vat_App.Common.Interfaces
 
         public Task<string> AddFrgnCheack(ForeignCheckVm foreignCheckVm);
         public Task<string> UpdateFrgn(ForeignCheckVm model);
-        public IEnumerable<ForeignCheckBatchVm> GetFrgnChksBatchByStatus(int status,string branch);
+        public IEnumerable<string> GetFrgnChksBatchByStatus(int status,string branch);
 
         public Task<ForeignCheckBatchVm> SaveFrgnBatch(FrgnCheckVm frgnCheckVm);
 
         public List<ForeignChecksDetail> GetAllforeign();
+
+        public Task<string> DeleteFrgnChksBatch(int batchId);
+
+        public Task<string> GetFrgnChksBatchByDate(int status, string branch, DateTime dateFrom, DateTime dateto);
+        public Task<string> GetFrgnChksBatchByBank(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo);
+
     }
 }
