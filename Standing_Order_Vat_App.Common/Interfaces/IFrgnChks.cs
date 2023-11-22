@@ -21,8 +21,9 @@ namespace Standing_Order_Vat_App.Common.Interfaces
         public Task<string> UpdateFrgn(ForeignCheckVm model);
         public IEnumerable<string> GetFrgnChksBatchByStatus(int status,string branch);
 
-        public Task<ForeignCheckBatchVm> SaveFrgnBatch(FrgnCheckVm frgnCheckVm);
+        public Task<int> SaveFrgnBatch(FrgnCheckVm frgnCheckVm);
 
+        public Task<decimal> GetCheckTotal(int BatchId);
         public List<ForeignChecksDetail> GetAllforeign();
 
         public Task<string> DeleteFrgnChksBatch(int batchId);

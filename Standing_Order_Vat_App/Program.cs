@@ -93,7 +93,7 @@ builder.Services.AddTransient<IApplicationUserRole, ApplicationUserRoleRepo>();
 builder.Services.AddTransient<IUserPermission, UserPermissionService>();
 builder.Services.AddScoped<IDormantRegister, DormantRegisterService>();
 builder.Services.AddScoped<IFrgnChks, FrgnChksService>();
-builder.Services.AddNotyf(config => { config.DurationInSeconds = 30; config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
+builder.Services.AddNotyf(config => { config.DurationInSeconds = 5; config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
 builder.Services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(3600000); });
 builder.Services.AddSession(options =>
 {

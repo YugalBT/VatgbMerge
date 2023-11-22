@@ -1,98 +1,6 @@
 ﻿@model GbRegister.Core.ViewModel.ForeignCheckVm
 <link href="~/css/link.css" rel="stylesheet" />
-<style>
-    .custom_navbars_link {
-        background-color: #002c36;
-    }
 
-        .custom_navbars_link .navbar-brand {
-            color: #ffffff;
-        }
-
-        .custom_navbars_link .navbar-nav .nav-link {
-            color: #ffffff;
-            font-size: 14px
-        }
-
-        .custom_navbars_link ul .nav-link img {
-            max-width: 40px;
-        }
-
-    .customfooter {
-        background-color: #002c36;
-        text-align: center;
-        color: #fff;
-        height: 60px;
-        vertical-align: bottom;
-        padding-top: 15px;
-    }
-
-    .spl {
-        border-color: #002C36;
-        width: 800px;
-        border-width: 1px;
-        border-style: solid;
-        margin-top: 40px;
-        min-height: 300px;
-    }
-
-    .demo {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background-color: #B46000;
-        padding: 10px 13px;
-    }
-
-        .demo a {
-            font-size: 14px;
-            color: #FFF;
-            text-decoration: none;
-        }
-
-    .b-demo {
-        background-color: #000000;
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        padding: 6px 20px;
-        justify-content: space-between;
-    }
-
-        .b-demo a {
-            color: #ffffff;
-            font-size: 14px;
-            text-decoration: none;
-        }
-
-    .b-demo-content {
-        padding: 20px 20px;
-    }
-
-    .data_grp .form-group label {
-        font-size: 13px;
-        margin-bottom: 5px
-    }
-
-    .data_grp .form-group input {
-        height: 30px;
-        border-color: #878787;
-        border-radius: 0;
-    }
-
-    .data_grp .form-group {
-        margin-bottom: 15px;
-    }
-
-
-    .sub_btn {
-        height: auto !important;
-        border-radius: 7px !important;
-        font-size: 15px;
-        min-width: 98px;
-    }
-
-</style>
 
 <div class="custom_navbars_link">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -138,225 +46,184 @@
         <div>
             <div class="row" style="text-align:center">
                 <form asp-action="AddFrgnCheck" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="row align-items-end">
+                        <input type="hidden" asp-for="BatchId" />
+                        <input type="hidden" asp-for="TotalAmount" />
                         <div class="col-3">
                             <div class="form-group">
-                                <label>Banks</label>
-                                <select class="form-control" asp-for="BankId"
-                                asp-items="@(new SelectList(Model.BanksList,"BankId","BankName"))">
-                                    <option>----Select Banks-----</option>
+                                <label class="form-label">Banks</label>
+                                <select class="form-select" asp-for="BankId"
+                                        asp-items="@(new SelectList(Model.BanksList,"BankId","BankName"))">
+                                    <option value="">----Select Banks-----</option>
                                 </select>
                             </div>
+
                         </div>
                         <div class="col-3">
-                            <div class="d-flex branch flex-column">
-                                <label class="date-from p-0" for="inlineFormCustomSelect">Date From:</label>
-                                <input type="date" asp-for="DateRecived" class="w-100" />
+                            <div class="form-group">
+                                <label class="form-label" asp-for="DateRecived">Date From</label>
+                                <input type="date" asp-for="DateRecived" class="form-control" />
                             </div>
                         </div>
                         <div class="col-3">
                             <div class="form-group">
-                                <input type="text" value="" class="" readonly="readonly" />
+                                <label asp-for="TotalAmount" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1">$</span>
+                                    <input value="@Model.TotalAmount" asp-for="TotalAmount" class="form-control" aria-describedby="basic-addon1" readonly />
+                                </div>
                             </div>
                         </div>
                         <div class="col-3">
-                            <input type="button" onclick="saveBatchHeader()" value="Save Batch Header" class="btn btn-primary w-100" />
+                            <button type="submit" id="savBatchbtn" name="actionbtn" value="batchHeader" class="btn btn-primary">Save Batch Header</button>
                         </div>
                     </div>
+                    <div class="row">
+                        <span asp-validation-for="BankId" class="text-danger col-3"></span>
+                        <span asp-validation-for="DateRecived" class="text-danger col-3"></span>
+                        <span asp-validation-for="TotalAmount" class="text-danger col-3"></span>
+                        <span class="col-3"></span>
 
-
+                    </div>
                     <div class="spl">
+
                         <div class="demo">
-
-                            <a href="#" id="btnAdd" onclick="showdiv()">Add New Check</a>
-                            <a href="">Refresh</a>
-                        </div>
-                        <div class="b-demo">
-
-                            <a href="#">CheckNumber</a>
-                            <a href="#">Payer Account</a>
-                            <a href="#">Payer Name</a>
-                            <a href="#">Deposit Account</a>
-                            <a href="#">Depositor's Name</a>
-                            <a href="#">Check Amount</a>
-
+                            @{
+                                if (Model.BatchId > 0)
+                                {
+                                    <button type="button" id="btnAdd" class="buttonRemoveCss" onclick="showdiv()">Add New Check</button>
+                                }
+                            }
+                            <a href="" class="text-end">Refresh</a>
                         </div>
 
-                        <div class="b-demo-content">
 
+                        @if (Model.BatchId > 0)
+                        {
+                            <div class="b-demo-content">
+                                <div class="row mb-3 data_grp" style="display: none;" id="AddfrgnCheck">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-label" asp-for="CheckNumber"></label>
+                                            <input asp-for="CheckNumber" class="form-control" />
+                                            <span asp-validation-for="CheckNumber" class="text-danger"></span>
+                                        </div>
+                                    </div>
 
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-label" asp-for="PayerAcctNumber"></label>
+                                            <input asp-for="PayerAcctNumber" class="form-control" />
+                                            <span asp-validation-for="PayerAcctNumber" class="text-danger"></span>
+                                        </div>
+                                    </div>
 
-                            <div class="row mb-3 data_grp" style="display: none;" id="AddfrgnCheck">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label asp-for="CheckNumber"></label>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-label" asp-for="PayerAcctName"></label>
 
-                                        <input asp-for="CheckNumber" class="form-control" />
-                                        <span asp-validation-for="CheckNumber" class="text-danger"></span>
+                                            <input asp-for="PayerAcctName" class="form-control" />
+                                            <span asp-validation-for="PayerAcctName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-label" asp-for="DepositAcctNumber"></label>
+
+                                            <input asp-for="DepositAcctNumber" class="form-control" />
+                                            <span asp-validation-for="DepositAcctNumber" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-label" asp-for="DepositAcctName"></label>
+
+                                            <input asp-for="DepositAcctName" class="form-control" />
+                                            <span asp-validation-for="DepositAcctName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-label" asp-for="CheckAmount"></label>
+
+                                            <input asp-for="CheckAmount" class="form-control" />
+                                            <span asp-validation-for="CheckAmount" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group text-start">
+                                            <button type="submit" name="actionbtn" value="saveCheck" class="btn btn-primary sub_btn">Save Check</button>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label asp-for="PayerAcctNumber"></label>
-
-                                        <input asp-for="PayerAcctNumber" class="form-control" />
-                                        <span asp-validation-for="PayerAcctNumber" class="text-danger"></span>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label asp-for="PayerAcctName"></label>
-
-                                        <input asp-for="PayerAcctName" class="form-control" />
-                                        <span asp-validation-for="PayerAcctName" class="text-danger"></span>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label asp-for="DepositAcctNumber"></label>
-
-                                        <input asp-for="DepositAcctNumber" class="form-control" />
-                                        <span asp-validation-for="DepositAcctNumber" class="text-danger"></span>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label asp-for="DepositAcctName"></label>
-
-                                        <input asp-for="DepositAcctName" class="form-control" />
-                                        <span asp-validation-for="DepositAcctName" class="text-danger"></span>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label asp-for="CheckAmount"></label>
-
-                                        <input asp-for="CheckAmount" class="form-control" />
-                                        <span asp-validation-for="CheckAmount" class="text-danger"></span>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="form-group text-start">
-                                        <input type="submit" value="Submit" class="btn btn-primary sub_btn" />
-                                    </div>
-                                </div>
                             </div>
 
-                        </div>
-                        <div>
-                            <table>
-                                <tbody class="table table-bordered">
-                                    @{
-                                        if(Model.checksList != null)
-                                        {
-                                            foreach (var item in Model.checksList)
+                            <div class="tblbg">
+                                <table class="table table-striped" id="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Check Number</th>
+                                            <th scope="col">Payer Account</th>
+                                            <th scope="col">Payer Name</th>
+                                            <th scope="col">Deposit Account</th>
+                                            <th scope="col">Depositor's Name</th>
+                                            <th scope="col">Check Amount</th>
+                                            <th scope="col">#</th>
+                                        </tr>
+                                        @* <label class="form-label checkHeader">CheckNumber</label>
+                                    <label class="form-label checkHeader">Payer Account</label>
+                                    <label class="form-label checkHeader">Payer Name</label>
+                                    <label class="form-label checkHeader">Deposit Account</label>
+                                    <label class="form-label checkHeader">Depositor's Name</label>
+                                    <label class="form-label checkHeader">Check Amount</label> *@
+
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            if (Model.checksList != null)
                                             {
-                                                <tr>
-                                                    <td><a href="">edit</a></td>
-                                                    <td>@item.CheckNumber</td>
-                                                    <td>@item.PayerAcctNumber</td>
-                                                    <td>@item.PayerAcctName</td>
-                                                    <td>@item.DepositAcctNumber</td>
-                                                    <td>@item.DepositAcctName</td>
-                                                    <td>@item.CheckAmount</td>
-                                                </tr>
+                                                foreach (var item in Model.checksList)
+                                                {
+                                                    <tr>
+                                                        <td>@item.CheckNumber</td>
+                                                        <td>@item.PayerAcctNumber</td>
+                                                        <td>@item.PayerAcctName</td>
+                                                        <td>@item.DepositAcctNumber</td>
+                                                        <td>@item.DepositAcctName</td>
+                                                        <td>@item.CheckAmount</td>
+                                                        <td><a href="">edit</a></td>
+                                                    </tr>
+                                                }
                                             }
                                         }
-                                    }
-                                   
-                                </tbody>
-                            </table>
-                        </div>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+@section Scripts{
+    <script asp-append-version="true" src="~/js/FrgnCheck.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable();
+        });
+    </script>
+}
 
 
 
 
-@*<div class="row">
-    <form asp-action="UpdateFrgnCheck" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="row" style="text-align:center">
-            <div class="col-lg-3">
-                <div class="form-group">
-                    <label asp-for="RecordId"></label>
-                    <input asp-for="RecordId" class="form-control" />
-                    <span asp-validation-for="RecordId" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="form-group">
-                    <label asp-for="CheckNumber"></label>
-                    <input asp-for="CheckNumber" class="form-control" />
-                    <span asp-validation-for="CheckNumber" class="text-danger"></span>
-                </div>
-            </div>
-            <br />
-            <br />
-            <div class="col-lg-3">
-                <div class="form-group">
-                    <label asp-for="PayerAcctNumber"></label>
-                    <input asp-for="PayerAcctNumber" class="form-control" />
-                    <span asp-validation-for="PayerAcctNumber" class="text-danger"></span>
-                </div>
-            </div>
-            <br />
-            <br />
-            <div class="col-lg-3">
-                <div class="form-group">
-                    <label asp-for="PayerAcctName"></label>
-                    <input asp-for="PayerAcctName" class="form-control" />
-                    <span asp-validation-for="PayerAcctName" class="text-danger"></span>
-                </div>
-            </div>
-            <br />
-            <br />
-            <div class="col-lg-3">
-                <div class="form-group">
-                    <label asp-for="DepositAcctNumber"></label>
-                    <input asp-for="DepositAcctNumber" class="form-control" />
-                    <span asp-validation-for="DepositAcctNumber" class="text-danger"></span>
-                </div>
-            </div>
-            <br />
-            <br />
-            <div class="col-lg-3">
-                <div class="form-group">
-                    <label asp-for="DepositAcctName"></label>
-                    <input asp-for="DepositAcctName" class="form-control" />
-                    <span asp-validation-for="DepositAcctName" class="text-danger"></span>
-                </div>
-            </div>
-            <br />
-            <br />
-            <div class="col-lg-3">
-                <div class="form-group">
-                    <label asp-for="CheckAmount"></label>
-                    <input asp-for="CheckAmount" class="form-control" />
-                    <span asp-validation-for="CheckAmount" class="text-danger"></span>
-                </div>
-            </div>
-
-        </div>
-        <br />
-
-        <div class="form-group">
-            <input type="submit" value="Submit" class="btn btn-primary" style="margin-left:315px" />
-        </div>
-    </form>
-</div>
-<footer class="customfooter">&copy;St.Kitts-Nevis-Anguilla National Bank 2017</footer>
-<script src="~/js/frgncheck.js"></script>
-<script src="~/js/cascade.js"></script>*@

@@ -87,6 +87,9 @@
             <div class="col-3" id="sele">
                     <div class="form-group mb-3">
                         <label class="d-block">Banks</label>
+                    @*<select class="form-control" id="Banks">
+                        <option>----Select Banks-----</option>
+                    </select>*@
                         <select id="Select1" asp-for=Banks class="form-select" asp-items="@(new SelectList(Model.bankList,"BankId", "BankName"))">
                             <option value="" selected disabled>--- Select Banks ---</option>
                         </select>
@@ -136,6 +139,7 @@
                             <tr class="table-active">
                                     <th>Date Received</th>
                                     <th>Date Payment Requested</th>
+                                    <th>Date Processed	</th>
                                     <th>Bank</th>
                                     <th>Date Processed</th>
                                     <th>Total</th>
@@ -151,11 +155,14 @@
                             <tr>
                             <td>@dormant.DateSettled</td>
                             <td>@dormant.DatePaymentRequested</td>
+                            <td>@dormant.DateSettled</td>
                             <td>@dormant.BankName</td>
                             <td>@dormant.DatePaymentRequested</td>
                           <td>@dormant.BatchTotal</td>
-                         <td>@dormant.ProcessName</td>
-                         
+                          <td>@dormant.ProcessName</td>
+                          <td>@dormant.DateSettled</td>
+                          <td>@dormant.DateSettled</td>
+
                           <td>@dormant.ProcessName</td>
                             </tr>
                             }
@@ -196,4 +203,5 @@
         $('#table').DataTable();
     });
     </script>
-    }
+            }
+</script>
