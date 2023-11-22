@@ -11,6 +11,7 @@ using System.Web.Helpers;
 using Microsoft.EntityFrameworkCore;
 using X.PagedList;
 using DocumentFormat.OpenXml.Office2016.Excel;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -230,6 +231,19 @@ namespace Standing_Order_Vat_App.Controllers
 
         }
 
+       public IActionResult DeletefrgnCheck(int batchid)
+        {
+            try
+            {
+                var res=_frgnchks.DeleteFrgnChksBatch(batchid);
+
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return View();
+        }
     }
 }
 
