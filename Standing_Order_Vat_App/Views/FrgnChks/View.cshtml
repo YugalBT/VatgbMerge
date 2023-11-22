@@ -1,0 +1,199 @@
+﻿@model Standing_Order_Vat_App.Common.ViewModels.FrgnViewCheckVm
+@{
+    ViewData["Title"] = "View";
+}
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<link href="~/css/link.css" rel="stylesheet" />
+<style>
+    .custom_navbars_link {
+        background-color: #002c36;
+    }
+
+        .custom_navbars_link .navbar-brand {
+            color: #ffffff;
+        }
+
+        .custom_navbars_link .navbar-nav .nav-link {
+            color: #ffffff;
+            font-size: 14px
+        }
+
+        .custom_navbars_link ul .nav-link img {
+            max-width: 40px;
+        }
+
+    .customfooter {
+        background-color: #002c36;
+        text-align: center;
+        color: #fff;
+        height: 60px;
+        vertical-align: bottom;
+        padding-top: 15px;
+    }
+
+</style>
+
+<div class="custom_navbars_link">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">GB Registries</a>
+           
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" asp-controller="DormantRegister" asp-action="Index">Dormant Register</a>
+                    </li>
+                    <li class="nav-item">
+
+                        <a class="nav-link active" asp-controller="FrgnChks" asp-action="Index">Foreign Checks</a>
+                    </li>
+                </ul>
+                <ul class="ml-0">
+                    <li class="nav-item">
+                        <a class="nav-link p-0" href="#"><img src="~/Image/help.png" /></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div class="d-flex">
+    <div id="sidebar-wrapper" class="side_bar_custom">
+        <div class="mt-4">
+            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnNewSection" value="New Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnNewSection" class="btn-no-style" asp-action="AddFrgnCheck">New Batch</a>
+            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnUpdateSection" value="Update Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnUpdateSection" class="btn-no-style" asp-action="UpdateFrgn">Update Batch</a>
+            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnViewSection" value="View Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnViewSection" class="btn-no-style" asp-controller="FrgnChks" asp-action="View">View Batch</a>
+        </div>
+    </div>
+    <div class="right_side_content bg-lightorangecolor w-100">
+
+        <form method="get" asp-action="View" asp-controller="FrgnChks">
+        <div class="row">
+            <div class="col-3">
+                <div class="form-group mb-3">
+                        <label for="Options" class="d-block">Options</label>
+                    <select class="form-control" asp-for=Options id="sel" onchange="Banksanddate()">
+                        <option selected>Options</option>
+                        <option value="1">Bank & Date</option>
+                        <option value="2">Date</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-3" id="sele">
+                    <div class="form-group mb-3">
+                        <label class="d-block">Banks</label>
+                        <select id="Select1" asp-for=Banks class="form-select" asp-items="@(new SelectList(Model.bankList,"BankId", "BankName"))">
+                            <option value="" selected disabled>--- Select Banks ---</option>
+                        </select>
+
+                </div>
+            </div>
+            <div class="col-3">
+                    <div class="form-group mb-3">
+                    <label class="d-block">Status</label>
+                    @*<select class="form-control" id="Status">
+                        <option>----Select Status-----</option>
+                    </select>*@
+
+                        <select id="Select1" asp-for=Status class="form-select" asp-items="@(new SelectList(Model.entryStatusVM,"StatusId", "StatusName"))">
+                            <option value="" selected disabled>--- Status ---</option></select>
+                </div>
+
+            </div>
+
+            <div class="col-3">
+                    <div class="branch mb-3">
+                    <label class="date-from d-block" for="inlineFormCustomSelect">Date From:</label>
+                        <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="From" />
+                </div>
+            </div>
+            <div class="col-3">
+                    <div class="branch mb-3">
+                    <label class="ms-auto d-block" for="inlineFormCustomSelect">Date To:</label>
+                        <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="To" />
+                </div>
+            </div>
+            
+            <div class="col-3">
+                    <div class="branch mb-3">
+                        <input type="submit" style="width:100%;height: 38px;margin-top: 25px;" value="Search" asp-controller="FrgnChks" asp-action="View" />
+                </div>
+            </div>
+        </div>
+        <div class="spl">
+            <br />
+            <br />
+            
+                <div style="height: 420px;overflow-y: auto;border-top: 2px solid #000;">
+                <div class="table-responsive">
+                        <table class="table table-hover border database_table" id="table">
+                        <thead>
+                            <tr class="table-active">
+                                    <th>Date Received</th>
+                                    <th>Date Payment Requested</th>
+                                    <th>Bank</th>
+                                    <th>Date Processed</th>
+                                    <th>Total</th>
+                                    <th>Entered By</th>
+                                    
+                                    <th>Settled By</th>
+                              
+                            </tr>
+                        </thead>
+                        <tbody >
+                            @foreach (var dormant in Model.FrgnCheckListRecVms)
+                            {
+                            <tr>
+                            <td>@dormant.DateSettled</td>
+                            <td>@dormant.DatePaymentRequested</td>
+                            <td>@dormant.BankName</td>
+                            <td>@dormant.DatePaymentRequested</td>
+                          <td>@dormant.BatchTotal</td>
+                         <td>@dormant.ProcessName</td>
+                         
+                          <td>@dormant.ProcessName</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </form>
+
+    </div>
+</div>
+
+
+
+<script src="~/js/cascade.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+    $('#sel').show();
+    $('#Banks').hide();
+    function Banksanddate(){
+        if ($("#sel").val() == "2") {
+            //alert("From second");
+            $('#sele').hide();
+        }
+        else{
+            $('#sele').show();
+        }
+    }
+    
+</script>
+@section scripts {
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#table').DataTable();
+    });
+    </script>
+    }

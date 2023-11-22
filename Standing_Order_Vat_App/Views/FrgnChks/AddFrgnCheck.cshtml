@@ -33,7 +33,7 @@
         border-width: 1px;
         border-style: solid;
         margin-top: 40px;
-        min-height:300px;
+        min-height: 300px;
     }
 
     .demo {
@@ -69,9 +69,9 @@
         padding: 20px 20px;
     }
 
-    .data_grp .form-group label{
-        font-size:13px;
-        margin-bottom:5px
+    .data_grp .form-group label {
+        font-size: 13px;
+        margin-bottom: 5px
     }
 
     .data_grp .form-group input {
@@ -80,8 +80,8 @@
         border-radius: 0;
     }
 
-    .data_grp .form-group{
-        margin-bottom:15px;
+    .data_grp .form-group {
+        margin-bottom: 15px;
     }
 
 
@@ -127,7 +127,7 @@
         <div class="mt-4">
             <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnNewSection" value="New Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnNewSection" class="btn-no-style" asp-action="AddFrgnCheck">New Batch</a>
             <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnUpdateSection" value="Update Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnUpdateSection" class="btn-no-style" asp-action="UpdateFrgnCheck">Update Batch</a>
-            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnViewSection" value="View Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnViewSection" class="btn-no-style" asp-action="ViewForeignCheck">View Batch</a>
+            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnViewSection" value="View Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnViewSection" class="btn-no-style" asp-controller="frgnChks" asp-action="View">View Batch</a>
         </div>
     </div>
     <div class="right_side_content bg-lightorangecolor">
@@ -143,7 +143,8 @@
                         <div class="col-3">
                             <div class="form-group">
                                 <label>Banks</label>
-                                <select class="form-control" id="Banks">
+                                <select class="form-control" asp-for="BankId"
+                                asp-items="@(new SelectList(Model.BanksList,"BankId","BankName"))">
                                     <option>----Select Banks-----</option>
                                 </select>
                             </div>
@@ -152,7 +153,6 @@
                             <div class="d-flex branch flex-column">
                                 <label class="date-from p-0" for="inlineFormCustomSelect">Date From:</label>
                                 <input type="date" asp-for="DateRecived" class="w-100" />
-
                             </div>
                         </div>
                         <div class="col-3">
@@ -185,63 +185,63 @@
 
                         <div class="b-demo-content">
 
-                           
+
 
                             <div class="row mb-3 data_grp" style="display: none;" id="AddfrgnCheck">
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label asp-for="CheckNumber"></label>
-                                 
+
                                         <input asp-for="CheckNumber" class="form-control" />
                                         <span asp-validation-for="CheckNumber" class="text-danger"></span>
                                     </div>
                                 </div>
-                              
+
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label asp-for="PayerAcctNumber"></label>
-                                   
+
                                         <input asp-for="PayerAcctNumber" class="form-control" />
                                         <span asp-validation-for="PayerAcctNumber" class="text-danger"></span>
                                     </div>
                                 </div>
-                             
+
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label asp-for="PayerAcctName"></label>
-                                    
+
                                         <input asp-for="PayerAcctName" class="form-control" />
                                         <span asp-validation-for="PayerAcctName" class="text-danger"></span>
                                     </div>
                                 </div>
-                             
+
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label asp-for="DepositAcctNumber"></label>
-                                      
+
                                         <input asp-for="DepositAcctNumber" class="form-control" />
                                         <span asp-validation-for="DepositAcctNumber" class="text-danger"></span>
                                     </div>
                                 </div>
-                             
+
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label asp-for="DepositAcctName"></label>
-                                     
+
                                         <input asp-for="DepositAcctName" class="form-control" />
                                         <span asp-validation-for="DepositAcctName" class="text-danger"></span>
                                     </div>
                                 </div>
-                                
+
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label asp-for="CheckAmount"></label>
-                                    
+
                                         <input asp-for="CheckAmount" class="form-control" />
                                         <span asp-validation-for="CheckAmount" class="text-danger"></span>
                                     </div>
                                 </div>
-                              
+
                                 <div class="col-md-12">
                                     <div class="form-group text-start">
                                         <input type="submit" value="Submit" class="btn btn-primary sub_btn" />
@@ -249,6 +249,30 @@
                                 </div>
                             </div>
 
+                        </div>
+                        <div>
+                            <table>
+                                <tbody class="table table-bordered">
+                                    @{
+                                        if(Model.checksList != null)
+                                        {
+                                            foreach (var item in Model.checksList)
+                                            {
+                                                <tr>
+                                                    <td><a href="">edit</a></td>
+                                                    <td>@item.CheckNumber</td>
+                                                    <td>@item.PayerAcctNumber</td>
+                                                    <td>@item.PayerAcctName</td>
+                                                    <td>@item.DepositAcctNumber</td>
+                                                    <td>@item.DepositAcctName</td>
+                                                    <td>@item.CheckAmount</td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                   
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </form>
@@ -260,7 +284,7 @@
 
 
 
-<div class="row">
+@*<div class="row">
     <form asp-action="UpdateFrgnCheck" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -335,4 +359,4 @@
 </div>
 <footer class="customfooter">&copy;St.Kitts-Nevis-Anguilla National Bank 2017</footer>
 <script src="~/js/frgncheck.js"></script>
-<script src="~/js/cascade.js"></script>
+<script src="~/js/cascade.js"></script>*@

@@ -3,10 +3,14 @@ using GbRegister.Core.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Standing_Order_Vat_App.Common.Interfaces;
 using Standing_Order_Vat_App.Common.ViewModels;
+using Standing_Order_Vat_App.Common.Helper;
 using Standing_Order_Vat_App.DAL.GB_Register;
 using Standing_Order_Vat_App.DAL.SKNANB_LIVE;
 using Standing_Order_Vat_App.DAL.Standing_Order_VAT_DB;
 using System.Web.Helpers;
+using Microsoft.EntityFrameworkCore;
+using X.PagedList;
+using DocumentFormat.OpenXml.Office2016.Excel;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -35,34 +39,47 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult AddFrgnCheckAsync()
         {
-            return View();
+            ForeignCheckVm vm = new ForeignCheckVm();
+            vm.BanksList = _frgnchks.GetBanks();
+            return View(vm);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddFrgnCheckAsync(ForeignCheckVm foreignChecksDetail)
         {
-            foreignChecksDetail.BatchId = 24;
-            if (foreignChecksDetail == null)
-            {
-                return BadRequest();
-            }
 
             try
             {
-                var response = await _frgnchks.AddFrgnCheack(foreignChecksDetail);
+                foreignChecksDetail.BatchId = 24;
 
-                return View(response);
+                if (foreignChecksDetail != null)
+                {
+                    var response = await _frgnchks.AddFrgnCheack(foreignChecksDetail);
+                    if (response.Successful)
+                    {
+                        var list = await _frgnchks.GetFrgnChksByBatchID(foreignChecksDetail.BatchId);
+                        if (list.Successful)
+                        {
+                            List<FrgnCheckListVm> v = DataTableToModelConvert.CreateListFromTable<FrgnCheckListVm>(list.Value);
+                            foreignChecksDetail.checksList = v;
+                            return View(foreignChecksDetail);
+
+                        }
+                    }
+                }
             }
-            catch
+            catch (Exception ex)
             {
                 throw;
             }
+            return View(foreignChecksDetail);
+
         }
 
         [HttpGet]
         public IActionResult UpdateFrgnCheck()
         {
-           
+
             return View();
         }
 
@@ -76,7 +93,7 @@ namespace Standing_Order_Vat_App.Controllers
 
             try
             {
-                var response =  _frgnchks.UpdateFrgn(foreignCheck);
+                var response = _frgnchks.UpdateFrgn(foreignCheck);
 
                 return View(response);
             }
@@ -104,8 +121,8 @@ namespace Standing_Order_Vat_App.Controllers
             frgnCheckVm.empId = 29;
             frgnCheckVm.batchStat = 1;
             frgnCheckVm.branch = "00";
-            var response =  await _frgnchks.SaveFrgnBatch(frgnCheckVm);
-            if(response.BatchId > 0)
+            var response = await _frgnchks.SaveFrgnBatch(frgnCheckVm);
+            if (response.BatchId > 0)
             {
                 return true;
             }
@@ -115,14 +132,104 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public JsonResult FrgncheckList()
         {
-            var res=_frgnchks.GetAllforeign();
+            var res = _frgnchks.GetAllforeign();
             return Json(res);
         }
         [HttpGet]
-        public IActionResult View()
+        public async Task<IActionResult> View(FrgnCheckViewRequest request)
         {
-            return View();
+            FrgnViewCheckVm res = new FrgnViewCheckVm();
+            res.entryStatusVM = new List<ForeignCheckStatusVM>();
+            res.bankList = new List<BankListVm>();
+
+            res.entryStatusVM = await _frgnchks.GetEntryStatus();
+            res.bankList = await _sKNANBLIVEContext.Banks.Select(s => new BankListVm()
+            {
+                BankId = s.BankId,
+                BankName = s.Name
+            }).ToListAsync();
+
+            List<FrgnCheckListRecVm> result = new List<FrgnCheckListRecVm>();
+
+            switch (request.Options)
+            {
+                case 1:
+
+                    var a = await _frgnchks.record(request.Status, "00", request.Banks, request.From, request.To);
+
+                    if (a.Value != null)
+                    {
+                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(a.Value);
+                    }
+                    break;
+
+                case 2:
+
+                    var b = await _frgnchks.record1(request.Status, "00", request.Banks, request.From, request.To);
+
+                    if (b.Value != null)
+                    {
+                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(b.Value);
+                    }
+                    break;
+
+                case 3:
+                    var c = await _frgnchks.record2(request.Status, "00", request.Banks, request.From, request.To);
+
+                    if (c.Value != null)
+                    {
+                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(c.Value);
+                    }
+                    break;
+            }
+            res.FrgnCheckListRecVms = result;
+            return View(res);
         }
+        [HttpGet]
+        public async Task<IActionResult>UpdateFrgn(FrgnCheckViewRequest request)
+        {
+            FrgnViewCheckVm res = new FrgnViewCheckVm();
+            res.entryStatusVM = new List<ForeignCheckStatusVM>();
+            res.bankList = new List<BankListVm>();
+
+            res.entryStatusVM = await _frgnchks.GetEntryStatus();
+            res.bankList = await _sKNANBLIVEContext.Banks.Select(s => new BankListVm()
+            {
+                BankId = s.BankId,
+                BankName = s.Name
+            }).ToListAsync();
+
+            List<FrgnCheckListRecVm> result = new List<FrgnCheckListRecVm>();
+
+            switch (request.Options)
+            {
+                case 1:
+                    var a = await _frgnchks.record(request.Status, "00", request.Banks, request.From, request.To);
+                    if (a.Value != null)
+                    {
+                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(a.Value);
+                    }
+                    break;
+                case 2:
+                    var b = await _frgnchks.record1(request.Status, "00", request.Banks, request.From, request.To);
+                    if (b.Value != null)
+                    {
+                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(b.Value);
+                    }
+                    break;
+                case 3:
+                    var c = await _frgnchks.record2(request.Status, "00", request.Banks, request.From, request.To);
+                    if (c.Value != null)
+                    {
+                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(c.Value);
+                    }
+                    break;
+            }
+            res.FrgnCheckListRecVms = result;
+            return View(res);
+
+        }
+
     }
 }
 

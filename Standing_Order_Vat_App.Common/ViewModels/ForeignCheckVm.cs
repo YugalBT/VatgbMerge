@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Standing_Order_Vat_App.Common.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,8 +19,12 @@ namespace GbRegister.Core.ViewModel
         public string DepositAcctNumber { get; set; } = null!;
         public string DepositAcctName { get; set; } = null!;
         public decimal CheckAmount { get; set; }
-        public long BatchId { get; set; } 
+        public decimal TotalAmount { get; set; }
+        public int BatchId { get; set; } 
         public DateTime DateRecived { get; set; }
+        public int BankId { get; set; }
+        public List<BankListVm> BanksList { get; set; }
+        public List<FrgnCheckListVm> checksList { get; set; }
 
     }
 }

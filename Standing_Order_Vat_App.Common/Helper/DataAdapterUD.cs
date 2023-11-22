@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VATCustomServices.Helper
+namespace Standing_Order_Vat_App.Common.Helper
 {
     public static class DataAdapterUD
     {
