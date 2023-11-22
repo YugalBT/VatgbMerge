@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols;
+using Standing_Order_Vat_App.Common.GeneralResult;
+using Standing_Order_Vat_App.Common.Helper;
 using Standing_Order_Vat_App.Common.Interfaces;
 using Standing_Order_Vat_App.Common.ViewModels;
 using Standing_Order_Vat_App.DAL.Directory_DB;
@@ -11,17 +13,19 @@ using Standing_Order_Vat_App.DAL.SKNANB_LIVE;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Helpers;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Standing_Order_Vat_App.Common.Services
 {
     public class FrgnChksService : IFrgnChks
     {
-        
+
         private readonly SKNANBLIVEContext _sknanbLiveContext;
         private readonly General_Banking_RegistersContext _generalBankingRegistersContext;
 
@@ -31,14 +35,40 @@ namespace Standing_Order_Vat_App.Common.Services
             _generalBankingRegistersContext = generalBankingRegistersContext;
         }
 
-        public List<Bank> GetBanks()
+        public List<BankListVm> GetBanks()
         {
-            var banks = _sknanbLiveContext.Banks.FromSqlRaw("exec getBank").ToList();
-            return banks;
+            List<BankListVm> list = new List<BankListVm>();
+
+            list = _sknanbLiveContext.Banks.Select(s => new BankListVm()
+            {
+                BankId=s.BankId,
+                BankName=s.Name
+            }).Take(100).ToList();
+            //var connString = _sknanbLiveContext.Database.GetDbConnection();
+            //using (var cmd = _sknanbLiveContext.Database.GetDbConnection().CreateCommand())
+            //{
+            //        cmd.CommandText = "getBank";
+            //        cmd.CommandType = CommandType.StoredProcedure;
+            //        cmd.CommandTimeout = 600;
+            //        DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
+            //        var dataTable = new DataTable();
+            //        adp.Fill(dataTable);
+
+            //    foreach (var a in dataTable.Rows)
+            //    {
+
+            //    }
+            //  list= dataTable.Select(new )
+            //        if (dataTable.Rows.Count > 0)
+            //        {
+            //            list = DataTableToModelConvert.CreateListFromTable<BankListVm>(dataTable);
+            //        }
+            //    }
+            return list;
         }
-        public async Task <String> AddFrgnCheack(ForeignCheckVm foreignCheckVm)
+        public async Task<IGeneralResult<string>> AddFrgnCheack(ForeignCheckVm foreignCheckVm)
         {
-            var result = "";
+            IGeneralResult<string> result = new GeneralResult<string>();
             try
             {
                 ForeignCheckBatchVm vm = new ForeignCheckBatchVm();
@@ -47,9 +77,9 @@ namespace Standing_Order_Vat_App.Common.Services
                 conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
                 cmd.Connection = conn;
                 cmd.CommandType = CommandType.StoredProcedure;
-               
-                cmd.CommandText = "NewFrgnChkDetails";
-                
+
+                cmd.CommandText = "NewFrgnChkDetails_New";
+
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@btchId", foreignCheckVm.BatchId);
                 cmd.Parameters.AddWithValue("@chkNum", foreignCheckVm.CheckNumber);
@@ -58,28 +88,32 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.Parameters.AddWithValue("@depAcctNum", foreignCheckVm.DepositAcctNumber);
                 cmd.Parameters.AddWithValue("@depAcctName", foreignCheckVm.DepositAcctName);
                 cmd.Parameters.AddWithValue("@chkAmt", Convert.ToDouble(foreignCheckVm.CheckAmount));
+                cmd.Parameters.Add("@batchTotal", SqlDbType.Money, 100);
+                cmd.Parameters["@batchTotal"].Direction = ParameterDirection.Output;
+                cmd.Parameters.Add("@insertRecordId", SqlDbType.Int, 100);
+                cmd.Parameters["@insertRecordId"].Direction = ParameterDirection.Output;
 
                 conn.Open();
-                int i=  cmd.ExecuteNonQuery();
+                int i = cmd.ExecuteNonQuery();
+                var batchTotal = cmd.Parameters["@batchTotal"].Value;
+                int insertRecordId = Convert.ToInt32(cmd.Parameters["@insertRecordId"].Value);
+                result.Successful = true;
+                result.Message = "Data Saved Successfully.";
+                result.Value = batchTotal.ToString();
+                conn.Close();
             }
             catch (Exception ex)
             {
-                 result = "Error saving checks for batch: " + foreignCheckVm.BatchId + ": " + ex.Message;
+                result.Message = "Error saving checks for batch: " + foreignCheckVm.BatchId + ": " + ex.Message;
 
             }
-
-            finally
-            {
-               
-            }
-
             return result;
         }
 
         public async Task<String> UpdateFrgn(ForeignCheckVm model)
         {
 
-         var   result = "Update Successful";
+            var result = "Update Successful";
             try
             {
                 ForeignCheckBatchVm vm = new ForeignCheckBatchVm();
@@ -90,7 +124,7 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "UpdFrgnChkDtls";
 
-                
+
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@btchId", Convert.ToInt16(model.BatchId));
                 cmd.Parameters.AddWithValue("@chkNum", model.CheckNumber);
@@ -103,7 +137,7 @@ namespace Standing_Order_Vat_App.Common.Services
 
                 conn.Open();
                 int i = cmd.ExecuteNonQuery();
-               var  batchTotal = Convert.ToDecimal(cmd.ExecuteScalar());
+                var batchTotal = Convert.ToDecimal(cmd.ExecuteScalar());
 
             }
             catch (SqlException ex)
@@ -112,14 +146,14 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             finally
             {
-                
+
             }
             return result;
         }
 
         public IEnumerable<string> GetFrgnChksBatchByStatus(int status, string branch)
         {
-           var result = "success";
+            var result = "success";
             try
             {
                 SqlConnection conn = new SqlConnection();
@@ -144,12 +178,12 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             finally
             {
-             
+
             }
             yield return result;
         }
 
-        public async Task<ForeignCheckBatchVm> SaveFrgnBatch(FrgnCheckVm frgnCheckVm )
+        public async Task<int> SaveFrgnBatch(FrgnCheckVm frgnCheckVm)
         {
             ForeignCheckBatchVm vm = new ForeignCheckBatchVm();
             SqlConnection conn = new SqlConnection();
@@ -170,19 +204,37 @@ namespace Standing_Order_Vat_App.Common.Services
             int i = cmd.ExecuteNonQuery();
             int id = Convert.ToInt32(cmd.Parameters["@Id"].Value);
             conn.Close();
-            vm.BatchId = id;
-            return vm;
+            //vm.BatchId = id;
+            return id;
+        }
+
+        public async Task<decimal> GetCheckTotal(int BatchId)
+        {
+            SqlConnection conn = new SqlConnection();
+            SqlCommand cmd = new SqlCommand();
+            conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+            cmd.Connection = conn;
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "InsertFrgnChkBtchTotal_New";
+            cmd.Parameters.AddWithValue("@batchId", BatchId);
+            cmd.Parameters.Add("@total", SqlDbType.Money, 100);
+            cmd.Parameters["@total"].Direction = ParameterDirection.Output;
+            conn.Open();
+            int i = cmd.ExecuteNonQuery();
+            var BatchTotal = cmd.Parameters["@total"].Value;
+            conn.Close();
+            return (decimal)BatchTotal;
         }
         public List<ForeignChecksDetail> GetAllforeign()
         {
-            List<ForeignChecksDetail> frgn=new List<ForeignChecksDetail>();
-            
+            List<ForeignChecksDetail> frgn = new List<ForeignChecksDetail>();
+
             return frgn;
         }
 
         public async Task<string> DeleteFrgnChksBatch(int batchId)
         {
-          var result = "record deleted";
+            var result = "record deleted";
 
             try
             {
@@ -205,15 +257,15 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             finally
             {
-               
+
             }
 
             return result;
         }
         public async Task<string> GetFrgnChksBatchByDate(int status, string branch, DateTime dateFrom, DateTime dateTo)
         {
-           var result = "success";
-           
+            var result = "success";
+
             SqlConnection conn = new SqlConnection();
             SqlCommand cmd = new SqlCommand();
             conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
@@ -248,7 +300,7 @@ namespace Standing_Order_Vat_App.Common.Services
 
         public async Task<string> GetFrgnChksBatchByBank(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo)
         {
-           var result = "success";
+            var result = "success";
             SqlConnection conn = new SqlConnection();
             SqlCommand cmd = new SqlCommand();
             conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
@@ -259,7 +311,7 @@ namespace Standing_Order_Vat_App.Common.Services
                 using (conn)
                 {
                     cmd.CommandText = "FindFrgnChkBatchByBank";
-                   
+
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@status", status);
                     cmd.Parameters.AddWithValue("@branch", branch);
@@ -282,7 +334,160 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             return result;
         }
+        public async Task<IGeneralResult<DataTable>> GetFrgnChksByBatchID(int batchId)
+        {
+            IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
+            var connString = _generalBankingRegistersContext.Database.GetDbConnection();
+            using (var cmd = _generalBankingRegistersContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    cmd.CommandText = "GetFrgnChkDetailsByBatchId_New";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter("@batchId", batchId));
+                    cmd.CommandTimeout = 600;
+                    DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
+                    var dataTable = new DataTable();
+                    adp.Fill(dataTable);
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        result.Successful = true;
+                        result.Message = "Data Saved Successfully.";
+                        result.Value = dataTable;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.Message = "Error retreiving checks for batch: " + batchId + ": " + ex.Message;
+                }
+                return result;
+            }
+        }
+
+        public async Task<List<ForeignCheckStatusVM>> GetEntryStatus()
+        {
+            List<ForeignCheckStatusVM> rec = new List<ForeignCheckStatusVM>();
+             rec = await _generalBankingRegistersContext.EntryStatuses.Select(s => new ForeignCheckStatusVM()
+            {
+                StatusId = s.EntryStatusId,
+                StatusName = s.EntryStatusDescription
+            }).ToListAsync();
+            return rec;
+        }
+
+
+        public async Task<IGeneralResult<DataTable>> record(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo)
+        {
+            IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
+            var connString = _generalBankingRegistersContext.Database.GetDbConnection();
+            using (var cmd = _generalBankingRegistersContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    cmd.CommandText = "FindFrgnChkBatchByBank";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter("@status", status));
+                    cmd.Parameters.Add(new SqlParameter("@branch", branch));
+                    cmd.Parameters.Add(new SqlParameter("@bankId", bankId));
+                    cmd.Parameters.Add(new SqlParameter("@dateFrom", dateFrom));
+                    cmd.Parameters.Add(new SqlParameter("@dateTo", dateTo));
+
+                    cmd.CommandTimeout = 6000;
+                    DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
+                    var dataTable = new DataTable();
+                    adp.Fill(dataTable);
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        result.Successful = true;
+                        result.Message = "Data Saved Successfully.";
+                        result.Value = dataTable;
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    result.Message = "Error retreiving checks for batch: " + branch + ": " + ex.Message;
+                }
+            }
+            return result;
+        }
+
+        public async Task<IGeneralResult<DataTable>> record1(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo)
+        {
+            IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
+            var connString = _generalBankingRegistersContext.Database.GetDbConnection();
+            using (var cmd = _generalBankingRegistersContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    cmd.CommandText = "FindFrgnChkBatchByDate";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter("@status", status));
+                    cmd.Parameters.Add(new SqlParameter("@branch", branch));
+                    cmd.Parameters.Add(new SqlParameter("@dateFrom", dateFrom));
+                    cmd.Parameters.Add(new SqlParameter("@dateTo", dateTo));
+
+                    cmd.CommandTimeout = 6000;
+                    DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
+                    var dataTable = new DataTable();
+                    adp.Fill(dataTable);
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        result.Successful = true;
+                        result.Message = "Data Saved Successfully.";
+                        result.Value = dataTable;
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    result.Message = "Error retreiving checks for batch: " + branch + ": " + ex.Message;
+                }
+            }
+            return result;
+        }
+
+
+        public async Task<IGeneralResult<DataTable>> record2(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo)
+        {
+            IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
+            var connString = _generalBankingRegistersContext.Database.GetDbConnection();
+            using (var cmd = _generalBankingRegistersContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    cmd.CommandText = "FindFrgnChkBatchByStatus";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter("@status", status));
+                    cmd.Parameters.Add(new SqlParameter("@branch", branch));
+
+                    cmd.CommandTimeout = 6000;
+                    DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
+                    var dataTable = new DataTable();
+                    adp.Fill(dataTable);
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        result.Successful = true;
+                        result.Message = "Data Saved Successfully.";
+                        result.Value = dataTable;
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    result.Message = "Error retreiving checks for batch: " + branch + ": " + ex.Message;
+                }
+            }
+            return result;
+        }
+
+
+
     }
-    }
-    
+}
+
+
 

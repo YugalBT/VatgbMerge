@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Standing_Order_Vat_App.Common.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,14 +13,27 @@ namespace GbRegister.Core.ViewModel
     {
 
         public long RecordId { get; set; } = 1234567;
+        [Display(Name ="Check Number")]
         public string CheckNumber { get; set; } = null!;
+        [Display(Name = "Payer Account Number")]
         public string PayerAcctNumber { get; set; } = null!;
+        [Display(Name = "Payer Name")]
         public string PayerAcctName { get; set; } = null!;
+        [Display(Name = "Deposite Account Number")]
         public string DepositAcctNumber { get; set; } = null!;
+        [Display(Name = "Depositer Name")]
         public string DepositAcctName { get; set; } = null!;
+        [Display(Name = "Check Amount")]
         public decimal CheckAmount { get; set; }
-        public long BatchId { get; set; } 
-        public DateTime DateRecived { get; set; }
+        [Display(Name = "Total Amount")]
+        public decimal? TotalAmount { get; set; }
+        public int BatchId { get; set; }
+        [Required(ErrorMessage = "This field is required.")]
+        public DateTime? DateRecived { get; set; }
+        [Required(ErrorMessage ="This field is required.")]
+        public int BankId { get; set; }
+        public List<BankListVm> BanksList { get; set; }
+        public List<FrgnCheckListVm> checksList { get; set; }
 
     }
 }

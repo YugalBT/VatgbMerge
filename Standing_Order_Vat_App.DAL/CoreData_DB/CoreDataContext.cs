@@ -46,7 +46,7 @@ namespace Standing_Order_Vat_App.DAL.CoreData_DB
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=SYS82\\SQLEXPRESS,1433;Database=CoreData;TrustServerCertificate=true;Trusted_Connection=True;user id=server;password=123456;Integrated Security=false;");
+                optionsBuilder.UseSqlServer("Server=SYS82\\SQLEXPRESS,1433;Database=CoreData;user id=sa;password=bt123;TrustServerCertificate=true;Trusted_Connection=True;user id=server;password=123456;Integrated Security=false;");
             }
         }
 

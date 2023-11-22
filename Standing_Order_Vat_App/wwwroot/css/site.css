@@ -12,6 +12,11 @@ html {
   position: relative;
   min-height: 100%;
 }
+.buttonRemoveCss{
+    color:white;
+    background:none;
+    border:none;
+}
 
 body {
   margin-bottom: 60px;
@@ -24,3 +29,101 @@ body {
     line-height: 36px;
     justify-content: center;
 }
+
+.custom_navbars_link {
+    background-color: #002c36;
+}
+
+.custom_navbars_link .navbar-brand {
+    color: #ffffff;
+}
+
+.custom_navbars_link .navbar-nav .nav-link {
+    color: #ffffff;
+    font-size: 14px
+}
+
+.custom_navbars_link ul .nav-link img {
+    max-width: 40px;
+}
+
+.customfooter {
+    background-color: #002c36;
+    text-align: center;
+    color: #fff;
+    height: 60px;
+    vertical-align: bottom;
+    padding-top: 15px;
+}
+.tblbg{
+    background-color:white;
+    padding:10px;
+}
+.checkHeader {
+    color: white !important;
+}
+.spl {
+    border-color: #002C36;
+    /*width: 800px;*/
+    border-width: 1px;
+    border-style: solid;
+    margin-top: 40px;
+    min-height: 300px;
+}
+
+.demo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #B46000;
+    padding: 10px 13px;
+}
+
+    .demo a {
+        font-size: 14px;
+        color: #FFF;
+        text-decoration: none;
+    }
+
+.b-demo {
+    background-color: #000000;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 6px 20px;
+    justify-content: space-between;
+}
+
+    .b-demo a {
+        color: #ffffff;
+        font-size: 14px;
+        text-decoration: none;
+    }
+
+.b-demo-content {
+    padding: 20px 20px;
+}
+
+.data_grp .form-group label {
+    font-size: 13px;
+    margin-bottom: 5px
+}
+
+.data_grp .form-group input {
+    height: 30px;
+    border-color: #878787;
+    border-radius: 0;
+}
+
+.data_grp .form-group {
+    margin-bottom: 15px;
+}
+
+
+.sub_btn {
+    height: auto !important;
+    border-radius: 7px !important;
+    font-size: 15px;
+    min-width: 98px;
+}
+
