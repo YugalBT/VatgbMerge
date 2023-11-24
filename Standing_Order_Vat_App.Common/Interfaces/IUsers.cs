@@ -16,7 +16,9 @@ namespace Standing_Order_Vat_App.Common.Interfaces
         AddUserVm GetUserById(int id);
         User GetUserByIds(int id);
         void UPdateUser(User model);
-        IGeneralResult<AddUserVm> adduser(AddUserVm vm);
-        IGeneralResult<AddUserVm> checkduplicaterecord(AddUserVm dt);
+        IGeneralResult<AddUserVm> AddUserData(AddUserVm vm);
+        IGeneralResult<AddUserVm> UpdateUserData(AddUserVm vm);
+        IGeneralResult<int> DeleteUserData(int userId);
+        IGeneralResult<AddUserVm> CheckDuplicateRecord(AddUserVm dt);
     }
 }

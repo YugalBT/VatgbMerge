@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using Standing_Order_Vat_App.Common.GeneralResult;
 using Standing_Order_Vat_App.Common.Interfaces;
+using Standing_Order_Vat_App.Common.Services;
 using Standing_Order_Vat_App.Common.ViewModels;
 using Standing_Order_Vat_App.DAL.Directory_DB;
 using Standing_Order_Vat_App.Models;
@@ -14,6 +15,8 @@ namespace Standing_Order_Vat_App.Controllers
     public class AccountController : Controller
     {
         private readonly IUsers userRepo;
+        private readonly IApplicationRolesRepo applicationRoleRepo;
+        private readonly IApplicationUserRolesRepo applicationUserAccessRoles;
         private readonly IUserRole userRoleRepo;
         private readonly IApplication applicationRepo;
         private readonly INotyfService notyf;
@@ -25,16 +28,21 @@ namespace Standing_Order_Vat_App.Controllers
         const string Sessionuname = "uname";
         const string Sessionurole = "urole";
         const string Sessionusercount = "ucount";
-        public AccountController(IUserRole userRoleService,IUsers userRepo, IUserRole userRole, IApplication applicationRepo, IApplicationUserRole applicationUserRole, INotyfService notyf,IUserPermission userPermission)
+
+        public AccountController(IUserRole userRoleService, IUsers userRepo, IApplicationRolesRepo applicationAccessRoleRepo, IApplicationUserRolesRepo applicationUserAccessRoles,
+            IUserRole userRole, IApplication applicationRepo, IApplicationUserRole applicationUserRole, INotyfService notyf, IUserPermission userPermission)
         {
             this.applicationUserRoleRepo = applicationUserRole;
             this.userRepo = userRepo;
+            this.applicationRoleRepo = applicationAccessRoleRepo;
+            this.applicationUserAccessRoles = applicationUserAccessRoles;
             this.userRoleRepo = userRole;
             this.applicationRepo = applicationRepo;
             this.notyf = notyf;
             this.userRoleService = userRoleService;
             userPermission = _userPermission;
         }
+
         public IActionResult ManageUser(int? page, string search)
         {
 
@@ -42,14 +50,14 @@ namespace Standing_Order_Vat_App.Controllers
 
             if (HttpContext.Session.GetString("urole").ToString().ToLower() != "admin")
             {
-               return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
             }
             else
             {
                 ViewBag.search = search;
                 if (String.IsNullOrEmpty(search))
                 {
-                    IPagedList<Users_VM> users = userRepo.GetAllUser().ToPagedList(page ?? 1, 10);
+                    IPagedList<Users_VM> users = userRepo.GetAllUser().OrderByDescending(x=>x.UserId).ToPagedList(page ?? 1, 10);
                     return View(users);
                 }
                 else
@@ -61,169 +69,112 @@ namespace Standing_Order_Vat_App.Controllers
         }
 
 
-
-
         [HttpGet]
-        public IActionResult AddUser()
+        public IActionResult AddUser(int? userid)
         {
             if (HttpContext.Session.GetString("urole").ToString().ToLower() != "admin")
             {
                 return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
             }
-            else
-            {
-                List<Role_VM> vm = new List<Role_VM>();
-                vm = userRoleRepo.GetAllUserRole().Select(s => new Role_VM
-                {
-                    RoleID = s.RoleId,
-                    RoleName = s.RoleName
-                }).ToList();
-                var students = new List<Student>() {
-                new Student(){ Id = 1, Name="Vat"},
-                new Student(){ Id = 2, Name="Check"},
-               
-            };
 
-                AddUserVm model = new AddUserVm();
-                model.ProcessDropDown = students;
-              
-                model.UserRoles = vm;
-                return View(model);
-            }
-        }
-        [HttpPost]
-        public IActionResult AddUser(AddUserVm model)
-        {
-            if (HttpContext.Session.GetString("urole").ToString().ToLower() != "admin")
+            List<Role_VM> vm = new List<Role_VM>();
+            vm = userRoleRepo.GetAllUserRole().Select(s => new Role_VM
             {
-                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
-            }
-            else
+                RoleID = s.RoleId,
+                RoleName = s.RoleName
+            }).ToList();
+            var applicationAccessRoles = applicationRoleRepo.GetAll().Result.Where(x => x.IsActive == true).Select(y => new ApplicationAccessRoles
             {
-                List<Role_VM> vm = new List<Role_VM>();
-                vm = userRoleRepo.GetAllUserRole().Select(s => new Role_VM
-                {
-                    RoleID = s.RoleId,
-                    RoleName = s.RoleName
-                }).ToList();
-                model.UserRoles = vm;
-                if (ModelState.IsValid)
-                {
-                    IGeneralResult<AddUserVm> result = new GeneralResult<AddUserVm>();
-                    IGeneralResult<AddUserVm> adduser = new GeneralResult<AddUserVm>();
+                Id = y.RoleId,
+                Name = y.RoleName
+            }).ToList();
 
-
-                    result = userRepo.checkduplicaterecord(model);
-                    if (result.Successful == false)
-                    {
-                        adduser = userRepo.adduser(model);
-
-                       
-                        if (adduser.Successful == true)
-                        {
-                            notyf.Success("User created successfully");
-                            return RedirectToAction("ManageUser");
-                        }
-                        else
-                        {
-                            notyf.Error("Something went wrong.");
-                            model.UserRoles = vm;
-                            return View(model);
-                        }
-                    }
-                    else
-                    {
-                        notyf.Error("User is already exist");
-                        model.UserRoles = vm;
-                        return View(model);
-                    }
-                }
-                else
-                {
-                    notyf.Error("Something went wrong.");
-                    model.UserRoles = vm;
-                    return View(model);
-                }
-            }
-        }
-       
-        [HttpGet]
-        public IActionResult UpdateUser(int userid)
-        {
-            if (HttpContext.Session.GetString("urole").ToString().ToLower() != "admin")
+            AddUserVm model = new AddUserVm();
+            model.ProcessDropDown = applicationAccessRoles;
+            if (userid > 0)
             {
-                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
-            }
-            else
-            {
-                List<Role_VM> vm = new List<Role_VM>();
-                vm = userRoleRepo.GetAllUserRole().Select(s => new Role_VM
-                {
-                    RoleID = s.RoleId,
-                    RoleName = s.RoleName
-                }).ToList();
-
-                AddUserVm model = new AddUserVm();
-                var user = userRepo.GetUserById(userid);
+                var user = userRepo.GetUserById(userid ?? 0);
+                var userApplicationAccessRoles = applicationUserAccessRoles.GetAll().Result.Where(x => x.UserId == user.userId).Select(x => x.RoleId);
                 model.UserName = user.UserName.Remove(0, 7);
                 model.DisplayName = user.DisplayName;
                 model.RoleId = user.RoleId;
-                model.UserRoles = vm;
-                return View(model);
+                model.UserPermissionIds = userApplicationAccessRoles;
             }
+            model.UserRoles = vm;
+            return View(model);
         }
+
         [HttpPost]
-        public IActionResult UpdateUser(AddUserVm model)
+        public IActionResult AddUser(AddUserVm model)
         {
-            if (HttpContext.Session.GetString("urole").ToString().ToLower() != "admin")
+            try
             {
-                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
-            }
-            else
-            {
-                List<Role_VM> vm = new List<Role_VM>();
-                vm = userRoleRepo.GetAllUserRole().Select(s => new Role_VM
+                if (HttpContext.Session.GetString("urole").ToString().ToLower() != "admin")
                 {
-                    RoleID = s.RoleId,
-                    RoleName = s.RoleName
-                }).ToList();
-                if (ModelState.IsValid)
+                    return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+                }
+                else
                 {
-                    IGeneralResult<AddUserVm> result = new GeneralResult<AddUserVm>();
-                    IGeneralResult<AddUserVm> updateuser = new GeneralResult<AddUserVm>();
-
-                    result = userRepo.checkduplicaterecord(model);
-                    if (result.Successful == false)
+                    List<Role_VM> vm = new List<Role_VM>();
+                    vm = userRoleRepo.GetAllUserRole().Select(s => new Role_VM
                     {
-                        updateuser = applicationUserRoleRepo.updateuser(model);
+                        RoleID = s.RoleId,
+                        RoleName = s.RoleName
+                    }).ToList();
+                    var applicationAccessRoles = applicationRoleRepo.GetAll().Result.Where(x => x.IsActive == true).Select(y => new ApplicationAccessRoles
+                    {
+                        Id = y.RoleId,
+                        Name = y.RoleName
+                    }).ToList();
+                    model.UserRoles = vm;
+                    if (ModelState.IsValid)
+                    {
 
-                        if (updateuser.Successful == true)
+                        var result = userRepo.CheckDuplicateRecord(model);
+                        if (!result.Successful)
                         {
-                            notyf.Success("User updated successfully");
-                            return RedirectToAction("ManageUser");
+                            var res = model.userId > 0 ? userRepo.UpdateUserData(model) : userRepo.AddUserData(model);
+                            if (res.Successful)
+                            {
+                                if (model.userId > 0)
+                                {
+                                    notyf.Success("User updated successfully");
+                                }
+                                else
+                                {
+                                    notyf.Success("User created successfully");
+                                };
+                                return RedirectToAction("ManageUser");
+                            }
+                            else
+                            {
+                                notyf.Error("Something went wrong.");
+                                model.UserRoles = vm;
+                                return View(model);
+                            }
                         }
                         else
                         {
-                            notyf.Success("User not updated due to some error");
+                            notyf.Error("User is already exist");
                             model.UserRoles = vm;
                             return View(model);
                         }
                     }
                     else
                     {
-                        notyf.Error("This user is already exist");
+                        notyf.Error("Something went wrong.");
                         model.UserRoles = vm;
                         return View(model);
                     }
                 }
-                else
-                {
-                    notyf.Error("Something went wrong");
-                    model.UserRoles = vm;
-                    return View(model);
-                }
+            }
+            catch (Exception ex)
+            {
+                notyf.Error(ex.Message);
+                return View(model);
             }
         }
+
 
         public IActionResult DeleteUser(int userid)
         {
@@ -235,7 +186,7 @@ namespace Standing_Order_Vat_App.Controllers
             {
                 IGeneralResult<int> result = new GeneralResult<int>();
 
-                result = applicationUserRoleRepo.deleteuser(userid);
+                result = userRepo.DeleteUserData(userid);
                 if (result.Successful == true)
                 {
                     notyf.Success("User deleted successfully");
@@ -248,6 +199,86 @@ namespace Standing_Order_Vat_App.Controllers
                 }
             }
         }
+
+        //[HttpGet]
+        //public IActionResult UpdateUser(int userid)
+        //{
+        //    if (HttpContext.Session.GetString("urole").ToString().ToLower() != "admin")
+        //    {
+        //        return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+        //    }
+        //    else
+        //    {
+        //        List<Role_VM> vm = new List<Role_VM>();
+        //        vm = userRoleRepo.GetAllUserRole().Select(s => new Role_VM
+        //        {
+        //            RoleID = s.RoleId,
+        //            RoleName = s.RoleName
+        //        }).ToList();
+
+        //        AddUserVm model = new AddUserVm();
+        //        var user = userRepo.GetUserById(userid);
+        //        model.UserName = user.UserName.Remove(0, 7);
+        //        model.DisplayName = user.DisplayName;
+        //        model.RoleId = user.RoleId;
+        //        model.UserRoles = vm;
+        //        return View(model);
+        //    }
+        //}
+        //[HttpPost]
+        //public IActionResult UpdateUser(AddUserVm model)
+        //{
+        //    if (HttpContext.Session.GetString("urole").ToString().ToLower() != "admin")
+        //    {
+        //        return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+        //    }
+        //    else
+        //    {
+        //        List<Role_VM> vm = new List<Role_VM>();
+        //        vm = userRoleRepo.GetAllUserRole().Select(s => new Role_VM
+        //        {
+        //            RoleID = s.RoleId,
+        //            RoleName = s.RoleName
+        //        }).ToList();
+        //        if (ModelState.IsValid)
+        //        {
+        //            IGeneralResult<AddUserVm> result = new GeneralResult<AddUserVm>();
+        //            IGeneralResult<AddUserVm> updateuser = new GeneralResult<AddUserVm>();
+
+        //            result = userRepo.checkduplicaterecord(model);
+        //            if (result.Successful == false)
+        //            {
+        //                updateuser = applicationUserRoleRepo.updateuser(model);
+
+        //                if (updateuser.Successful == true)
+        //                {
+        //                    notyf.Success("User updated successfully");
+        //                    return RedirectToAction("ManageUser");
+        //                }
+        //                else
+        //                {
+        //                    notyf.Success("User not updated due to some error");
+        //                    model.UserRoles = vm;
+        //                    return View(model);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                notyf.Error("This user is already exist");
+        //                model.UserRoles = vm;
+        //                return View(model);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            notyf.Error("Something went wrong");
+        //            model.UserRoles = vm;
+        //            return View(model);
+        //        }
+        //    }
+        //}
+
+
         //[HttpPost]
         //public IActionResult Multiselect(UserPermissionVm userPermission)
         //{

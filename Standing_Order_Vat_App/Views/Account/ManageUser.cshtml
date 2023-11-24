@@ -40,8 +40,10 @@
                         <tr>
                             <td>@item.UserName</td>
                             <td>@item.RoleName</td>
-                            <td><a  class="btn btn-primary btn-sm" asp-action="UpdateUser" asp-route-userid="@item.UserId">Edit</a>
-                                <a  class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete?')" asp-action="DeleteUser" asp-route-userid="@item.UserId">Delete</a></td>
+                            <td>
+                                <a  class="btn btn-primary btn-sm" asp-action="AddUser" asp-route-userid="@item.UserId">Edit</a>
+                                <a  class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete?')" asp-action="DeleteUser" asp-route-userid="@item.UserId">Delete</a>
+                            </td>
                         </tr>
                     }
                 </tbody>
