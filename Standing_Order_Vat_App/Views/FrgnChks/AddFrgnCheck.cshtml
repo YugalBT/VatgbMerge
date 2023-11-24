@@ -12,8 +12,8 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        @* <a class="btn btn-primary" asp-controller="FrgnChks" asp-action="Index">Foreign Checks</a>*@
-                        <a class="nav-link active" asp-controller="DormantRegister" asp-action="Index">Dormant Register</a>
+                        @*  <a class="btn btn-primary" asp-controller="FrgnChks" asp-action="Index">Foreign Checks</a>*@
+                        @*  <a class="nav-link active" asp-controller="DormantRegister" asp-action="Index">Dormant Register</a>*@
                     </li>
                     <li class="nav-item">
 
@@ -34,17 +34,15 @@
     <div id="sidebar-wrapper" class="side_bar_custom">
         <div class="mt-4">
             <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnNewSection" value="New Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnNewSection" class="btn-no-style" asp-action="AddFrgnCheck">New Batch</a>
-            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnUpdateSection" value="Update Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnUpdateSection" class="btn-no-style" asp-action="UpdateFrgnCheck">Update Batch</a>
+            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnUpdateSection" value="Update Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnUpdateSection" class="btn-no-style" asp-action="UpdateFrgn">Update Batch</a>
             <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnViewSection" value="View Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnViewSection" class="btn-no-style" asp-controller="frgnChks" asp-action="View">View Batch</a>
         </div>
     </div>
     <div class="right_side_content bg-lightorangecolor">
-        <br />
-        <h2 style="text-align:center;color:#b46000">New Foreign Checks Batch</h2>
-        <br />
-        <br />
-        <div>
-            <div class="row" style="text-align:center">
+        <h2 class="main_heading">New Foreign Checks Batch</h2>
+
+        <div class="middle-content-sec">
+            <div>
                 <form asp-action="AddFrgnCheck" method="post">
                     <div class="row align-items-end">
                         <input type="hidden" asp-for="BatchId" />
@@ -75,7 +73,13 @@
                             </div>
                         </div>
                         <div class="col-3">
-                            <button type="submit" id="savBatchbtn" name="actionbtn" value="batchHeader" class="btn btn-primary">Save Batch Header</button>
+
+
+                            <div class="d-flex align-items-center flex-column gap-2">
+                                <button type="submit" id="savBatchbtn" name="actionbtn" value="batchHeader" class="btn btn-primary main_btn w-100">Save Batch Header</button>
+                                @*  <button type="submit" name="actionbtn" value="saveCheck" class="btn btn-primary main_btn w-100">Close Batch</button>*@
+                            </div>
+
                         </div>
                     </div>
                     <div class="row">
@@ -100,77 +104,78 @@
 
                         @if (Model.BatchId > 0)
                         {
-                            <div class="b-demo-content">
-                                <div class="row mb-3 data_grp" style="display: none;" id="AddfrgnCheck">
-                                    <div class="col-lg-6">
+                            <div class="b-demo-content" style="display: none;" id="AddfrgnCheck">
+                                <div class="row mb-3">
+                                    <div class="col-lg-4 mb-lg-3 mb-md-3">
                                         <div class="form-group">
-                                            <label class="form-label" asp-for="CheckNumber"></label>
-                                            <input asp-for="CheckNumber" class="form-control" />
+                                            <label class="form-label form-label-cust" asp-for="CheckNumber"></label>
+                                            <input asp-for="CheckNumber" class="form-control form-control-cust" />
                                             <span asp-validation-for="CheckNumber" class="text-danger"></span>
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4 mb-lg-3 mb-md-3">
                                         <div class="form-group">
-                                            <label class="form-label" asp-for="PayerAcctNumber"></label>
-                                            <input asp-for="PayerAcctNumber" class="form-control" />
+                                            <label class="form-label form-label-cust" asp-for="PayerAcctNumber"></label>
+                                            <input asp-for="PayerAcctNumber" class="form-control form-control-cust" />
                                             <span asp-validation-for="PayerAcctNumber" class="text-danger"></span>
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4 mb-lg-3 mb-md-3">
                                         <div class="form-group">
-                                            <label class="form-label" asp-for="PayerAcctName"></label>
+                                            <label class="form-label form-label-cust" asp-for="PayerAcctName"></label>
 
-                                            <input asp-for="PayerAcctName" class="form-control" />
+                                            <input asp-for="PayerAcctName" class="form-control form-control-cust" />
                                             <span asp-validation-for="PayerAcctName" class="text-danger"></span>
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4 mb-lg-3 mb-md-3">
                                         <div class="form-group">
-                                            <label class="form-label" asp-for="DepositAcctNumber"></label>
+                                            <label class="form-label form-label-cust" asp-for="DepositAcctNumber"></label>
 
-                                            <input asp-for="DepositAcctNumber" class="form-control" />
+                                            <input asp-for="DepositAcctNumber" class="form-control form-control-cust" />
                                             <span asp-validation-for="DepositAcctNumber" class="text-danger"></span>
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4 mb-lg-3 mb-md-3">
                                         <div class="form-group">
-                                            <label class="form-label" asp-for="DepositAcctName"></label>
+                                            <label class="form-label form-label-cust" asp-for="DepositAcctName"></label>
 
-                                            <input asp-for="DepositAcctName" class="form-control" />
+                                            <input asp-for="DepositAcctName" class="form-control form-control-cust" />
                                             <span asp-validation-for="DepositAcctName" class="text-danger"></span>
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4 mb-lg-3 mb-md-3">
                                         <div class="form-group">
-                                            <label class="form-label" asp-for="CheckAmount"></label>
+                                            <label class="form-label form-label-cust" asp-for="CheckAmount"></label>
 
-                                            <input asp-for="CheckAmount" class="form-control" />
+                                            <input asp-for="CheckAmount" class="form-control form-control-cust" />
                                             <span asp-validation-for="CheckAmount" class="text-danger"></span>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-12">
-                                        <div class="form-group text-start">
-                                            <button type="submit" name="actionbtn" value="saveCheck" class="btn btn-primary sub_btn">Save Check</button>
+                                    <div class="col-md-12 mt-1">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button type="submit" name="actionbtn" value="saveCheck" class="btn btn-primary main_btn rounded-0">Save Check</button>
+                                            <button type="submit" name="" value="saveCheck" class="btn btn-primary cancel_btn rounded-0">Cancel</button>
                                         </div>
                                     </div>
                                 </div>
 
                             </div>
 
-                            <div class="tblbg">
-                                <table class="table table-striped" id="table">
+                            <div class="table-responsive scroll_table">
+                                <table class="table custom_tble" id="table">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Check Number</th>
+                                            <th scope="col" class="col_w1">Check Number</th>
                                             <th scope="col">Payer Account</th>
                                             <th scope="col">Payer Name</th>
-                                            <th scope="col">Deposit Account</th>
+                                            <th scope="col" class="col_w2">Deposit Account</th>
                                             <th scope="col">Depositor's Name</th>
                                             <th scope="col">Check Amount</th>
                                             <th scope="col">#</th>
@@ -190,13 +195,38 @@
                                                 foreach (var item in Model.checksList)
                                                 {
                                                     <tr>
-                                                        <td>@item.CheckNumber</td>
-                                                        <td>@item.PayerAcctNumber</td>
-                                                        <td>@item.PayerAcctName</td>
-                                                        <td>@item.DepositAcctNumber</td>
-                                                        <td>@item.DepositAcctName</td>
-                                                        <td>@item.CheckAmount</td>
-                                                        <td><a href="">edit</a></td>
+
+
+                                                        <td>
+                                                            <input type="hidden" asp-for="@item.RecordId">
+                                                            <input type="text" value="@item.CheckNumber" class="form-control custom_box" asp-for="@item.CheckNumber" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" value="@item.PayerAcctNumber" class="form-control custom_box" asp-for="@item.PayerAcctNumber" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" value="@item.PayerAcctName" class="form-control custom_box" asp-for="@item.PayerAcctName" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" value="@item.DepositAcctNumber" class="form-control custom_box" asp-for="@item.DepositAcctNumber" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" value="@item.DepositAcctName" class="form-control custom_box" asp-for="@item.DepositAcctName" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" value="@item.CheckAmount" class="form-control custom_box" asp-for="@item.CheckAmount" />
+                                                        </td>
+                                                        <td>
+                                                            <a href="javascript:void(0)" class="edit_icon"><i class="fa-solid fa-pencil"></i></a>
+
+                                                            <div class="d_none">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <a href="javascript:void(0)" class="check_icon" onclick="UpdateFrgnCheck(this)"><i class="fa-regular fa-circle-check"></i></a>
+                                                                    <a href="javascript:void(0)" class="close_icon"><i class="fa-solid fa-xmark"></i></a>
+                                                                </div>
+                                                            </div>
+
+                                                        </td>
                                                     </tr>
                                                 }
                                             }
@@ -212,6 +242,7 @@
         </div>
     </div>
 </div>
+<script src="~/js/frgncheck.js"></script>
 @section Scripts{
     <script asp-append-version="true" src="~/js/FrgnCheck.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
@@ -219,7 +250,12 @@
 
     <script>
         $(document).ready(function () {
-            $('#table').DataTable();
+            $(".edit_icon").click(function () {
+                $(this).parent().parent().addClass("active");
+            });
+            $(".check_icon, .close_icon").click(function () {
+                $("tr").removeClass("active");
+            });
         });
     </script>
 }
