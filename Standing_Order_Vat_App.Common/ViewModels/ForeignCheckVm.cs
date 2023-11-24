@@ -13,7 +13,6 @@ namespace GbRegister.Core.ViewModel
     {
 
         public long RecordId { get; set; }
-        [Required,RegularExpression("^[0-9]+$")]
         [Display(Name ="Check Number")]
         public int? CheckNumber { get; set; } 
         [Required]
