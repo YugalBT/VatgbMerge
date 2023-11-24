@@ -23,7 +23,7 @@ namespace Standing_Order_Vat_App.Common.ViewModels
 
         public int[]? UserPermissionId { get; set; }
         public IEnumerable<int?>? UserPermissionIds { get; set; }
-        public IEnumerable<Student> ProcessDropDown { get; set; } = Enumerable.Empty<Student>();
+        public IEnumerable<ApplicationAccessRoles> ProcessDropDown { get; set; } = Enumerable.Empty<ApplicationAccessRoles>();
         public List<Role_VM> ?UserRoles  { get; set; } 
 
 

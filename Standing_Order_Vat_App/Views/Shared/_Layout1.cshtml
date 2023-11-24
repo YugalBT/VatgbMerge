@@ -102,6 +102,7 @@
                 @RenderBody()
             </main>
         </div>
+        @await Component.InvokeAsync("Notyf")
 
         <footer class="border-top footer text-muted">
             <div class="container">
@@ -121,7 +122,6 @@
     <script src="~/css/bootstrap-multiselect.js"></script>
     <script src="~/js/popper.min.js" asp-append-version="true"></script>
     <script src="~/js/custom.js" asp-append-version="true"></script>
-    @await Component.InvokeAsync("Notyf")
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

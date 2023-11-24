@@ -46,66 +46,66 @@ namespace Standing_Order_Vat_App.Common.Services
             dirdbcontext.SaveChanges();
         }
 
-        public IGeneralResult<AddUserVm> updateuser(AddUserVm vm)
-        {
+        //public IGeneralResult<AddUserVm> updateuser(AddUserVm vm)
+        //{
 
-            IGeneralResult<AddUserVm> res = new GeneralResult<AddUserVm>();
-            User user = new User();
-            user = dirdbcontext.Users.Where(x => x.UserId == vm.userId).FirstOrDefault();
-            if (user == null)
-            {
-                res.Successful = false;
-            }
-            else
-            {
-                user.UserName = @"SKNANB\" + vm.UserName.Trim();
-                user.DisplayName = vm.DisplayName.Trim();
+        //    IGeneralResult<AddUserVm> res = new GeneralResult<AddUserVm>();
+        //    User user = new User();
+        //    user = dirdbcontext.Users.Where(x => x.UserId == vm.userId).FirstOrDefault();
+        //    if (user == null)
+        //    {
+        //        res.Successful = false;
+        //    }
+        //    else
+        //    {
+        //        user.UserName = @"SKNANB\" + vm.UserName.Trim();
+        //        user.DisplayName = vm.DisplayName.Trim();
 
-                dirdbcontext.Users.Update(user);
-                ApplicationUserRole obj = new ApplicationUserRole();
-                obj = dirdbcontext.ApplicationUserRoles.Where(w => w.UserId == user.UserId && w.ApplicationId == 53).Select(s => new ApplicationUserRole
-                {
-                    RoleId = s.RoleId,
-                    UserId = s.UserId,
-                    UserApplicationId = s.UserApplicationId
-                }).FirstOrDefault();
+        //        dirdbcontext.Users.Update(user);
+        //        ApplicationUserRole obj = new ApplicationUserRole();
+        //        obj = dirdbcontext.ApplicationUserRoles.Where(w => w.UserId == user.UserId && w.ApplicationId == 53).Select(s => new ApplicationUserRole
+        //        {
+        //            RoleId = s.RoleId,
+        //            UserId = s.UserId,
+        //            UserApplicationId = s.UserApplicationId
+        //        }).FirstOrDefault();
 
-                obj.UserId = vm.userId;
-                obj.RoleId = vm.RoleId;
-                dirdbcontext.ApplicationUserRoles.Update(obj);
-                int update = dirdbcontext.SaveChanges();
-                if (update > 0)
-                {
-                    res.Successful = true;
-                }
-                else
-                {
-                    res.Successful = false;
-                }
-            }
-            return res;
-        }
+        //        obj.UserId = vm.userId;
+        //        obj.RoleId = vm.RoleId;
+        //        dirdbcontext.ApplicationUserRoles.Update(obj);
+        //        int update = dirdbcontext.SaveChanges();
+        //        if (update > 0)
+        //        {
+        //            res.Successful = true;
+        //        }
+        //        else
+        //        {
+        //            res.Successful = false;
+        //        }
+        //    }
+        //    return res;
+        //}
 
-        public IGeneralResult<int> deleteuser(int userId)
-        {
-            IGeneralResult<int> res = new GeneralResult<int>();
-            User user=new User ();
-             user = dirdbcontext.Users.Where(w => w.UserId == userId).FirstOrDefault();
-            if(user != null)
-            {
-                user.IsDelete = true;
-                dirdbcontext.Users.Update(user);
-                int delete = dirdbcontext.SaveChanges();
-                if (delete > 0)
-                {
-                    res.Successful = true;
-                }
-                else
-                {
-                    res.Successful = false;
-                }
-            }
-            return res;
-        }
+        //public IGeneralResult<int> deleteuser(int userId)
+        //{
+        //    IGeneralResult<int> res = new GeneralResult<int>();
+        //    User user=new User ();
+        //     user = dirdbcontext.Users.Where(w => w.UserId == userId).FirstOrDefault();
+        //    if(user != null)
+        //    {
+        //        user.IsDelete = true;
+        //        dirdbcontext.Users.Update(user);
+        //        int delete = dirdbcontext.SaveChanges();
+        //        if (delete > 0)
+        //        {
+        //            res.Successful = true;
+        //        }
+        //        else
+        //        {
+        //            res.Successful = false;
+        //        }
+        //    }
+        //    return res;
+        //}
     }
 }
