@@ -411,16 +411,83 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             return result;
         }
-
-
-
-        public async Task<IGeneralResult<DataTable>> record1(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo)
+        public async Task<IGeneralResult<DataTable>> GetFrgnChksByBatchID(int batchId)
         {
             IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
             var connString = _generalBankingRegistersContext.Database.GetDbConnection();
             using (var cmd = _generalBankingRegistersContext.Database.GetDbConnection().CreateCommand())
             {
                 try
+                {
+                    cmd.CommandText = "GetFrgnChkDetailsByBatchId_New";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter("@batchId", batchId));
+                    cmd.CommandTimeout = 600;
+                    DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
+                    var dataTable = new DataTable();
+                    adp.Fill(dataTable);
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        result.Successful = true;
+                        result.Message = "Data Saved Successfully.";
+                        result.Value = dataTable;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.Message = "Error retreiving checks for batch: " + batchId + ": " + ex.Message;
+                }
+                return result;
+            }
+        }
+
+        public async Task<List<ForeignCheckStatusVM>> GetEntryStatus()
+        {
+            List<ForeignCheckStatusVM> rec = new List<ForeignCheckStatusVM>();
+             rec = await _generalBankingRegistersContext.EntryStatuses.Select(s => new ForeignCheckStatusVM()
+            {
+                StatusId = s.EntryStatusId,
+                StatusName = s.EntryStatusDescription
+            }).ToListAsync();
+            return rec;
+        }
+
+
+        public async Task<IGeneralResult<DataTable>> record(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo)
+        {
+            IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
+            var connString = _generalBankingRegistersContext.Database.GetDbConnection();
+            using (var cmd = _generalBankingRegistersContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    cmd.CommandText = "FindFrgnChkBatchByBank";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter("@status", status));
+                    cmd.Parameters.Add(new SqlParameter("@branch", branch));
+                    cmd.Parameters.Add(new SqlParameter("@bankId", bankId));
+                    cmd.Parameters.Add(new SqlParameter("@dateFrom", dateFrom));
+                    cmd.Parameters.Add(new SqlParameter("@dateTo", dateTo));
+
+                    cmd.CommandTimeout = 6000;
+                    DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
+                    var dataTable = new DataTable();
+                    adp.Fill(dataTable);
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        result.Successful = true;
+                        result.Message = "Data Saved Successfully.";
+                        result.Value = dataTable;
+                    }
+
+
+
+    }
+}
+            IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
+            var connString = _generalBankingRegistersContext.Database.GetDbConnection();
+            using (var cmd = _generalBankingRegistersContext.Database.GetDbConnection().CreateCommand())
+
                 {
                     cmd.CommandText = "FindFrgnChkBatchByDate";
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -482,12 +549,16 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             return result;
         }
+
+
+
     }
 }
 
 
 
 
-
+    }
+}
 
 
