@@ -13,17 +13,18 @@ namespace GbRegister.Core.ViewModel
     {
 
         public long RecordId { get; set; }
+        [Required]
         [Display(Name ="Check Number")]
         public int? CheckNumber { get; set; } 
         [Required]
         [Display(Name = "Payer Account Number")]
-        public int? PayerAcctNumber { get; set; }
+        public long? PayerAcctNumber { get; set; }
         [Required()]
         [Display(Name = "Payer Name")]
         public string PayerAcctName { get; set; } 
         [Required]
         [Display(Name = "Deposite Account Number")]
-        public int? DepositAcctNumber { get; set; } 
+        public long? DepositAcctNumber { get; set; } 
         [Display(Name = "Depositer Name")]
         public string DepositAcctName { get; set; }
         [Required]
