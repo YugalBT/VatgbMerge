@@ -41,8 +41,8 @@ namespace Standing_Order_Vat_App.Common.Services
 
             list = _sknanbLiveContext.Banks.Select(s => new BankListVm()
             {
-                BankId=s.BankId,
-                BankName=s.Name
+                BankId = s.BankId,
+                BankName = s.Name
             }).Take(100).ToList();
             //var connString = _sknanbLiveContext.Database.GetDbConnection();
             //using (var cmd = _sknanbLiveContext.Database.GetDbConnection().CreateCommand())
@@ -110,10 +110,9 @@ namespace Standing_Order_Vat_App.Common.Services
             return result;
         }
 
-        public async Task<String> UpdateFrgn(ForeignCheckVm model)
+        public async Task<IGeneralResult<string>> UpdateFrgn(ForeignCheckvmm model)
         {
-
-            var result = "Update Successful";
+            IGeneralResult<string> result = new GeneralResult<string>();
             try
             {
                 ForeignCheckBatchVm vm = new ForeignCheckBatchVm();
@@ -133,21 +132,21 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.Parameters.AddWithValue("@depAcctNum", model.DepositAcctNumber);
                 cmd.Parameters.AddWithValue("@depAcctName", model.DepositAcctName);
                 cmd.Parameters.AddWithValue("@chkAmt", Convert.ToDouble(model.CheckAmount));
-                cmd.Parameters.AddWithValue("@recId", Convert.ToInt16(model.RecordId));
+                cmd.Parameters.AddWithValue("@recId", Convert.ToInt32(model.RecordId));
 
                 conn.Open();
                 int i = cmd.ExecuteNonQuery();
                 var batchTotal = Convert.ToDecimal(cmd.ExecuteScalar());
+                conn.Close();
+                result.Successful = true;
+                result.Message = "Data Updated Successfully.";
 
             }
             catch (SqlException ex)
             {
-                result = "Error updating check recordID- " + model.RecordId + ": " + ex.Message;
+                result.Message = "Error updating check recordID " + model.RecordId + ": " + ex.Message;
             }
-            finally
-            {
 
-            }
             return result;
         }
 
@@ -232,9 +231,9 @@ namespace Standing_Order_Vat_App.Common.Services
             return frgn;
         }
 
-        public async Task<string> DeleteFrgnChksBatch(int batchId)
+        public async Task<IGeneralResult<string>> DeleteFrgnChksBatch(int batchId)
         {
-            var result = "record deleted";
+            IGeneralResult<string> res = new GeneralResult<string>();
 
             try
             {
@@ -250,17 +249,17 @@ namespace Standing_Order_Vat_App.Common.Services
                 conn.Open();
                 cmd.ExecuteNonQuery();
 
+                res.Successful = true;
+                res.Message = "Record deleted successfully.";
+
+
             }
             catch (Exception ex)
             {
-                result = "Error deleting batch id = " + batchId + ": " + ex.Message;
-            }
-            finally
-            {
-
+                res.Message = "Error deleting batch id = " + batchId + ": " + ex.Message;
             }
 
-            return result;
+            return res;
         }
         public async Task<string> GetFrgnChksBatchByDate(int status, string branch, DateTime dateFrom, DateTime dateTo)
         {
@@ -297,8 +296,8 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             return result;
         }
-
-        public async Task<string> GetFrgnChksBatchByBank(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo)
+        //Findfrgncheckbatchbybank
+        public async Task<string> GetFrgnChksBatchByBank(Getfrgncheckvm getfrgncheckvm)
         {
             var result = "success";
             SqlConnection conn = new SqlConnection();
@@ -313,11 +312,11 @@ namespace Standing_Order_Vat_App.Common.Services
                     cmd.CommandText = "FindFrgnChkBatchByBank";
 
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@status", status);
-                    cmd.Parameters.AddWithValue("@branch", branch);
-                    cmd.Parameters.AddWithValue("@bankId", bankId);
-                    cmd.Parameters.AddWithValue("@dateFrom", dateFrom);
-                    cmd.Parameters.AddWithValue("@dateTo", dateTo);
+                    cmd.Parameters.AddWithValue("@status", getfrgncheckvm.status);
+                    cmd.Parameters.AddWithValue("@branch", getfrgncheckvm.branch);
+                    cmd.Parameters.AddWithValue("@bankId", getfrgncheckvm.bankId);
+                    cmd.Parameters.AddWithValue("@dateFrom", getfrgncheckvm.dateFrom);
+                    cmd.Parameters.AddWithValue("@dateTo", getfrgncheckvm.dateTo);
 
                     if (conn.State != ConnectionState.Open)
                         conn.Open();
@@ -325,7 +324,7 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             catch (SqlException ex)
             {
-                result = "Error retreiving batch by bank: " + bankId + ": " + ex.Message;
+                result = "Error retreiving batch by bank: " + getfrgncheckvm.bankId + ": " + ex.Message;
             }
             finally
             {
@@ -367,13 +366,14 @@ namespace Standing_Order_Vat_App.Common.Services
         public async Task<List<ForeignCheckStatusVM>> GetEntryStatus()
         {
             List<ForeignCheckStatusVM> rec = new List<ForeignCheckStatusVM>();
-             rec = await _generalBankingRegistersContext.EntryStatuses.Select(s => new ForeignCheckStatusVM()
+            rec = await _generalBankingRegistersContext.EntryStatuses.Select(s => new ForeignCheckStatusVM()
             {
                 StatusId = s.EntryStatusId,
                 StatusName = s.EntryStatusDescription
             }).ToListAsync();
             return rec;
         }
+
 
         public async Task<IGeneralResult<DataTable>> record(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo)
         {
@@ -412,6 +412,7 @@ namespace Standing_Order_Vat_App.Common.Services
             return result;
         }
 
+
         public async Task<IGeneralResult<DataTable>> record1(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo)
         {
             IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
@@ -447,6 +448,7 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             return result;
         }
+
 
 
         public async Task<IGeneralResult<DataTable>> record2(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo)
@@ -488,4 +490,8 @@ namespace Standing_Order_Vat_App.Common.Services
     }
 }
 
+
+
+
+ 
 

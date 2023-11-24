@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using X.PagedList;
 using DocumentFormat.OpenXml.Office2016.Excel;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Standing_Order_Vat_App.Common.GeneralResult;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -105,7 +106,7 @@ namespace Standing_Order_Vat_App.Controllers
         //    }
         //    catch (Exception ex)
         //    {
-                
+
         //    }
         //    return RedirectToAction("AddFrgnCheck");
         //}
@@ -120,7 +121,7 @@ namespace Standing_Order_Vat_App.Controllers
                 foreignChecksDetail.BanksList = _frgnchks.GetBanks();
                 if (actionbtn == "batchHeader")
                 {
-                    foreignChecksDetail.BatchId = 24;
+                    //foreignChecksDetail.BatchId = 555;
 
                     FrgnCheckVm vm = new FrgnCheckVm();
                     vm.dtRecvd = (DateTime)foreignChecksDetail.DateRecived;
@@ -132,13 +133,14 @@ namespace Standing_Order_Vat_App.Controllers
                     var response = await _frgnchks.SaveFrgnBatch(vm);
                     if (response > 0)
                     {
-                        foreignChecksDetail.TotalAmount = Convert.ToDecimal(await _frgnchks.GetCheckTotal(foreignChecksDetail.BatchId));
-                        var list = await _frgnchks.GetFrgnChksByBatchID(foreignChecksDetail.BatchId);
-                        if (list.Successful)
-                        {
-                            List<FrgnCheckListVm> v = DataTableToModelConvert.CreateListFromTable<FrgnCheckListVm>(list.Value);
-                            foreignChecksDetail.checksList = v;
-                        }
+                        foreignChecksDetail.BatchId=response;
+                        //foreignChecksDetail.TotalAmount = Convert.ToDecimal(await _frgnchks.GetCheckTotal(foreignChecksDetail.BatchId));
+                        //var list = await _frgnchks.GetFrgnChksByBatchID(foreignChecksDetail.BatchId);
+                        //if (list.Successful)
+                        //{
+                        //    List<FrgnCheckListVm> v = DataTableToModelConvert.CreateListFromTable<FrgnCheckListVm>(list.Value);
+                        //    foreignChecksDetail.checksList = v;
+                        //}
                         ModelState.Clear();
                         _notyf.Success("Header Saved successfully. Add Checked.");
                         return View(foreignChecksDetail);
@@ -149,15 +151,15 @@ namespace Standing_Order_Vat_App.Controllers
                 {
                     if (foreignChecksDetail != null)
                     {
-                        foreignChecksDetail.BatchId = 24;
+                        //foreignChecksDetail.BatchId = 555;
                         var response = await _frgnchks.AddFrgnCheack(foreignChecksDetail);
                         if (response.Successful)
                         {
-                            foreignChecksDetail.CheckNumber = "";
-                            foreignChecksDetail.PayerAcctNumber = "";
+                            foreignChecksDetail.CheckNumber = 0;
+                            foreignChecksDetail.PayerAcctNumber = 0;
                             foreignChecksDetail.PayerAcctName = "";
                             foreignChecksDetail.DepositAcctName = "";
-                            foreignChecksDetail.DepositAcctNumber = "";
+                            foreignChecksDetail.DepositAcctNumber = 0;
                             foreignChecksDetail.CheckAmount = 0;
                             ModelState.Clear();
                             _notyf.Success("Check Saved successfully.");
@@ -176,11 +178,11 @@ namespace Standing_Order_Vat_App.Controllers
                 }
 
                 foreignChecksDetail.BatchId = 0;
-                foreignChecksDetail.CheckNumber = "";
-                foreignChecksDetail.PayerAcctNumber = "";
+                foreignChecksDetail.CheckNumber = 0;
+                foreignChecksDetail.PayerAcctNumber = 0;
                 foreignChecksDetail.PayerAcctName = "";
                 foreignChecksDetail.DepositAcctName = "";
-                foreignChecksDetail.DepositAcctNumber = "";
+                foreignChecksDetail.DepositAcctNumber = 0;
             }
             catch (Exception ex)
             {
@@ -199,23 +201,27 @@ namespace Standing_Order_Vat_App.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateFrgnCheck(ForeignCheckVm foreignCheck)
+        public async Task<IGeneralResult<string>> UpdateFrgnCheck(ForeignCheckvmm foreignCheck)
         {
-            if (foreignCheck == null)
-            {
-                return BadRequest();
-            }
+            IGeneralResult<string> result = new GeneralResult<string>();
 
             try
             {
-                var response = _frgnchks.UpdateFrgn(foreignCheck);
-
-                return View(response);
+                if (foreignCheck == null)
+                {
+                    result.Message = "Something Went Wrong";
+                }
+                else
+                {
+                    var response = await _frgnchks.UpdateFrgn(foreignCheck);
+                    return response;
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                result.Message = "Server error: " + ex.Message;
             }
+            return result;
         }
 
         public JsonResult Status()
@@ -230,7 +236,7 @@ namespace Standing_Order_Vat_App.Controllers
             return Json(banks);
         }
 
-       
+
         [HttpGet]
         public JsonResult FrgncheckList()
         {
@@ -288,7 +294,25 @@ namespace Standing_Order_Vat_App.Controllers
             return View(res);
         }
         [HttpGet]
-        public async Task<IActionResult>UpdateFrgn(FrgnCheckViewRequest request)
+        public async Task<IActionResult> UpdateFrgn()
+        {
+            FrgnViewCheckVm res = new FrgnViewCheckVm();
+            res.entryStatusVM = new List<ForeignCheckStatusVM>();
+            res.bankList = new List<BankListVm>();
+
+            res.entryStatusVM = await _frgnchks.GetEntryStatus();
+            res.bankList = await _sKNANBLIVEContext.Banks.Select(s => new BankListVm()
+            {
+                BankId = s.BankId,
+                BankName = s.Name
+            }).ToListAsync();
+
+            
+            return View(res);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateFrgn(FrgnCheckViewRequest request)
         {
             FrgnViewCheckVm res = new FrgnViewCheckVm();
             res.entryStatusVM = new List<ForeignCheckStatusVM>();
@@ -329,21 +353,23 @@ namespace Standing_Order_Vat_App.Controllers
             }
             res.FrgnCheckListRecVms = result;
             return View(res);
-
         }
 
-       public IActionResult DeletefrgnCheck(int batchid)
+        [HttpPost]
+        public async Task<IGeneralResult<string>> DeletefrgnCheck(int batchid)
         {
-            try
-            {
-                var res=_frgnchks.DeleteFrgnChksBatch(batchid);
+            IGeneralResult<string> res = new GeneralResult<string>();
 
-            }
-            catch(Exception ex)
+            if (batchid > 0)
             {
-
+                var result = await _frgnchks.DeleteFrgnChksBatch(batchid);
+                return result;
             }
-            return View();
+            else
+            {
+                res.Message = "Batch Not Found!";
+            }
+            return res;
         }
 
     }

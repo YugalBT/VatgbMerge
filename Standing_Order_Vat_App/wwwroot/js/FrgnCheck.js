@@ -9,7 +9,21 @@ function removeValidation() {
     $("#AddfrgnCheck").hide();
     ValidateField()
 }
-
+function Banksanddate() {
+    if ($("#sel").val() == "2") {
+        $('#datef').show();
+        $('#datet').show();
+        $('#sele').hide();
+    }
+    else if ($("#sel").val() == "3") {
+        $('#sele').hide();
+        $('#datef').hide();
+        $('#datet').hide();
+    }
+    else {
+        $('#sele').show();
+    }
+}
 function saveBatchHeader() {
     let dtRecvd = $('#DateRecived').val();
     let dtProcessed = $('#dateProcessed').val();
@@ -18,7 +32,7 @@ function saveBatchHeader() {
     let empId = $('#empId').val();
     let bankId = $('#BankId').val()
     let errorCount = ValidateField()
-    if (errorCount == 0 ) {
+    if (errorCount == 0) {
         var empObj = {
             dtRecvd: dtRecvd,
             dtProcessed: dtProcessed,
@@ -97,4 +111,70 @@ function ValidateField() {
         $('[data-valmsg-for="BankId"]').html("");
     }
     return error
+}
+function UpdateFrgnCheck(e) {
+    let data = $(e).parents("tr")
+
+    let btchId = $('#BatchId').val();
+    let chkNum = $(data).find('#item_CheckNumber').val();
+    let payAcctNum = $(data).find('#item_PayerAcctNumber').val();
+    let payAcctName = $(data).find('#item_PayerAcctName').val();
+    let depAcctNum = $(data).find('#item_DepositAcctNumber').val();
+    let depAcctName = $(data).find('#item_DepositAcctName').val();
+    let chkAmt = $(data).find('#item_CheckAmount').val();
+    let recId = $(data).find('#item_RecordId').val()
+    //let errorCount = ValidateField()
+    //if (errorCount == 0) {
+    var empObj = {
+        BatchId: btchId,
+        CheckNumber: chkNum,
+        PayerAcctNumber: payAcctNum,
+        PayerAcctName: payAcctName,
+        DepositAcctNumber: depAcctNum,
+        DepositAcctName: depAcctName,
+        CheckAmount: chkAmt,
+        RecordId: recId
+    }
+    $.ajax({
+        url: "/FrgnChks/UpdateFrgnCheck",
+        data: { foreignCheck: empObj },
+        type: "POST",
+        success: function (result) {
+            /* loadData();*/
+            if (result.successful) {
+                $("tr").removeClass("active");
+                alert(result.message);
+            }
+            else {
+                $("tr").removeClass("active");
+                alert("error: " + result.message);
+            }
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
+
+function DeleteBatch(batchId, e) {
+    if (confirm('Are you sure you want to delete this Batch?')) {
+        $.ajax({
+            url: "/FrgnChks/DeletefrgnCheck",
+            data: { batchid: batchId },
+            type: "POST",
+            success: function (result) {
+                /* loadData();*/
+                if (result.successful == true) {
+                    $(e).parents('tr').remove();
+                    alert(result.message);
+                }
+                else {
+                    alert("error: " + result.message);
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
 }

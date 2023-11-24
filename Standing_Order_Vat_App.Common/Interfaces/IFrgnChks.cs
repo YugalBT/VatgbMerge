@@ -18,7 +18,7 @@ namespace Standing_Order_Vat_App.Common.Interfaces
         List<BankListVm> GetBanks();
 
         public Task<IGeneralResult<string>> AddFrgnCheack(ForeignCheckVm foreignCheckVm);
-        public Task<string> UpdateFrgn(ForeignCheckVm model);
+        public Task<IGeneralResult<string>> UpdateFrgn(ForeignCheckvmm model);
         public IEnumerable<string> GetFrgnChksBatchByStatus(int status,string branch);
 
         public Task<int> SaveFrgnBatch(FrgnCheckVm frgnCheckVm);
@@ -26,10 +26,10 @@ namespace Standing_Order_Vat_App.Common.Interfaces
         public Task<decimal> GetCheckTotal(int BatchId);
         public List<ForeignChecksDetail> GetAllforeign();
 
-        public Task<string> DeleteFrgnChksBatch(int batchId);
+        public Task<IGeneralResult<string>> DeleteFrgnChksBatch(int batchId);
 
         public Task<string> GetFrgnChksBatchByDate(int status, string branch, DateTime dateFrom, DateTime dateto);
-        public Task<string> GetFrgnChksBatchByBank(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo);
+        public Task<string> GetFrgnChksBatchByBank(Getfrgncheckvm getfrgncheckvm);
 
          public Task<IGeneralResult<DataTable>> GetFrgnChksByBatchID(int batchId);
 
