@@ -12,19 +12,24 @@ namespace GbRegister.Core.ViewModel
     public class ForeignCheckVm
     {
 
-        public long RecordId { get; set; } = 1234567;
+        public long RecordId { get; set; }
+        [Required,RegularExpression("^[0-9]+$")]
         [Display(Name ="Check Number")]
-        public string CheckNumber { get; set; } = null!;
+        public int? CheckNumber { get; set; } 
+        [Required]
         [Display(Name = "Payer Account Number")]
-        public string PayerAcctNumber { get; set; } = null!;
+        public int? PayerAcctNumber { get; set; }
+        [Required()]
         [Display(Name = "Payer Name")]
-        public string PayerAcctName { get; set; } = null!;
+        public string PayerAcctName { get; set; } 
+        [Required]
         [Display(Name = "Deposite Account Number")]
-        public string DepositAcctNumber { get; set; } = null!;
+        public int? DepositAcctNumber { get; set; } 
         [Display(Name = "Depositer Name")]
-        public string DepositAcctName { get; set; } = null!;
+        public string DepositAcctName { get; set; }
+        [Required]
         [Display(Name = "Check Amount")]
-        public decimal CheckAmount { get; set; }
+        public decimal? CheckAmount { get; set; }
         [Display(Name = "Total Amount")]
         public decimal? TotalAmount { get; set; }
         public int BatchId { get; set; }
