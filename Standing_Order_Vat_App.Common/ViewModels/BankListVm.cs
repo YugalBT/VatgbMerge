@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Standing_Order_Vat_App.Common.ViewModels
 {
-    public class ApplicationAccessRoles
+    public class BankListVm
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int BankId { get; set; }
+        public string? BankName { get; set; }
+
     }
 }

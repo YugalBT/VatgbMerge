@@ -2,6 +2,11 @@
 @{
     ViewData["Title"] = "View";
 }
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
 <link href="~/css/link.css" rel="stylesheet" />
 <style>
     .custom_navbars_link {
@@ -72,7 +77,7 @@
                     <div class="form-group mb-3">
                         <label for="Options" class="d-block">Options</label>
                         <select class="form-control" asp-for=Options id="sel" onchange="Banksanddate()">
-
+                           
                             <option value="1">Bank & Date</option>
                             <option value="2">Date</option>
                             <option value="3">Entry Status</option>
@@ -92,11 +97,15 @@
                 <div class="col-3" id="selec">
                     <div class="form-group mb-3">
                         <label class="d-block">Status</label>
+                        @*<select class="form-control" id="Status">
+                        <option>----Select Status-----</option>
+                        </select>*@
 
                         <select id="Select1" asp-for=Status class="form-select" asp-items="@(new SelectList(Model.entryStatusVM,"StatusId", "StatusName"))">
                             <option value="" selected disabled>--- Status ---</option>
                         </select>
                     </div>
+
                 </div>
 
                 <div class="col-3" id="datef">
@@ -133,7 +142,9 @@
                                     <th>Date Processed</th>
                                     <th>Total</th>
                                     <th>Entered By</th>
+
                                     <th>Settled By</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -146,6 +157,7 @@
                                         <td>@dormant.DatePaymentRequested</td>
                                         <td>@dormant.BatchTotal</td>
                                         <td>@dormant.ProcessName</td>
+
                                         <td>@dormant.ProcessName</td>
                                     </tr>
                                 }
@@ -158,6 +170,9 @@
 
     </div>
 </div>
+
+
+
 <script src="~/js/cascade.js"></script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
@@ -186,6 +201,7 @@
         }
     }
 </script>
+
 @section scripts {
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>

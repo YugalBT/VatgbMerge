@@ -49,7 +49,7 @@ namespace Standing_Order_Vat_App.DAL.GB_Register
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=SSYS60\\SQLEXPRESS;Database=General_Banking_Registers;TrustServerCertificate=true;Integrated Security=false;");
+                optionsBuilder.UseSqlServer("Server=SYS82\\SYS82G,1433;Database=General_Banking_Registers;user id=sa;password=bt123;TrustServerCertificate=true;Integrated Security=false;");
             }
         }
 

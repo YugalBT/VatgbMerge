@@ -1,4 +1,7 @@
-﻿namespace Standing_Order_Vat_App.DAL.Directory_DB
+﻿using System;
+using System.Collections.Generic;
+
+namespace Standing_Order_Vat_App.DAL.Directory_DB
 {
     public partial class User
     {
@@ -6,6 +9,7 @@
         {
             ApplicationUserRoleModules = new HashSet<ApplicationUserRoleModule>();
             ApplicationUserRoles = new HashSet<ApplicationUserRole>();
+            ApplicationUserRolesNews = new HashSet<ApplicationUserRolesNew>();
             UserDataFilters = new HashSet<UserDataFilter>();
         }
 
@@ -16,10 +20,11 @@
         public int EmployeeId { get; set; }
         public string AccessCode { get; set; } = null!;
         public bool Online { get; set; }
-        public bool IsDelete { get; set; }
+        public bool? IsDelete { get; set; }
 
         public virtual ICollection<ApplicationUserRoleModule> ApplicationUserRoleModules { get; set; }
         public virtual ICollection<ApplicationUserRole> ApplicationUserRoles { get; set; }
+        public virtual ICollection<ApplicationUserRolesNew> ApplicationUserRolesNews { get; set; }
         public virtual ICollection<UserDataFilter> UserDataFilters { get; set; }
     }
 }

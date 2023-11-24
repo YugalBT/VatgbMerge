@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Standing_Order_Vat_App.DAL.Sp_DirectoryDB;
 
 namespace Standing_Order_Vat_App.DAL.Directory_DB
@@ -19,10 +22,12 @@ namespace Standing_Order_Vat_App.DAL.Directory_DB
         public virtual DbSet<ApplicationModule> ApplicationModules { get; set; } = null!;
         public virtual DbSet<ApplicationRole> ApplicationRoles { get; set; } = null!;
         public virtual DbSet<ApplicationRoleModule> ApplicationRoleModules { get; set; } = null!;
+        public virtual DbSet<ApplicationRolesNew> ApplicationRolesNews { get; set; } = null!;
         public virtual DbSet<ApplicationUserDataFilter> ApplicationUserDataFilters { get; set; } = null!;
         public virtual DbSet<ApplicationUserModule> ApplicationUserModules { get; set; } = null!;
         public virtual DbSet<ApplicationUserRole> ApplicationUserRoles { get; set; } = null!;
         public virtual DbSet<ApplicationUserRoleModule> ApplicationUserRoleModules { get; set; } = null!;
+        public virtual DbSet<ApplicationUserRolesNew> ApplicationUserRolesNews { get; set; } = null!;
         public virtual DbSet<Audit> Audits { get; set; } = null!;
         public virtual DbSet<DataFilter> DataFilters { get; set; } = null!;
         public virtual DbSet<Module> Modules { get; set; } = null!;
@@ -31,7 +36,6 @@ namespace Standing_Order_Vat_App.DAL.Directory_DB
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserDataFilter> UserDataFilters { get; set; } = null!;
         public virtual DbSet<Sp_userRole> Sp_UserRoles { get; set; } = null!;
-
         public virtual DbSet<UserPermission> UserPermissions { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -39,7 +43,7 @@ namespace Standing_Order_Vat_App.DAL.Directory_DB
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=SYS60\\SQLEXPRESS;Database=Directory;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=SYS82\\SYS82G,1433;Database=Directory;user id=sa;password=bt123;TrustServerCertificate=true;Integrated Security=false;");
             }
         }
 
@@ -176,6 +180,20 @@ namespace Standing_Order_Vat_App.DAL.Directory_DB
                     .HasConstraintName("FK_ApplicationRoleModules_ApplicationRoles");
             });
 
+            modelBuilder.Entity<ApplicationRolesNew>(entity =>
+            {
+                entity.HasKey(e => e.RoleId)
+                    .HasName("PK__Applicat__8AFACE1A8429E4C7");
+
+                entity.ToTable("ApplicationRoles_New");
+
+                entity.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.RoleName)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<ApplicationUserDataFilter>(entity =>
             {
                 entity.HasKey(e => e.Id)
@@ -304,6 +322,21 @@ namespace Standing_Order_Vat_App.DAL.Directory_DB
                     .HasPrincipalKey(p => new { p.ApplicationId, p.ModuleId })
                     .HasForeignKey(d => new { d.ApplicationId, d.ModuleId })
                     .HasConstraintName("FK_ApplicationUserRoleModules_ApplicationModules");
+            });
+
+            modelBuilder.Entity<ApplicationUserRolesNew>(entity =>
+            {
+                entity.ToTable("ApplicationUserRoles_New");
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.ApplicationUserRolesNews)
+                    .HasForeignKey(d => d.RoleId)
+                    .HasConstraintName("FK__Applicati__RoleI__6BAEFA67");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.ApplicationUserRolesNews)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK__Applicati__UserI__6CA31EA0");
             });
 
             modelBuilder.Entity<Audit>(entity =>

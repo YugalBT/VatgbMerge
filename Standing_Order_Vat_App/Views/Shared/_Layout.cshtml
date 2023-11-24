@@ -96,12 +96,12 @@
                 @RenderBody()
             </main>
         </div>
-
-        <footer class="border-top footer text-muted">
+        @await Component.InvokeAsync("Notyf")
+        @* <footer class="border-top footer text-muted">
             <div class="container">
                 &copy; 2022 - Standing_Order_Vat_App - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
             </div>
-        </footer>
+        </footer> *@
     </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -110,6 +110,8 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
     <script type="text/javascript" src="https://cdn.tiny.cloud/1/c7k279i01d7tsc0gpthvyhrvmx25esc4qvsez3vulspnr05h/tinymce/6/tinymce.min.js"></script>
     <script src="~/lib/jquery-toast-plugin/jquery.toast.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/jquery-3.3.1.min.js"></script>
     <script src="~/js/bootstrap.bundle.min.js"></script>
     <script src="~/css/bootstrap-multiselect.js"></script>
@@ -117,7 +119,6 @@
     <script src="~/js/custom.js" asp-append-version="true"></script>
     <script src="~/js/site.js"></script>
 
-    @await Component.InvokeAsync("Notyf")
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

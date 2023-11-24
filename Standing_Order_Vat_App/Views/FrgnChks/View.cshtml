@@ -2,6 +2,11 @@
 @{
     ViewData["Title"] = "View";
 }
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
 <link href="~/css/link.css" rel="stylesheet" />
 <style>
     .custom_navbars_link {
@@ -36,7 +41,7 @@
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">GB Registries</a>
-
+           
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
@@ -66,132 +71,137 @@
     </div>
     <div class="right_side_content bg-lightorangecolor w-100">
 
-        <form method="get" asp-action="UpdateFrgn" asp-controller="FrgnChks">
-            <div class="row">
-                <div class="col-3">
-                    <div class="form-group mb-3">
+        <form method="get" asp-action="View" asp-controller="FrgnChks">
+        <div class="row">
+            <div class="col-3">
+                <div class="form-group mb-3">
                         <label for="Options" class="d-block">Options</label>
-                        <select class="form-control" asp-for=Options id="sel" onchange="Banksanddate()">
-
-                            <option value="1">Bank & Date</option>
-                            <option value="2">Date</option>
-                            <option value="3">Entry Status</option>
-                        </select>
-                    </div>
+                    <select class="form-control" asp-for=Options id="sel" onchange="Banksanddate()">
+                        <option selected>Options</option>
+                        <option value="1">Bank & Date</option>
+                        <option value="2">Date</option>
+                    </select>
                 </div>
+            </div>
 
-                <div class="col-3" id="sele">
+            <div class="col-3" id="sele">
                     <div class="form-group mb-3">
                         <label class="d-block">Banks</label>
+                    @*<select class="form-control" id="Banks">
+                        <option>----Select Banks-----</option>
+                    </select>*@
                         <select id="Select1" asp-for=Banks class="form-select" asp-items="@(new SelectList(Model.bankList,"BankId", "BankName"))">
                             <option value="" selected disabled>--- Select Banks ---</option>
                         </select>
 
-                    </div>
-                </div>
-                <div class="col-3" id="selec">
-                    <div class="form-group mb-3">
-                        <label class="d-block">Status</label>
-
-                        <select id="Select1" asp-for=Status class="form-select" asp-items="@(new SelectList(Model.entryStatusVM,"StatusId", "StatusName"))">
-                            <option value="" selected disabled>--- Status ---</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-3" id="datef">
-                    <div class="branch mb-3">
-                        <label class="date-from d-block" for="inlineFormCustomSelect">Date From:</label>
-                        <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="From" />
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="branch mb-3" id="datet">
-                        <label class="ms-auto d-block" for="inlineFormCustomSelect">Date To:</label>
-                        <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="To" />
-                    </div>
-                </div>
-
-                <div class="col-3">
-                    <div class="branch mb-3">
-                        <input type="submit" style="width:100%;height: 38px;margin-top: 25px;" value="Search" asp-controller="FrgnChks" asp-action="UpdateFrgn" />
-                    </div>
                 </div>
             </div>
-            <div class="spl">
-                <br />
-                <br />
+            <div class="col-3">
+                    <div class="form-group mb-3">
+                    <label class="d-block">Status</label>
+                    @*<select class="form-control" id="Status">
+                        <option>----Select Status-----</option>
+                    </select>*@
 
+                        <select id="Select1" asp-for=Status class="form-select" asp-items="@(new SelectList(Model.entryStatusVM,"StatusId", "StatusName"))">
+                            <option value="" selected disabled>--- Status ---</option></select>
+                </div>
+
+            </div>
+
+            <div class="col-3">
+                    <div class="branch mb-3">
+                    <label class="date-from d-block" for="inlineFormCustomSelect">Date From:</label>
+                        <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="From" />
+                </div>
+            </div>
+            <div class="col-3">
+                    <div class="branch mb-3">
+                    <label class="ms-auto d-block" for="inlineFormCustomSelect">Date To:</label>
+                        <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="To" />
+                </div>
+            </div>
+            
+            <div class="col-3">
+                    <div class="branch mb-3">
+                        <input type="submit" style="width:100%;height: 38px;margin-top: 25px;" value="Search" asp-controller="FrgnChks" asp-action="View" />
+                </div>
+            </div>
+        </div>
+        <div class="spl">
+            <br />
+            <br />
+            
                 <div style="height: 420px;overflow-y: auto;border-top: 2px solid #000;">
-                    <div class="table-responsive">
+                <div class="table-responsive">
                         <table class="table table-hover border database_table" id="table">
-                            <thead>
-                                <tr class="table-active">
+                        <thead>
+                            <tr class="table-active">
                                     <th>Date Received</th>
                                     <th>Date Payment Requested</th>
+                                    <th>Date Processed	</th>
                                     <th>Bank</th>
                                     <th>Date Processed</th>
                                     <th>Total</th>
                                     <th>Entered By</th>
+                                    
                                     <th>Settled By</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var dormant in Model.FrgnCheckListRecVms)
-                                {
-                                    <tr>
-                                        <td>@dormant.DateSettled</td>
-                                        <td>@dormant.DatePaymentRequested</td>
-                                        <td>@dormant.BankName</td>
-                                        <td>@dormant.DatePaymentRequested</td>
-                                        <td>@dormant.BatchTotal</td>
-                                        <td>@dormant.ProcessName</td>
-                                        <td>@dormant.ProcessName</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                              
+                            </tr>
+                        </thead>
+                        <tbody >
+                            @foreach (var dormant in Model.FrgnCheckListRecVms)
+                            {
+                            <tr>
+                            <td>@dormant.DateSettled</td>
+                            <td>@dormant.DatePaymentRequested</td>
+                            <td>@dormant.DateSettled</td>
+                            <td>@dormant.BankName</td>
+                            <td>@dormant.DatePaymentRequested</td>
+                          <td>@dormant.BatchTotal</td>
+                          <td>@dormant.ProcessName</td>
+                          <td>@dormant.DateSettled</td>
+                          <td>@dormant.DateSettled</td>
+
+                          <td>@dormant.ProcessName</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </div>
         </form>
 
     </div>
 </div>
+
+
+
 <script src="~/js/cascade.js"></script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
 <script>
     $('#sel').show();
     $('#Banks').hide();
-
-    $(document).ready(function () {
-        //saveBatchHeader();
-        Banksanddate();
-
-    });
     function Banksanddate(){
         if ($("#sel").val() == "2") {
-            $('#datef').show();
-            $('#datet').show();
+            //alert("From second");
             $('#sele').hide();
-        }
-        else if ($("#sel").val() == "3") {
-            $('#sele').hide();
-            $('#datef').hide();
-            $('#datet').hide();
         }
         else{
             $('#sele').show();
         }
     }
+    
 </script>
 @section scripts {
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#table').DataTable();
-        });
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#table').DataTable();
+    });
     </script>
-    }
+            }
+</script>

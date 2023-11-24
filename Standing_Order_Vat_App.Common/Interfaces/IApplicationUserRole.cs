@@ -14,8 +14,9 @@ namespace Standing_Order_Vat_App.Common.Interfaces
         ApplicationUserRole CreateApplicationuserRole(ApplicationUserRole applicationUserRole);
         ApplicationUserRole GetApplicationUserRoleByUserId(int userId);
         void UpdateApplicationUserRole(ApplicationUserRole model);
-        IGeneralResult<AddUserVm> updateuser(AddUserVm vm);
-        IGeneralResult<int> deleteuser(int userId);
+
+        //IGeneralResult<AddUserVm> updateuser(AddUserVm vm);
+        //IGeneralResult<int> deleteuser(int userId);
 
     }
 }
