@@ -1,6 +1,6 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using GbRegister.Core.ViewModel;
-using Microsoft.AspNetCore.Mvc;
+//using Microsoft.AspNetCore.Mvc;
 using Standing_Order_Vat_App.Common.Interfaces;
 using Standing_Order_Vat_App.Common.ViewModels;
 using Standing_Order_Vat_App.Common.Helper;
@@ -13,6 +13,9 @@ using X.PagedList;
 using DocumentFormat.OpenXml.Office2016.Excel;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Standing_Order_Vat_App.Common.GeneralResult;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using VATCustomServices;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -126,7 +129,7 @@ namespace Standing_Order_Vat_App.Controllers
                     FrgnCheckVm vm = new FrgnCheckVm();
                     vm.dtRecvd = (DateTime)foreignChecksDetail.DateRecived;
                     vm.dtProcessed = DateTime.Now;
-                    vm.empId = 29;
+                    vm.empId = 28;
                     vm.batchStat = 1;
                     vm.branch = "00";
                     vm.bankId = foreignChecksDetail.BankId.ToString();
@@ -244,55 +247,28 @@ namespace Standing_Order_Vat_App.Controllers
             return Json(res);
         }
         [HttpGet]
-        public async Task<IActionResult> View(FrgnCheckViewRequest request)
+        public async Task<IActionResult> ViewAsync(FrgnViewCheckVm res)
         {
-            FrgnViewCheckVm res = new FrgnViewCheckVm();
+            //FrgnViewCheckVm res = new FrgnViewCheckVm();
             res.entryStatusVM = new List<ForeignCheckStatusVM>();
             res.bankList = new List<BankListVm>();
-
             res.entryStatusVM = await _frgnchks.GetEntryStatus();
             res.bankList = await _sKNANBLIVEContext.Banks.Select(s => new BankListVm()
             {
                 BankId = s.BankId,
                 BankName = s.Name
             }).ToListAsync();
-
-            List<FrgnCheckListRecVm> result = new List<FrgnCheckListRecVm>();
-
-            switch (request.Options)
+            if (res.Status == 1)
             {
-                case 1:
-
-                    var a = await _frgnchks.record(request.Status, "00", request.Banks, request.From, request.To);
-
-                    if (a.Value != null)
-                    {
-                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(a.Value);
-                    }
-                    break;
-
-                case 2:
-
-                    var b = await _frgnchks.record1(request.Status, "00", request.Banks, request.From, request.To);
-
-                    if (b.Value != null)
-                    {
-                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(b.Value);
-                    }
-                    break;
-
-                case 3:
-                    var c = await _frgnchks.record2(request.Status, "00", request.Banks, request.From, request.To);
-
-                    if (c.Value != null)
-                    {
-                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(c.Value);
-                    }
-                    break;
+                res.FrgncheckListIncompletes = ListIncomplete(res);
             }
-            res.FrgnCheckListRecVms = result;
+            else
+            {
+                res.FrgnCheckListRecVms = ListComplete(res);
+            }
             return View(res);
         }
+  
         [HttpGet]
         public async Task<IActionResult> UpdateFrgn()
         {
@@ -312,9 +288,9 @@ namespace Standing_Order_Vat_App.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateFrgn(FrgnCheckViewRequest request)
+        public async Task<IActionResult> UpdateFrgn(FrgnViewCheckVm res)
         {
-            FrgnViewCheckVm res = new FrgnViewCheckVm();
+           // FrgnViewCheckVm res = new FrgnViewCheckVm();
             res.entryStatusVM = new List<ForeignCheckStatusVM>();
             res.bankList = new List<BankListVm>();
 
@@ -325,34 +301,15 @@ namespace Standing_Order_Vat_App.Controllers
                 BankName = s.Name
             }).ToListAsync();
 
-            List<FrgnCheckListRecVm> result = new List<FrgnCheckListRecVm>();
-
-            switch (request.Options)
+            if (res.Status == 1)
             {
-                case 1:
-                    var a = await _frgnchks.record(request.Status, "00", request.Banks, request.From, request.To);
-                    if (a.Value != null)
-                    {
-                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(a.Value);
-                    }
-                    break;
-                case 2:
-                    var b = await _frgnchks.record1(request.Status, "00", request.Banks, request.From, request.To);
-                    if (b.Value != null)
-                    {
-                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(b.Value);
-                    }
-                    break;
-                case 3:
-                    var c = await _frgnchks.record2(request.Status, "00", request.Banks, request.From, request.To);
-                    if (c.Value != null)
-                    {
-                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(c.Value);
-                    }
-                    break;
+                res.FrgncheckListIncompletes = ListIncomplete(res);
             }
-            res.FrgnCheckListRecVms = result;
-            return View(res);
+            else
+            {
+                res.FrgnCheckListRecVms = ListComplete(res);
+            }
+         return View(res);
         }
 
         [HttpPost]
@@ -371,7 +328,89 @@ namespace Standing_Order_Vat_App.Controllers
             }
             return res;
         }
+        private List<frgncheckListIncomplete> ListIncomplete(FrgnViewCheckVm res)
+        {
+
+            List<frgncheckListIncomplete> result1 = new List<frgncheckListIncomplete>();
+
+            switch (res.Options)
+            {
+                case 1:
+                    var a = _frgnchks.record(res.Status, "00", res.Banks, res.From, res.To);
+                    if (a.Result.Value != null)
+                    {
+
+                        result1 = DataTableToModelConvert.ConvertToList<frgncheckListIncomplete>(a.Result.Value);
+                    }
+
+                    break;
+                case 2:
+                    var b = _frgnchks.record1(res.Status, "00", res.Banks, res.From, res.To);
+                    if (b.Result.Value != null)
+                    {
+                        if (res.Status == 1)
+                        {
+                            result1 = DataTableToModelConvert.ConvertToList<frgncheckListIncomplete>(b.Result.Value);
+                        }
+
+
+                    }
+                    break;
+                case 3:
+                    var c = _frgnchks.record2(res.Status, "00", res.Banks, res.From, res.To);
+                    if (c.Result.Value != null)
+                    {
+                        if (res.Status == 1)
+                        {
+                            result1 = DataTableToModelConvert.ConvertToList<frgncheckListIncomplete>(c.Result.Value);
+                        }
+
+                    }
+                    break;
+            }
+            res.FrgncheckListIncompletes = result1;
+            return result1;
+        }
+        
+        private List<FrgnCheckListRecVm> ListComplete(FrgnViewCheckVm res)
+        {
+            List<FrgnCheckListRecVm> result = new List<FrgnCheckListRecVm>();
+
+            switch (res.Options)
+            {
+                case 1:
+                    var a =  _frgnchks.record(res.Status, "00", res.Banks, res.From, res.To);
+                    if (a.Result.Value != null)
+                    {
+                            result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(a.Result.Value);
+                    }
+                    break;
+                case 2:
+                    var b =  _frgnchks.record1(res.Status, "00", res.Banks, res.From, res.To);
+                    if (b.Result.Value != null)
+                    {
+                        if (res.Status == 1)
+                        {
+                            result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(b.Result.Value);
+                        }
+
+                    }
+                    break;
+                case 3:
+                    var c =  _frgnchks.record2(res.Status, "00", res.Banks, res.From, res.To);
+                    if (c.Result.Value != null)
+                    {
+                      result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(c.Result.Value);
+                    }
+                    
+                    break;
+            }
+            res.FrgnCheckListRecVms = result;
+            return result;
+          
+        }
 
     }
+   
 }
 

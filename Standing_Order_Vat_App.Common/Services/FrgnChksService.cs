@@ -459,7 +459,7 @@ namespace Standing_Order_Vat_App.Common.Services
             {
                 try
                 {
-                    cmd.CommandText = "FindFrgnChkBatchByStatus";
+                    cmd.CommandText = "FindFrgnChkBatchByStatus_New";
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@status", status));
                     cmd.Parameters.Add(new SqlParameter("@branch", branch));
