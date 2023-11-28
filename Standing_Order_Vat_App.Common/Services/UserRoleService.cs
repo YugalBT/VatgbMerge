@@ -26,9 +26,14 @@ namespace Standing_Order_Vat_App.Common.Services
         public List<Sp_userRole> GetUserRole(string user, [Optional] int pageNum, [Optional] int recordPerPage)
         {
             List<Sp_userRole> sp_UserRoles = new List<Sp_userRole>();
-                 //  var userName = new SqlParameter("@userName", user);
-                // var userName = new SqlParameter("@userName", "SKNANB" + @"\" + "JUNIORJ");
-                var userName = new SqlParameter("@userName", "test");
+
+            // For Live we need to comment line no 36 and uncomment line no 32
+
+            // var userName = new SqlParameter("@userName", user);
+            // var userName = new SqlParameter("@userName", "SKNANB" + @"\" + "JUNIORJ");
+
+            // For testing
+            var userName = new SqlParameter("@userName", "test");
             // var userName = new SqlParameter("@userName", "SKNANB\\TestK");
 
             var appName = new SqlParameter("@appName", "NB_VAT_FEES");
@@ -37,7 +42,7 @@ namespace Standing_Order_Vat_App.Common.Services
             {
                 sp_UserRoles = dirdbcontext.Sp_UserRoles.FromSqlRaw("exec getUserAccess_NewKK @userName,@appName", userName, appName).AsEnumerable().ToList();
             }
-            catch(Exception ex) { } 
+            catch (Exception ex) { }
             return sp_UserRoles;
         }
     }
