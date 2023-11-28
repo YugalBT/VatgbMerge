@@ -18,6 +18,8 @@ using Syncfusion.Pdf.Graphics;
 using Syncfusion.Drawing;
 using System.Reflection;
 using static Standing_Order_Vat_App.Controllers.CustomerSummaryController;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -38,10 +40,13 @@ namespace Standing_Order_Vat_App.Controllers
         private readonly IVATOnFraudCharge vATOnFraudCharge;
         private readonly ITransactionCharges transactionCharge;
         private readonly ICustomerdetail customerdetail;
+        private readonly IAccountRepo _accountrepo;
+        string result;
+        int userId;
 
         public StandingOrderVatController(IUserRole userRoleService, IgetSummary summaryrecordservices, IGetDDACReport getDDACReportservice,
             IGetLoanCharge getLoanChargeservice, IStopPayCharge getstopPayChargeservice, ITansChargeBranch getTansChargeBranchservise
-            , ISafekeepingPayments getSafekeepingPayments, IVATOnFraudCharge vATOnFraudCharge, ITransactionCharges transactionCharge, ICustomerdetail customerdetail)
+            , ISafekeepingPayments getSafekeepingPayments, IVATOnFraudCharge vATOnFraudCharge, ITransactionCharges transactionCharge, ICustomerdetail customerdetail, IAccountRepo accountRepo)
         {
             this.userRoleService = userRoleService;
             this.summaryrecordservices = summaryrecordservices;
@@ -53,6 +58,7 @@ namespace Standing_Order_Vat_App.Controllers
             this.vATOnFraudCharge = vATOnFraudCharge;
             this.transactionCharge = transactionCharge;
             this.customerdetail = customerdetail;
+            _accountrepo = accountRepo;
         }
         public IActionResult Index()
         {
@@ -63,8 +69,11 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> TotalSummaryReport(Summery_VM obj, int pn = 1, int recordPerPage = 10, int branche = 0, int report = 0, DateTime fdate = default, DateTime tdate = default)
         {
+            
+            
+             _accountrepo.GetEmpId(ref result,ref userId);
 
-            printlog("Status: Application Start");
+          printlog("Status: Application Start");
 
             List<Customer_VM> customers = new List<Customer_VM>();
 
@@ -399,6 +408,10 @@ namespace Standing_Order_Vat_App.Controllers
 
         }
 
+        private void UserInfo()
+        {
+            var username = Environment.UserName;
+        }
 
         [HttpGet]
         public async Task<IActionResult> ExportListUsingEPPlus(int pn = 1, int recordPerPage = 10, int brchno = 0, int report = 0, DateTime fdate = default, DateTime tdate = default, int doctype = 0, string search = "")
