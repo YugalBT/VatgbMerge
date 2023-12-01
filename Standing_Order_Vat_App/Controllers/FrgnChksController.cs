@@ -16,26 +16,34 @@ using Standing_Order_Vat_App.Common.GeneralResult;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using VATCustomServices;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Standing_Order_Vat_App.Controllers
 {
+   // [Authorize(Roles = "Foreign Check")]
     public class FrgnChksController : Controller
     {
         private readonly IFrgnChks _frgnchks;
         private readonly General_Banking_RegistersContext _context;
         private readonly SKNANBLIVEContext _sKNANBLIVEContext;
         private readonly INotyfService _notyf;
+        private readonly IAccountRepo accountRepo;
 
-        public FrgnChksController(IFrgnChks frgnChks, General_Banking_RegistersContext context, SKNANBLIVEContext sKNANBLIVEContext, INotyfService notyf)
+        public FrgnChksController(IFrgnChks frgnChks, General_Banking_RegistersContext context, SKNANBLIVEContext sKNANBLIVEContext, INotyfService notyf, IAccountRepo accountRepo)
         {
             _frgnchks = frgnChks;
             _context = context;
             _sKNANBLIVEContext = sKNANBLIVEContext;
             _notyf = notyf;
+            this.accountRepo = accountRepo;
         }
 
         public IActionResult Index()
         {
+            if ( !accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            {
+                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+            }
             var rec = _frgnchks.GetBanks();
             ViewBag.BankName = rec;
             return View();
@@ -46,79 +54,22 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult AddFrgnCheckAsync()
         {
+            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            {
+                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+            }
             ForeignCheckVm vm = new ForeignCheckVm();
             vm.BanksList = _frgnchks.GetBanks();
             return View(vm);
         }
 
-        //[HttpPost]
-        //public async Task<IGeneralResult<int>> SaveFrgnBatchHeader(FrgnCheckVm frgnCheckVm)
-        //{
-        //    IGeneralResult<int> res = new GeneralResult<int>();
-        //    try
-        //    {
-        //        frgnCheckVm.dtProcessed = DateTime.Now;
-        //        frgnCheckVm.empId = 29;
-        //        frgnCheckVm.batchStat = 1;
-        //        frgnCheckVm.branch = "00";
-        //        var response = await _frgnchks.SaveFrgnBatch(frgnCheckVm);
-        //        if (response.BatchId > 0)
-        //        {
-        //            res.Successful = true;
-        //            res.Message = "Header Saved successfully. Add Checked.";
-        //            res.Value = (int)response.BatchId;
-        //            return res;
-        //        }
-        //        res.Message = "Something went wrong. Please try again!";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        res.Message = "Server error!";
-        //    }
-        //    return res;
-        //}
-
-
-        //[HttpPost]
-        //public async Task<IActionResult> SaveFrgnBatchHeader(ForeignCheckVm frgnCheckVm)
-        //{
-        //    try
-        //    {
-        //        FrgnCheckVm vm = new FrgnCheckVm();
-        //        vm.dtRecvd = (DateTime)frgnCheckVm.DateRecived;
-        //        vm.dtProcessed = DateTime.Now;
-        //        vm.empId = 29;
-        //        vm.batchStat = 1;
-        //        vm.branch = "00";
-        //        vm.bankId = frgnCheckVm.BankId.ToString();
-        //        frgnCheckVm.BatchId = 24;
-        //        var response = await _frgnchks.SaveFrgnBatch(vm);
-        //        if (response > 0)
-        //        {
-        //            string Message = "Header Saved successfully. Add Checked.";
-        //            frgnCheckVm.BanksList = _frgnchks.GetBanks();
-        //            frgnCheckVm.TotalAmount = Convert.ToDecimal(await _frgnchks.GetCheckTotal(frgnCheckVm.BatchId));
-        //            var list = await _frgnchks.GetFrgnChksByBatchID(frgnCheckVm.BatchId);
-        //            if (list.Successful)
-        //            {
-        //                List<FrgnCheckListVm> v = DataTableToModelConvert.CreateListFromTable<FrgnCheckListVm>(list.Value);
-        //                frgnCheckVm.checksList = v;
-        //            }
-        //            return View("AddFrgnCheck", frgnCheckVm);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-        //    return RedirectToAction("AddFrgnCheck");
-        //}
-
-
         [HttpPost]
         public async Task<IActionResult> AddFrgnCheckAsync(string actionbtn, ForeignCheckVm foreignChecksDetail)
         {
-
+            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            {
+                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+            }
             try
             {
                 foreignChecksDetail.BanksList = _frgnchks.GetBanks();
@@ -129,14 +80,14 @@ namespace Standing_Order_Vat_App.Controllers
                     FrgnCheckVm vm = new FrgnCheckVm();
                     vm.dtRecvd = (DateTime)foreignChecksDetail.DateRecived;
                     vm.dtProcessed = DateTime.Now;
-                    vm.empId = 28;
+                    vm.empId = Convert.ToInt32(accountRepo.GetEmpId());
                     vm.batchStat = 1;
-                    vm.branch = "00";
+                    vm.branch = accountRepo.GetBranchID();
                     vm.bankId = foreignChecksDetail.BankId.ToString();
                     var response = await _frgnchks.SaveFrgnBatch(vm);
                     if (response > 0)
                     {
-                        foreignChecksDetail.BatchId=response;
+                        foreignChecksDetail.BatchId = response;
                         //foreignChecksDetail.TotalAmount = Convert.ToDecimal(await _frgnchks.GetCheckTotal(foreignChecksDetail.BatchId));
                         //var list = await _frgnchks.GetFrgnChksByBatchID(foreignChecksDetail.BatchId);
                         //if (list.Successful)
@@ -196,36 +147,9 @@ namespace Standing_Order_Vat_App.Controllers
 
         }
 
-        [HttpGet]
-        public IActionResult UpdateFrgnCheck()
-        {
+        
 
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IGeneralResult<string>> UpdateFrgnCheck(ForeignCheckvmm foreignCheck)
-        {
-            IGeneralResult<string> result = new GeneralResult<string>();
-
-            try
-            {
-                if (foreignCheck == null)
-                {
-                    result.Message = "Something Went Wrong";
-                }
-                else
-                {
-                    var response = await _frgnchks.UpdateFrgn(foreignCheck);
-                    return response;
-                }
-            }
-            catch (Exception ex)
-            {
-                result.Message = "Server error: " + ex.Message;
-            }
-            return result;
-        }
+        
 
         public JsonResult Status()
         {
@@ -249,6 +173,10 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> ViewAsync(FrgnViewCheckVm res)
         {
+            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            {
+                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+            }
             //FrgnViewCheckVm res = new FrgnViewCheckVm();
             res.entryStatusVM = new List<ForeignCheckStatusVM>();
             res.bankList = new List<BankListVm>();
@@ -268,10 +196,14 @@ namespace Standing_Order_Vat_App.Controllers
             }
             return View(res);
         }
-  
+
         [HttpGet]
         public async Task<IActionResult> UpdateFrgn()
         {
+            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            {
+                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+            }
             FrgnViewCheckVm res = new FrgnViewCheckVm();
             res.entryStatusVM = new List<ForeignCheckStatusVM>();
             res.bankList = new List<BankListVm>();
@@ -283,14 +215,18 @@ namespace Standing_Order_Vat_App.Controllers
                 BankName = s.Name
             }).ToListAsync();
 
-            
+
             return View(res);
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateFrgn(FrgnViewCheckVm res)
         {
-           // FrgnViewCheckVm res = new FrgnViewCheckVm();
+            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            {
+                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+            }
+            // FrgnViewCheckVm res = new FrgnViewCheckVm();
             res.entryStatusVM = new List<ForeignCheckStatusVM>();
             res.bankList = new List<BankListVm>();
 
@@ -309,14 +245,20 @@ namespace Standing_Order_Vat_App.Controllers
             {
                 res.FrgnCheckListRecVms = ListComplete(res);
             }
-         return View(res);
+            return View(res);
         }
 
         [HttpPost]
         public async Task<IGeneralResult<string>> DeletefrgnCheck(int batchid)
         {
+            
             IGeneralResult<string> res = new GeneralResult<string>();
+            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            {
+                    res.Message = "Access Denied";
+                return res;
 
+            }
             if (batchid > 0)
             {
                 var result = await _frgnchks.DeleteFrgnChksBatch(batchid);
@@ -371,7 +313,7 @@ namespace Standing_Order_Vat_App.Controllers
             res.FrgncheckListIncompletes = result1;
             return result1;
         }
-        
+
         private List<FrgnCheckListRecVm> ListComplete(FrgnViewCheckVm res)
         {
             List<FrgnCheckListRecVm> result = new List<FrgnCheckListRecVm>();
@@ -379,14 +321,14 @@ namespace Standing_Order_Vat_App.Controllers
             switch (res.Options)
             {
                 case 1:
-                    var a =  _frgnchks.record(res.Status, "00", res.Banks, res.From, res.To);
+                    var a = _frgnchks.record(res.Status, "00", res.Banks, res.From, res.To);
                     if (a.Result.Value != null)
                     {
-                            result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(a.Result.Value);
+                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(a.Result.Value);
                     }
                     break;
                 case 2:
-                    var b =  _frgnchks.record1(res.Status, "00", res.Banks, res.From, res.To);
+                    var b = _frgnchks.record1(res.Status, "00", res.Banks, res.From, res.To);
                     if (b.Result.Value != null)
                     {
                         if (res.Status == 1)
@@ -397,20 +339,20 @@ namespace Standing_Order_Vat_App.Controllers
                     }
                     break;
                 case 3:
-                    var c =  _frgnchks.record2(res.Status, "00", res.Banks, res.From, res.To);
+                    var c = _frgnchks.record2(res.Status, "00", res.Banks, res.From, res.To);
                     if (c.Result.Value != null)
                     {
-                      result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(c.Result.Value);
+                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(c.Result.Value);
                     }
-                    
+
                     break;
             }
             res.FrgnCheckListRecVms = result;
             return result;
-          
+
         }
 
     }
-   
+
 }
 

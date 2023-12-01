@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using Standing_Order_Vat_App.Common.GeneralResult;
@@ -22,6 +23,7 @@ namespace Standing_Order_Vat_App.Controllers
         private readonly INotyfService notyf;
         private readonly IApplicationUserRole applicationUserRoleRepo;
         private readonly IUserRole userRoleService;
+        private readonly IAccountRepo accountRepo;
         private readonly IUserPermission _userPermission;
         List<UserRole_VM> userRolelist = new List<UserRole_VM>();
         const string Sessionuid = "uid";
@@ -29,7 +31,7 @@ namespace Standing_Order_Vat_App.Controllers
         const string Sessionurole = "urole";
         const string Sessionusercount = "ucount";
 
-        public AccountController(IUserRole userRoleService, IUsers userRepo, IApplicationRolesRepo applicationAccessRoleRepo, IApplicationUserRolesRepo applicationUserAccessRoles,
+        public AccountController(IUserRole userRoleService,IAccountRepo accountRepo, IUsers userRepo, IApplicationRolesRepo applicationAccessRoleRepo, IApplicationUserRolesRepo applicationUserAccessRoles,
             IUserRole userRole, IApplication applicationRepo, IApplicationUserRole applicationUserRole, INotyfService notyf, IUserPermission userPermission)
         {
             this.applicationUserRoleRepo = applicationUserRole;
@@ -40,6 +42,7 @@ namespace Standing_Order_Vat_App.Controllers
             this.applicationRepo = applicationRepo;
             this.notyf = notyf;
             this.userRoleService = userRoleService;
+            this.accountRepo = accountRepo;
             userPermission = _userPermission;
         }
 
@@ -48,7 +51,7 @@ namespace Standing_Order_Vat_App.Controllers
 
             VATServices tes = new VATServices();
 
-            if (HttpContext.Session.GetString("urole").ToString().ToLower() != "admin")
+            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" && !accountRepo.GetAppAccessRoles().Contains("Vat"))
             {
                 return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
             }
@@ -72,7 +75,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult AddUser(int? userid)
         {
-            if (HttpContext.Session.GetString("urole").ToString().ToLower() != "admin")
+            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" && !accountRepo.GetAppAccessRoles().Contains("Vat"))
             {
                 return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
             }
@@ -109,7 +112,7 @@ namespace Standing_Order_Vat_App.Controllers
         {
             try
             {
-                if (HttpContext.Session.GetString("urole").ToString().ToLower() != "admin")
+                if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" && !accountRepo.GetAppAccessRoles().Contains("Vat"))
                 {
                     return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
                 }
@@ -178,7 +181,7 @@ namespace Standing_Order_Vat_App.Controllers
 
         public IActionResult DeleteUser(int userid)
         {
-            if (HttpContext.Session.GetString("urole").ToString().ToLower() != "admin")
+            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" && !accountRepo.GetAppAccessRoles().Contains("Vat"))
             {
                 return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
             }
@@ -198,11 +201,6 @@ namespace Standing_Order_Vat_App.Controllers
                     return View();
                 }
             }
-        }
-        public void UserInfo()
-        {
-            var username = Environment.UserName;
-
         }
         
     }

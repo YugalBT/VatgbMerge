@@ -79,8 +79,6 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.CommandText = "NewFrgnChkDetails_New";
-
-                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@btchId", foreignCheckVm.BatchId);
                 cmd.Parameters.AddWithValue("@chkNum", foreignCheckVm.CheckNumber);
                 cmd.Parameters.AddWithValue("@payAcctNum", foreignCheckVm.PayerAcctNumber);

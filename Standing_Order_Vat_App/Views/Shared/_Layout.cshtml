@@ -1,4 +1,9 @@
 ﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var ucount = HttpContextAccessor.HttpContext.Session.GetString("ucount");
+    var urole = HttpContextAccessor.HttpContext.Session.GetString("urole");
+    var AppAccess = HttpContextAccessor.HttpContext.Session.GetString("AppAccessRoles");
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +15,7 @@
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
-   @* <link rel="stylesheet" href="~/css/site.css" />*@
+    @* <link rel="stylesheet" href="~/css/site.css" />*@
     <link rel="stylesheet" href="~/css/CustomStyle.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Standing_Order_Vat_App.styles.css" asp-append-version="true" />
@@ -21,20 +26,21 @@
     <link rel="stylesheet" href="~/css/bootstrap-multiselect.css" />
     <link rel="stylesheet" href="~/css/icofont.min.css">
     <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true">
-  @*  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">*@
+    @*  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">*@
     <link rel="stylesheet" href="~/lib/jquery-toast-plugin/jquery.toast.min.css">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/themes/smoothness/jquery-ui.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  
+
 
 
 </head>
 <style>
-    .clrclass{
+    .clrclass {
         background - color: #3e8b8b;
     }
-    .notyf{
-        justify-content: space-around!important;
+
+    .notyf {
+        justify-content: space-around !important;
     }
 </style>
 <body style="background:#6a4e4fc9; width:100%; border-top:4px solid #897374">
@@ -49,39 +55,45 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
                     <ul class="navbar-nav mr-auto mt-2 mt-lg-0" style="height: 28px;">
-                        <li class="nav-item1 active clrclass" style="border: 1px solid #d3c621;padding: 0 4px;font-size: 14px;height: 26px;">
-                            <a class="navbar-brand" asp-area="" asp-controller="StandingOrderVat" asp-action="TotalSummaryReport" style="line-height:30px;font-size: 14px;">Total Summary Report</a>
-                        </li>
-                        <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="CustomerSummary" asp-action="CustomerSummaryReport" style="line-height:30px;font-size: 14px;padding: 1px 13px;">Customer Summary Report</a>
-                        </li>
-                        @*@if (Convert.ToInt32(User.FindFirst("uCount")?.Value) > 0)*@
-                        @if (HttpContextAccessor.HttpContext.Session.GetString("ucount") != null && Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("ucount").ToString()) > 0)
-                        {
-                            @if (HttpContextAccessor.HttpContext.Session.GetString("urole").ToString().ToLower() == "admin")
-                            @*@if (User.FindFirst("RoleName")?.Value == "Admin")*@
-                                    {
-                                <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ManageUser" style="line-height:30px;font-size: 14px;padding: 1px 13px;">Manage User</a>
-
-                               
-                                </li>
-                                <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="CustomServiceVAT" asp-action="InsertRecord" style="line-height:30px;font-size: 14px;padding: 1px 13px;">Services</a>
-                                </li>
-                            }
-                        }
-                        </li>
-                        
-                        @if (HttpContextAccessor.HttpContext.Session.GetString("ucount") != null && Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("ucount").ToString()) > 0)
-                        @*@if (Convert.ToInt32(User.FindFirst("uCount")?.Value) > 0)*@
-                        {
-                            @if (HttpContextAccessor.HttpContext.Session.GetString("urole").ToString().ToLower() == "e-banking" || HttpContextAccessor.HttpContext.Session.GetString("urole").ToString().ToLower() == "admin")
-                            @*@if (User.FindFirst("RoleName")?.Value == "Admin" || User.FindFirst("RoleName")?.Value == "E-Banking")*@
+                        @{
+                            if (AppAccess != null &&  AppAccess.Contains("Vat"))
                             {
-                                <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="OnlineBanking" asp-action="Index" style="line-height:30px;font-size: 14px;padding: 1px 13px;"> E-Banking</a>
+                                <li class="nav-item1 active clrclass" style="border: 1px solid #d3c621;padding: 0 4px;font-size: 14px;height: 26px;">
+                                    <a class="navbar-brand" asp-area="" asp-controller="StandingOrderVat" asp-action="TotalSummaryReport" style="line-height:30px;font-size: 14px;">
+                                        Total Summary Report
+                                    </a>
                                 </li>
+                                <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="CustomerSummary" asp-action="CustomerSummaryReport" style="line-height:30px;font-size: 14px;padding: 1px 13px;">
+                                        Customer Summary Report
+                                    </a>
+                                </li>
+
+
+                                if (ucount != null && Convert.ToInt32(ucount) > 0)
+                                {
+                                    if (urole.Contains("Admin"))
+                                    {
+                                        <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ManageUser" style="line-height:30px;font-size: 14px;padding: 1px 13px;">
+                                                Manage User
+                                            </a>
+                                        </li>
+                                        <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="CustomServiceVAT" asp-action="InsertRecord" style="line-height:30px;font-size: 14px;padding: 1px 13px;">
+                                                Services
+                                            </a>
+                                        </li>
+                                        <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="OnlineBanking" asp-action="Index" style="line-height:30px;font-size: 14px;padding: 1px 13px;">
+                                                E-Banking
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            }
+                            if (AppAccess != null && AppAccess.Contains("Foreign Check"))
+                            {
                                 <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="GBRegister" asp-action="Index" style="line-height:30px;font-size: 14px;padding: 1px 13px;">GB Register</a>
                                 </li>
@@ -99,9 +111,9 @@
         </div>
         @await Component.InvokeAsync("Notyf")
         @* <footer class="border-top footer text-muted">
-            <div class="container">
-                &copy; 2022 - Standing_Order_Vat_App - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-            </div>
+        <div class="container">
+        &copy; 2022 - Standing_Order_Vat_App - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
         </footer> *@
     </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

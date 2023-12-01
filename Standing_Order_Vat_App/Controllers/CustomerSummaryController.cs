@@ -22,9 +22,11 @@ using System.Reflection;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Net.Mail;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Standing_Order_Vat_App.Controllers
 {
+    //[Authorize(Roles = "Vat")]
     public class CustomerSummaryController : Controller
     {
         const string Sessionuid = "uid";
@@ -32,6 +34,7 @@ namespace Standing_Order_Vat_App.Controllers
         const string Sessionurole = "urole";
         const string Sessionusercount = "ucount";
         private readonly IUserRole userRoleService;
+        private readonly IAccountRepo accountRepo;
         private readonly IgetSummary summaryrecordservices;
         private readonly IGetDDACReport getDDACReportservice;
         private readonly IGetLoanCharge getLoanChargeservice;
@@ -39,11 +42,12 @@ namespace Standing_Order_Vat_App.Controllers
         private readonly ITansChargeBranch getTansChargeBranchservise;
         private readonly ISafekeepingPayments getSafekeepingPayments;
         private readonly ICustomerdetail customerdetail;
-        public CustomerSummaryController(IUserRole userRoleService, IgetSummary summaryrecordservices, IGetDDACReport getDDACReportservice,
+        public CustomerSummaryController(IUserRole userRoleService, IAccountRepo accountRepo, IgetSummary summaryrecordservices, IGetDDACReport getDDACReportservice,
         IGetLoanCharge getLoanChargeservice, IStopPayCharge getstopPayChargeservice, ITansChargeBranch getTansChargeBranchservise
         , ISafekeepingPayments getSafekeepingPayments, ICustomerdetail customerdetail)
         {
             this.userRoleService = userRoleService;
+            this.accountRepo = accountRepo;
             this.summaryrecordservices = summaryrecordservices;
             this.getDDACReportservice = getDDACReportservice;
             this.getLoanChargeservice = getLoanChargeservice;
@@ -298,7 +302,7 @@ namespace Standing_Order_Vat_App.Controllers
         {
             List<Customer_VM> customers = new List<Customer_VM>();
 
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString(Sessionurole)?.ToString()) == false)
+            if (accountRepo.Geturole() != null)
             {
                 customers = customerdetail.GetCustomerDetail(reportid);
                 ViewBag.ddlrec = customers;
@@ -332,7 +336,7 @@ namespace Standing_Order_Vat_App.Controllers
                 case 1:
                     {
                         //record.acct = ;
-                        if (HttpContext.Session.GetString(Sessionurole)?.ToString() == "Credit")
+                        if (accountRepo.Geturole() != null && accountRepo.Geturole() == "Credit")
                         {
                             ViewBag.Message = String.Format("You are not authorized to view this report");
                         }
@@ -348,7 +352,7 @@ namespace Standing_Order_Vat_App.Controllers
                     {
                         //  record.acct = obj.acct;
 
-                        if (HttpContext.Session.GetString(Sessionurole)?.ToString() == "Credit")
+                        if (accountRepo.Geturole() != null && accountRepo.Geturole() == "Credit")
                         {
                             ViewBag.Message = String.Format("You are not authorized to view this report");
                         }
@@ -364,7 +368,7 @@ namespace Standing_Order_Vat_App.Controllers
                     {
                         //  record.acct = obj.acct;
 
-                        if (HttpContext.Session.GetString(Sessionurole)?.ToString() == "Main Branch")
+                        if (accountRepo.Geturole() != null && accountRepo.Geturole() == "Main Branch")
                         {
                             ViewBag.Message = String.Format("You are not authorized to view this report");
                         }
@@ -385,7 +389,7 @@ namespace Standing_Order_Vat_App.Controllers
                     {
                         // record.acct = obj.acct;
 
-                        if (HttpContext.Session.GetString(Sessionurole)?.ToString() == "Credit")
+                        if (accountRepo.Geturole() != null && accountRepo.Geturole() == "Credit")
                         {
                             ViewBag.Message = String.Format("You are not authorized to view this report");
                         }
@@ -400,7 +404,7 @@ namespace Standing_Order_Vat_App.Controllers
                     {
                         // record.acct = obj.acct;
 
-                        if (HttpContext.Session.GetString(Sessionurole)?.ToString() == "Credit")
+                        if (accountRepo.Geturole() != null && accountRepo.Geturole() == "Credit")
                         {
                             ViewBag.Message = String.Format("You are not authorized to view this report");
                         }
@@ -415,7 +419,7 @@ namespace Standing_Order_Vat_App.Controllers
                     {
                         // record.acct = obj.acct;
 
-                        if (HttpContext.Session.GetString(Sessionurole)?.ToString() == "Credit")
+                        if (accountRepo.Geturole() != null && accountRepo.Geturole() == "Credit")
                         {
                             ViewBag.Message = String.Format("You are not authorized to view this report");
                         }
