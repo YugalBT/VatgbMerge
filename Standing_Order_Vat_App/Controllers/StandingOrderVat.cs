@@ -18,6 +18,10 @@ using Syncfusion.Pdf.Graphics;
 using Syncfusion.Drawing;
 using System.Reflection;
 using static Standing_Order_Vat_App.Controllers.CustomerSummaryController;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -38,10 +42,17 @@ namespace Standing_Order_Vat_App.Controllers
         private readonly IVATOnFraudCharge vATOnFraudCharge;
         private readonly ITransactionCharges transactionCharge;
         private readonly ICustomerdetail customerdetail;
+        private readonly IAccountRepo accountRepo;
+        string result;
+        int userId;
+        string ssnum;
+        int empID;
+        GetCurrentUserInfoVm userInfo;
+
 
         public StandingOrderVatController(IUserRole userRoleService, IgetSummary summaryrecordservices, IGetDDACReport getDDACReportservice,
             IGetLoanCharge getLoanChargeservice, IStopPayCharge getstopPayChargeservice, ITansChargeBranch getTansChargeBranchservise
-            , ISafekeepingPayments getSafekeepingPayments, IVATOnFraudCharge vATOnFraudCharge, ITransactionCharges transactionCharge, ICustomerdetail customerdetail)
+            , ISafekeepingPayments getSafekeepingPayments, IVATOnFraudCharge vATOnFraudCharge, ITransactionCharges transactionCharge, ICustomerdetail customerdetail, IAccountRepo accountRepo)
         {
             this.userRoleService = userRoleService;
             this.summaryrecordservices = summaryrecordservices;
@@ -53,6 +64,7 @@ namespace Standing_Order_Vat_App.Controllers
             this.vATOnFraudCharge = vATOnFraudCharge;
             this.transactionCharge = transactionCharge;
             this.customerdetail = customerdetail;
+            this.accountRepo = accountRepo;
         }
         public IActionResult Index()
         {
@@ -63,6 +75,8 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> TotalSummaryReport(Summery_VM obj, int pn = 1, int recordPerPage = 10, int branche = 0, int report = 0, DateTime fdate = default, DateTime tdate = default)
         {
+            int empid = accountRepo.GetUserinfo(ref result, ref userInfo);
+            var rec = userRoleService.GetUserRole(User.Identity.Name);
 
             printlog("Status: Application Start");
 
@@ -91,7 +105,7 @@ namespace Standing_Order_Vat_App.Controllers
             List<UserRole_VM> userRolelist = new List<UserRole_VM>();
 
             ViewBag.pageno = pn;
-            var rec = userRoleService.GetUserRole(User.Identity.Name);
+            
 
             userRolelist = rec.Select(x => ((UserRole_VM)x)).ToList();
 
@@ -106,25 +120,6 @@ namespace Standing_Order_Vat_App.Controllers
 
             if (userRolelist.Count > 0)
             {
-
-                //var claims = new List<Claim>
-                //        {
-                //            new Claim(ClaimTypes.Role, userRolelist.FirstOrDefault().RoleName.ToString()),
-                //            new Claim(ClaimTypes.Name,userRolelist.FirstOrDefault().UserName.ToString()),
-                //            new Claim("RoleName",userRolelist.FirstOrDefault().RoleName.ToString()),
-                //            new Claim("uCount", userRolelist.Count.ToString()),
-                //        };
-                //var claimsIdentity = new ClaimsIdentity(
-                //    claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                //var authProperties = new AuthenticationProperties
-                //{
-                //    IsPersistent = true,
-                //    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(2),
-                //};
-                //await HttpContext.SignInAsync(
-                //    CookieAuthenticationDefaults.AuthenticationScheme,
-                //    new ClaimsPrincipal(claimsIdentity),
-                //    authProperties);
 
                 HttpContext.Session.SetInt32(Sessionuid, Convert.ToInt32(userRolelist.FirstOrDefault().RoleID));
                 printlog("Role ID: " + userRolelist.FirstOrDefault().RoleID.ToString());
@@ -398,7 +393,6 @@ namespace Standing_Order_Vat_App.Controllers
             return View(record);
 
         }
-
 
         [HttpGet]
         public async Task<IActionResult> ExportListUsingEPPlus(int pn = 1, int recordPerPage = 10, int brchno = 0, int report = 0, DateTime fdate = default, DateTime tdate = default, int doctype = 0, string search = "")
@@ -1424,6 +1418,7 @@ public static class Extensions
             return value.ToString();
     }
 }
+
 
 
 

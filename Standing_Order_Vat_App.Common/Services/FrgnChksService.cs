@@ -79,8 +79,6 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.CommandText = "NewFrgnChkDetails_New";
-
-                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@btchId", foreignCheckVm.BatchId);
                 cmd.Parameters.AddWithValue("@chkNum", foreignCheckVm.CheckNumber);
                 cmd.Parameters.AddWithValue("@payAcctNum", foreignCheckVm.PayerAcctNumber);
@@ -459,7 +457,7 @@ namespace Standing_Order_Vat_App.Common.Services
             {
                 try
                 {
-                    cmd.CommandText = "FindFrgnChkBatchByStatus";
+                    cmd.CommandText = "FindFrgnChkBatchByStatus_New";
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@status", status));
                     cmd.Parameters.Add(new SqlParameter("@branch", branch));
