@@ -13,7 +13,7 @@ html {
   min-height: 100%;
 }
 .buttonRemoveCss{
-    color:white;
+    color:#000;
     background:none;
     border:none;
 }
@@ -63,7 +63,7 @@ body {
     color: white !important;
 }
 .spl {
-    border-color: #002C36;
+    border-color: #d7b79a;
     /*width: 800px;*/
     border-width: 1px;
     border-style: solid;
@@ -75,13 +75,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #B46000;
+    background-color: #fae9d9;
     padding: 10px 13px;
 }
 
     .demo a {
         font-size: 14px;
-        color: #FFF;
+        color: #000000;
         text-decoration: none;
     }
 

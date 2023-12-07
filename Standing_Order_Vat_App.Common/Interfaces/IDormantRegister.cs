@@ -1,7 +1,9 @@
 ﻿using GbRegister.Core.ViewModel;
+using Standing_Order_Vat_App.Common.GeneralResult;
 using Standing_Order_Vat_App.Common.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,12 +12,16 @@ namespace Standing_Order_Vat_App.Common.Interfaces
 {
     public interface IDormantRegister
     {
-        VmDormantRegister AddDormantRegister(VmDormantRegister dormantRegister);
-        VmDormantRegister GetDormantRegister(VmDormantRegister dormantRegister, string acctNumber);
-        VmDormantRegister UpdateDormant(string acctNumber, int recordId);
-        VmDormantRegister UpdateDormant(VmDormantRegister dormantRegister);
-        List<VmDormantRegister> ViewDormant(string search, int? EntryStatusId, DateTime date, int pg = 1);
-        VmDormantRegister DeleteDormant(int  recordId);
-        public List<EntityStatusVM> GetEntityStatus();
+        public Task<IGeneralResult<string>> AddDormantRegister(VmDormantRegister dormantRegister);
+        
+        IGeneralResult<DataTable> GetDormRegRecsByAcctNum(ref DataTable dtable, string acct, string coreBranch, int entry, string jobTitle);
+
+        IGeneralResult<DataTable> GetDormRegRecsByDate(ref DataTable dtable, DateTime? dtFrom, DateTime? dtTo, string coreBranch, int entry, string jobTitle);
+
+
+        IGeneralResult<DataTable> GetDormRegRecsByStatus(ref DataTable dtable, int status, string coreBranch, string jobTitle);
+
+        
+        
     }
 }

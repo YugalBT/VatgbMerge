@@ -1,8 +1,13 @@
 ﻿body {
 }
 
+.custom_navbars_link {
+    background-color: #fae9d9;
+    border-bottom: 2px solid #efd0b2;
+}
 .side_bar_custom {
-    background-color: #f5f5f5;
+    background-color: #fff5ec;
+    border-right: 2px solid #efd0b2;
     height: 100vh;
     display: block;
     min-width: 200px;
@@ -29,7 +34,7 @@
 }
 
 .bg-lightorangecolor {
-    background-color: #ffedd9;
+    background-color: #f3f3f3;
 }
 
 .date_from label {
@@ -40,11 +45,12 @@
 .main_heading {
     font-size: 24px;
     font-weight: bold;
-    color: #b46000;
-    border-bottom: 3px solid #b46000;
+    color: #323232;
+    border-bottom: 2px solid #d1d1d1;
     margin-bottom: 0;
     padding: 14px 20px;
 }
+
 
 .middle-content-sec {
     padding: 20px
@@ -102,8 +108,8 @@
 }
 
 .custom_tble thead tr {
-    background-color: #002c36;
-    color:#ffffff;
+    background-color: #c17935;
+    color: #ffffff;
 }
 
     .custom_tble thead tr th {

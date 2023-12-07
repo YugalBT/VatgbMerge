@@ -44,26 +44,7 @@ namespace Standing_Order_Vat_App.Common.Services
                 BankId = s.BankId,
                 BankName = s.Name
             }).Take(100).ToList();
-            //var connString = _sknanbLiveContext.Database.GetDbConnection();
-            //using (var cmd = _sknanbLiveContext.Database.GetDbConnection().CreateCommand())
-            //{
-            //        cmd.CommandText = "getBank";
-            //        cmd.CommandType = CommandType.StoredProcedure;
-            //        cmd.CommandTimeout = 600;
-            //        DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
-            //        var dataTable = new DataTable();
-            //        adp.Fill(dataTable);
-
-            //    foreach (var a in dataTable.Rows)
-            //    {
-
-            //    }
-            //  list= dataTable.Select(new )
-            //        if (dataTable.Rows.Count > 0)
-            //        {
-            //            list = DataTableToModelConvert.CreateListFromTable<BankListVm>(dataTable);
-            //        }
-            //    }
+            
             return list;
         }
         public async Task<IGeneralResult<string>> AddFrgnCheack(ForeignCheckVm foreignCheckVm)
