@@ -1,324 +1,174 @@
 ﻿using GbRegister.Core.ViewModel;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Standing_Order_Vat_App.Common.GeneralResult;
 using Standing_Order_Vat_App.Common.Interfaces;
 using Standing_Order_Vat_App.Common.ViewModels;
 using Standing_Order_Vat_App.DAL.GB_Register;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+string dtable;
 
 namespace Standing_Order_Vat_App.Common.Services
 {
     public class DormantRegisterService : IDormantRegister
     {
         private readonly General_Banking_RegistersContext _generalBankingRegistersContext;
-
         public DormantRegisterService(General_Banking_RegistersContext generalBankingRegistersContext)
         {
             _generalBankingRegistersContext = generalBankingRegistersContext;
         }
 
-        public VmDormantRegister AddDormantRegister(VmDormantRegister dormantRegister)
+    
+        public async Task<IGeneralResult<string>>AddDormantRegister(VmDormantRegister dormantRegister)
         {
-            var dormantRegister1 = new DormantRegister()
-            {
 
-                DateRequested = DateTime.Now,
-                AcctNumber = dormantRegister.AcctNumber,
-                Name = dormantRegister.Name,
-                PreviousBalance = 11,
-                Particulars = dormantRegister.Particulars,
-                InitialIdEmployee = 33,
-                ReactivateIdEmployee = 269,
-                DatePerformed = DateTime.Now,
-                EntryStatusId = 2,
-                //AcctTypeId = 1,
-                CoreBranchNumber = "00",
-                IssuingDeptId = dormantRegister.IssuingDeptId,
-                AcctStatus = "D",
-                AcctType = "SAV"
-
-            };
-
+            IGeneralResult<string> result = new GeneralResult<string>();
             try
             {
-                _generalBankingRegistersContext.DormantRegisters.Add(dormantRegister1);
-                _generalBankingRegistersContext.SaveChanges();
+                VmDormantRegister vm = new VmDormantRegister();
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                var result = new VmDormantRegister()
-                {
-                    DateRequested = dormantRegister.DateRequested,
-                    AcctNumber = dormantRegister.AcctNumber,
-                    Name = dormantRegister.Name,
-                    PreviousBalance = dormantRegister.PreviousBalance,
-                    Particulars = dormantRegister.Particulars,
-                    InitialIdEmployee = dormantRegister.InitialIdEmployee,
-                    ReactivateIdEmployee = dormantRegister.ReactivateIdEmployee,
-                    DatePerformed = dormantRegister.DatePerformed,
-                    EntryStatusId = dormantRegister.EntryStatusId,
-                    CoreBranchNumber = dormantRegister.CoreBranchNumber,
-                    IssuingDeptId = dormantRegister.IssuingDeptId,
-                    AcctStatus = dormantRegister.AcctStatus,
-                    AcctType = dormantRegister.AcctType
-
-                };
-                return result;
-            }
-
-            catch (Exception ex)
-            {
-                return null;
-            }
-
-        }
-
-
-        public VmDormantRegister GetDormantRegister(VmDormantRegister dormantRegister, string acctNumber)
-        {
-            VmDormantRegister vmDormantRegister;
-            try
-            {
-                var result = _generalBankingRegistersContext.DormantRegisters.Where(x => x.AcctNumber == acctNumber).FirstOrDefault();
-
-                vmDormantRegister = new VmDormantRegister()
-                {
-                    DateRequested = result.DateRequested,
-                    RecordId = result.RecordId,
-                    AcctNumber = result.AcctNumber,
-                    Name = result.Name,
-                    PreviousBalance = result.PreviousBalance,
-                    InitialIdEmployee = result.InitialIdEmployee,
-                    ReactivateIdEmployee = result.ReactivateIdEmployee,
-                    DatePerformed = result.DatePerformed,
-                    EntryStatusId = result.EntryStatusId,
-                    CoreBranchNumber = result.CoreBranchNumber,
-                    IssuingDeptId = result.IssuingDeptId,
-                    AcctStatus = result.AcctStatus,
-                    AcctType = result.AcctType,
-
-                };
-                return vmDormantRegister;
+                cmd.CommandText = "NewDormantEntry_New";
+                cmd.Parameters.AddWithValue("@date", dormantRegister.DateRequested);
+                cmd.Parameters.AddWithValue("@acctNum", dormantRegister.AcctNumber);
+                cmd.Parameters.AddWithValue("@name", dormantRegister.Name);
+                cmd.Parameters.AddWithValue("@acctType", dormantRegister.AcctType);
+                cmd.Parameters.AddWithValue("@particulars", dormantRegister.Particulars);
+                cmd.Parameters.AddWithValue("@acctStat", dormantRegister.AcctStatus);
+                cmd.Parameters.AddWithValue("@intIDEmp", dormantRegister.InitialIdEmployee);
+                cmd.Parameters.AddWithValue("@entryStatusId", dormantRegister.EntryStatusId);
+                cmd.Parameters.AddWithValue("@coreBrNum", dormantRegister.CoreBranchNumber);
+                cmd.Parameters.AddWithValue("@deptId", dormantRegister.InitialIdEmployee);
+                conn.Open();
+                int i = cmd.ExecuteNonQuery();
+                result.Successful = true;
+                result.Message = "Data Saved Successfully.";
+                
+                conn.Close();
             }
             catch (Exception ex)
             {
-                return new VmDormantRegister();
+                result.Message = "Error saving new entry for Dormant Registry: " + ex.Message;
             }
+            return result;
         }
-
-        public VmDormantRegister UpdateDormant(string? acctNumber, int recordId)
+        public  IGeneralResult<DataTable> GetDormRegRecsByAcctNum(ref DataTable dtable, string acct, string coreBranch, int entry, string jobTitle)
         {
+            IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
+            var connString = _generalBankingRegistersContext.Database.GetDbConnection();
             try
             {
-                var result = _generalBankingRegistersContext.DormantRegisters.SingleOrDefault(x => x.RecordId == recordId);
+                DormantAllAccountVm vm = new DormantAllAccountVm();
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+                cmd.CommandType = CommandType.StoredProcedure;
+                if (entry == 1)
+                    cmd.CommandText = "FindAllIncompleteDormantEntryByDate";
+                else
+                    cmd.CommandText = "FindAllCompletedDormantEntryByDate";
+                cmd.CommandText = "FindAllCompletedDormantEntryByAcctNum";
+                cmd.Parameters.AddWithValue("@acctNum", acct);
+                cmd.Parameters.AddWithValue("@userBranch", coreBranch);
+                cmd.Parameters.AddWithValue("@title", jobTitle);
 
-                if (result != null)
+                DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
+                var dataTable = new DataTable();
+                adp.Fill(dataTable);
+                if (dataTable.Rows.Count > 0)
                 {
-                    var dormant = new VmDormantRegister()
-                    {
-                        RecordId = result.RecordId,
-                        AcctNumber = result.AcctNumber,
-                        DatePerformed = result.DatePerformed,
-                        EntryStatusId = result.EntryStatusId,
-                        ReactivateIdEmployee = result.ReactivateIdEmployee,
-                        Name = result.Name,
-                        Particulars = result.Particulars
-                    };
-
-                    return dormant;
+                    result.Successful = true;
+                    result.Message = "Data Fethed Successfully.";
+                    result.Value = dataTable;
                 }
             }
             catch (Exception ex)
             {
-                return new VmDormantRegister();
+                result.Message = "Error retrieving Dormant Registry entries by account number " + ex.Message;
             }
-
-            return new VmDormantRegister();
+            return result;
         }
 
-        public VmDormantRegister UpdateDormant(VmDormantRegister dormantRegister)
+        public IGeneralResult<DataTable> GetDormRegRecsByDate(ref DataTable dtable, DateTime? dtFrom, DateTime? dtTo, string coreBranch, int entry, string jobTitle)
         {
-            var dormantRegister1 = new DormantRegister()
-            {
-                RecordId = dormantRegister.RecordId,
-                DateRequested = DateTime.Now,
-                AcctNumber = dormantRegister.AcctNumber,
-                Name = dormantRegister.Name,
-                PreviousBalance = 11,
-                Particulars = dormantRegister.Particulars,
-                InitialIdEmployee = 33,
-                ReactivateIdEmployee = 269,
-                DatePerformed = DateTime.Now,
-                EntryStatusId = 2,
-                //AcctTypeId = 1,
-                CoreBranchNumber = "00",
-                IssuingDeptId = dormantRegister.IssuingDeptId,
-                AcctStatus = "D",
-                AcctType = "SAV",
-            };
-
+            IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
+            var connString = _generalBankingRegistersContext.Database.GetDbConnection();
             try
             {
-                _generalBankingRegistersContext.DormantRegisters.Update(dormantRegister1);
-                _generalBankingRegistersContext.SaveChanges();
+                DormantAllAccountVm vm = new DormantAllAccountVm();
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+                cmd.CommandType = CommandType.StoredProcedure;
+                if (entry == 1)
+                    cmd.CommandText = "FindIncompleteDormantEntryByDate";
+                else
+                    cmd.CommandText = "FindCompletedDormantEntryByDate";
+               
+                cmd.Parameters.AddWithValue("@dateFrom", dtFrom);
+                cmd.Parameters.AddWithValue("@dateTo", dtTo);
+                cmd.Parameters.AddWithValue("@userBranch", coreBranch);
+                cmd.Parameters.AddWithValue("@title", jobTitle);
 
-                var result = new VmDormantRegister()
+                DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
+                var dataTable = new DataTable();
+                adp.Fill(dataTable);
+                if (dataTable.Rows.Count > 0)
                 {
-                    DateRequested = DateTime.Now,
-                    AcctNumber = dormantRegister1.AcctNumber,
-                    Name = dormantRegister1.Name,
-                    PreviousBalance = 11,
-                    Particulars = dormantRegister1.Particulars,
-                    InitialIdEmployee = 33,
-                    ReactivateIdEmployee = 269,
-                    DatePerformed = DateTime.Now,
-                    EntryStatusId = 2,
-                    //AcctTypeId = 1,
-                    CoreBranchNumber = "00",
-                    IssuingDeptId = dormantRegister1.IssuingDeptId,
-                    AcctStatus = "D",
-                    AcctType = "SAV",
-                    RecordId = dormantRegister1.RecordId
-
-                };
-                return result;
-            }
-
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
-        public List<VmDormantRegister> ViewDormant(string search, int? EntryStatusId, DateTime date, int pg = 1)
-        {
-            List<VmDormantRegister> dormantList = new List<VmDormantRegister>();
-            try
-            {
-                var dormants = _generalBankingRegistersContext.DormantRegisters.Where(w => w.EntryStatusId == EntryStatusId || w.AcctNumber == search).ToList();
-
-                if (dormants != null)
-                {
-                    if (String.IsNullOrEmpty(search))
-                    {
-                        foreach (var dormant in dormants)
-                        {
-                            var vmDormantRegister = new VmDormantRegister()
-                            {
-                                RecordId = dormant.RecordId,
-                                DateRequested = dormant.DateRequested,
-                                AcctNumber = dormant.AcctNumber,
-                                Name = dormant.Name,
-                                PreviousBalance = dormant.PreviousBalance,
-                                Particulars = dormant.Particulars,
-                                InitialIdEmployee = dormant.InitialIdEmployee,
-                                ReactivateIdEmployee = dormant.ReactivateIdEmployee,
-                                DatePerformed = dormant.DatePerformed,
-                                EntryStatusId = dormant.EntryStatusId,
-                                AcctTypeId = dormant.AcctTypeId,
-                                CoreBranchNumber = dormant.CoreBranchNumber,
-                                IssuingDeptId = dormant.IssuingDeptId,
-                                AcctStatus = dormant.AcctStatus,
-                                AcctType = dormant.AcctType
-
-                            };
-                            dormantList.Add(vmDormantRegister);
-                        }
-                    }
-                    else
-                    {
-                        dormants = dormants.Where(w => w.EntryStatusId == EntryStatusId || w.AcctNumber.ToLower().Contains(search.ToLower())).ToList();
-
-                        foreach (var dormant in dormants)
-                        {
-                            var vmDormantRegister = new VmDormantRegister()
-                            {
-                                RecordId = dormant.RecordId,
-                                DateRequested = dormant.DateRequested,
-                                AcctNumber = dormant.AcctNumber,
-                                Name = dormant.Name,
-                                PreviousBalance = dormant.PreviousBalance,
-                                Particulars = dormant.Particulars,
-                                InitialIdEmployee = dormant.InitialIdEmployee,
-                                ReactivateIdEmployee = dormant.ReactivateIdEmployee,
-                                DatePerformed = dormant.DatePerformed,
-                                EntryStatusId = dormant.EntryStatusId,
-                                AcctTypeId = dormant.AcctTypeId,
-                                CoreBranchNumber = dormant.CoreBranchNumber,
-                                IssuingDeptId = dormant.IssuingDeptId,
-                                AcctStatus = dormant.AcctStatus,
-                                AcctType = dormant.AcctType
-                            };
-                            dormantList.Add(vmDormantRegister);
-                        }
-                    }
-
-                }
-
-                //return dormantList;
-            }
-
-            catch (Exception ex)
-            {
-
-            }
-
-            return dormantList;
-
-        }
-
-        public List<EntityStatusVM> GetEntityStatus()
-        {
-            List<EntityStatusVM> dormantList = new List<EntityStatusVM>();
-
-            try
-            {
-                dormantList = _generalBankingRegistersContext.EntryStatuses.Select(s => new EntityStatusVM()
-                {
-                    Id = s.EntryStatusId,
-                    Name = s.EntryStatusDescription
-                }).ToList();
-
-                return dormantList;
-            }
-
-            catch (Exception ex)
-            {
-                return new List<EntityStatusVM>();
-            }
-        }
-
-        public VmDormantRegister DeleteDormant(int recordId)
-        {
-            try
-            {
-                var result = _generalBankingRegistersContext.DormantRegisters.SingleOrDefault(x => x.RecordId == recordId);
-                _generalBankingRegistersContext.DormantRegisters.Remove(result);
-                _generalBankingRegistersContext.SaveChanges();
-
-                if (result != null)
-                {
-                    var dormant = new VmDormantRegister()
-                    {
-                        RecordId = result.RecordId,
-                        AcctNumber = result.AcctNumber,
-                        DatePerformed = result.DatePerformed,
-                        EntryStatusId = result.EntryStatusId,
-                        ReactivateIdEmployee = result.ReactivateIdEmployee,
-                        Name = result.Name,
-                        Particulars = result.Particulars
-                    };
-
-                    return dormant;
+                    result.Successful = true;
+                    result.Message = "Data Fethed Successfully.";
+                    result.Value = dataTable;
                 }
             }
             catch (Exception ex)
             {
-                return new VmDormantRegister();
+                result.Message = "Error retrieving Dormant Registry entries by account number " + ex.Message;
             }
-
-            return new VmDormantRegister();
+            return result;
         }
+        public IGeneralResult<DataTable> GetDormRegRecsByStatus(ref DataTable dtable, int status, string coreBranch, string jobTitle)
+        {
+            IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
+            var connString = _generalBankingRegistersContext.Database.GetDbConnection();
+            try
+            {
+                DormantAllAccountVm vm = new DormantAllAccountVm();
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "FindDormantEntryByStatus";
+                cmd.Parameters.AddWithValue("@status", status);
+                cmd.Parameters.AddWithValue("@userBranch", coreBranch);
+                cmd.Parameters.AddWithValue("@title", jobTitle);
 
+                DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
+                var dataTable = new DataTable();
+                adp.Fill(dataTable);
+                if (dataTable.Rows.Count > 0)
+                {
+                    result.Successful = true;
+                    result.Message = "Data Fethed Successfully.";
+                    result.Value = dataTable;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = "Error retrieving Dormant Registry entries by account number " + ex.Message;
+            }
+            return result;
+
+        }
     }
-}
+    }
+

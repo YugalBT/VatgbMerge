@@ -29,6 +29,7 @@ namespace Standing_Order_Vat_App.Controllers
         private readonly INotyfService _notyf;
         private readonly IAccountRepo accountRepo;
 
+
         public FrgnChksController(IFrgnChks frgnChks, General_Banking_RegistersContext context, SKNANBLIVEContext sKNANBLIVEContext, INotyfService notyf, IAccountRepo accountRepo)
         {
             _frgnchks = frgnChks;
