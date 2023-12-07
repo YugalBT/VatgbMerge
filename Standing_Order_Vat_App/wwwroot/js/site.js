@@ -3,3 +3,23 @@
 
 // Write your JavaScript code.
 
+
+let requestAjax = (targetUrl, ajaxType, params, callback) => {
+
+    $.ajax({
+        url: targetUrl,
+        type: ajaxType,
+        data: params,
+        beforeSend: function () {
+            /*BoxLoading(parentId);*/
+        },
+        success: callback,
+        error: function (response) {
+            console.log("error");
+        },
+        complete: function (data) {
+            /*  *//* BoxLoadingRemove(parentId);*/
+        }
+    });
+}
+

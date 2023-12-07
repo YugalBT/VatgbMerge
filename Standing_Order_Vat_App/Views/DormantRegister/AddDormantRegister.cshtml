@@ -71,8 +71,8 @@
                 <div class="row mb-3">
                     <div class="col-lg-5" style="padding-left:70px">
                         <div class="form-group">
-                            <label class="form-label" for="txtAcctNum">Account Number</label>
-                            <input asp-for="AcctNumber" id="txtName" class="form-control" />
+                            <label class="form-label" asp-for="AcctNumber">Account Number</label>
+                            <input asp-for="AcctNumber" class="form-control" oninput="GetAccountInfo()"/>
                             <span asp-validation-for="AcctNumber" class="text-danger"></span>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                     <div class="col-lg-5" style="padding-left:70px">
                         <div class="form-group">
                             <label class="form-label" for="acctType">AcountType</label>
-                            <input asp-for="AcctType" id="Type" class="form-control" />
+                            <input asp-for="AcctType" type="number" class="form-control" />
                             <span asp-validation-for="AcctType" class="text-danger"></span>
                         </div>
                     </div>
@@ -219,4 +219,15 @@
         });
 
     </script> *@
+
+    <script>
+        let GetAccountInfo = () => {
+            let AcctNumber = $("#AcctNumber").val();
+            requestAjax("/DormantRegister/GetAccountInfo", "get" AcctNumber, function (res) {
+                if (res.successful) {
+
+                }
+            })
+        }
+    </script>
 }

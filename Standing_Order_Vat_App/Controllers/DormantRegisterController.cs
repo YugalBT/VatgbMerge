@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Standing_Order_Vat_App.Common.Interfaces;
+using Standing_Order_Vat_App.Common.ViewModels;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -32,6 +33,11 @@ namespace Standing_Order_Vat_App.Controllers
                 ViewBag.record = result;
             }
             return View("AddDormantRegister");
+        }
+        public void GetAccountInfo(string AccNo)
+        {
+            Accountinfo vm = new Accountinfo();
+            var res = _dormantRegister.GetAcctCoreInfo(ref vm, AccNo);
         }
 
         //public JsonResult GetDormantRegister(VmDormantRegister vmDormantRegister, string acctNumber)
