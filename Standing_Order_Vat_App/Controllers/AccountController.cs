@@ -51,8 +51,9 @@ namespace Standing_Order_Vat_App.Controllers
 
             VATServices tes = new VATServices();
 
-            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" && !accountRepo.GetAppAccessRoles().Contains("Vat"))
+            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains("Vat"))
             {
+                notyf.Information("Access Denied.");
                 return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
             }
             else
@@ -75,8 +76,9 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult AddUser(int? userid)
         {
-            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" && !accountRepo.GetAppAccessRoles().Contains("Vat"))
+            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains("Vat"))
             {
+                notyf.Information("Access Denied.");
                 return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
             }
 
@@ -112,8 +114,9 @@ namespace Standing_Order_Vat_App.Controllers
         {
             try
             {
-                if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" && !accountRepo.GetAppAccessRoles().Contains("Vat"))
+                if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains("Vat"))
                 {
+                    notyf.Information("Access Denied.");
                     return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
                 }
                 else
@@ -181,8 +184,9 @@ namespace Standing_Order_Vat_App.Controllers
 
         public IActionResult DeleteUser(int userid)
         {
-            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" && !accountRepo.GetAppAccessRoles().Contains("Vat"))
+            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains("Vat"))
             {
+                notyf.Information("Access Denied.");
                 return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
             }
             else

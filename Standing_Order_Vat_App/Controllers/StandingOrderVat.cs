@@ -22,6 +22,8 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.ExtendedProperties;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -43,6 +45,7 @@ namespace Standing_Order_Vat_App.Controllers
         private readonly ITransactionCharges transactionCharge;
         private readonly ICustomerdetail customerdetail;
         private readonly IAccountRepo accountRepo;
+        private readonly INotyfService notyf;
         string result;
         int userId;
         string ssnum;
@@ -52,7 +55,8 @@ namespace Standing_Order_Vat_App.Controllers
 
         public StandingOrderVatController(IUserRole userRoleService, IgetSummary summaryrecordservices, IGetDDACReport getDDACReportservice,
             IGetLoanCharge getLoanChargeservice, IStopPayCharge getstopPayChargeservice, ITansChargeBranch getTansChargeBranchservise
-            , ISafekeepingPayments getSafekeepingPayments, IVATOnFraudCharge vATOnFraudCharge, ITransactionCharges transactionCharge, ICustomerdetail customerdetail, IAccountRepo accountRepo)
+            , ISafekeepingPayments getSafekeepingPayments, IVATOnFraudCharge vATOnFraudCharge, ITransactionCharges transactionCharge,
+            ICustomerdetail customerdetail, IAccountRepo accountRepo, INotyfService notyf)
         {
             this.userRoleService = userRoleService;
             this.summaryrecordservices = summaryrecordservices;
@@ -65,6 +69,7 @@ namespace Standing_Order_Vat_App.Controllers
             this.transactionCharge = transactionCharge;
             this.customerdetail = customerdetail;
             this.accountRepo = accountRepo;
+            this.notyf = notyf;
         }
         public IActionResult Index()
         {
@@ -79,7 +84,11 @@ namespace Standing_Order_Vat_App.Controllers
             var rec = userRoleService.GetUserRole(User.Identity.Name);
 
             printlog("Status: Application Start");
-
+            if (!accountRepo.GetAppAccessRoles().Contains("Vat"))
+            {
+                notyf.Information("Access Denied.");
+                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+            }
             List<Customer_VM> customers = new List<Customer_VM>();
 
             Summery_VM record = new Summery_VM();
@@ -397,6 +406,11 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> ExportListUsingEPPlus(int pn = 1, int recordPerPage = 10, int brchno = 0, int report = 0, DateTime fdate = default, DateTime tdate = default, int doctype = 0, string search = "")
         {
+            if (!accountRepo.GetAppAccessRoles().Contains("Vat"))
+            {
+                notyf.Information("Access Denied.");
+                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+            }
             Summery_VM record = new Summery_VM();
             ulong TotalRecord = 0;
             record.Branch = brchno;
