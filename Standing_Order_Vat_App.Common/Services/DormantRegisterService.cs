@@ -12,20 +12,20 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-string dtable;
 
 namespace Standing_Order_Vat_App.Common.Services
 {
     public class DormantRegisterService : IDormantRegister
     {
+        string dtable;
+
         private readonly General_Banking_RegistersContext _generalBankingRegistersContext;
         public DormantRegisterService(General_Banking_RegistersContext generalBankingRegistersContext)
         {
             _generalBankingRegistersContext = generalBankingRegistersContext;
         }
 
-    
-        public async Task<IGeneralResult<string>>AddDormantRegister(VmDormantRegister dormantRegister)
+        public async Task<IGeneralResult<string>> AddDormantRegister(VmDormantRegister dormantRegister)
         {
 
             IGeneralResult<string> result = new GeneralResult<string>();
@@ -53,7 +53,7 @@ namespace Standing_Order_Vat_App.Common.Services
                 int i = cmd.ExecuteNonQuery();
                 result.Successful = true;
                 result.Message = "Data Saved Successfully.";
-                
+
                 conn.Close();
             }
             catch (Exception ex)
@@ -62,7 +62,7 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             return result;
         }
-        public  IGeneralResult<DataTable> GetDormRegRecsByAcctNum(ref DataTable dtable, string acct, string coreBranch, int entry, string jobTitle)
+        public IGeneralResult<DataTable> GetDormRegRecsByAcctNum(ref DataTable dtable, string acct, string coreBranch, int entry, string jobTitle)
         {
             IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
             var connString = _generalBankingRegistersContext.Database.GetDbConnection();
@@ -98,7 +98,6 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             return result;
         }
-
         public IGeneralResult<DataTable> GetDormRegRecsByDate(ref DataTable dtable, DateTime? dtFrom, DateTime? dtTo, string coreBranch, int entry, string jobTitle)
         {
             IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
@@ -114,7 +113,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     cmd.CommandText = "FindIncompleteDormantEntryByDate";
                 else
                     cmd.CommandText = "FindCompletedDormantEntryByDate";
-               
+
                 cmd.Parameters.AddWithValue("@dateFrom", dtFrom);
                 cmd.Parameters.AddWithValue("@dateTo", dtTo);
                 cmd.Parameters.AddWithValue("@userBranch", coreBranch);
@@ -170,5 +169,5 @@ namespace Standing_Order_Vat_App.Common.Services
 
         }
     }
-    }
+}
 
