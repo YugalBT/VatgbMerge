@@ -4,7 +4,7 @@
 // Write your JavaScript code.
 
 
-let requestAjax = (targetUrl, ajaxType, params, callback) => {
+function requestAjax (targetUrl, ajaxType, params, callback) {
 
     $.ajax({
         url: targetUrl,
@@ -22,4 +22,20 @@ let requestAjax = (targetUrl, ajaxType, params, callback) => {
         }
     });
 }
-
+function GetAccountInfo() {
+    let AcctNumber = $("#AcctNumber").val();
+    requestAjax("/DormantRegister/GetAccountInfo", "get", { AccNo: AcctNumber }, function (res) {
+        if (res.successful) {
+            $("#Name").val(res.value.name);
+            $("#AcctType").val(res.value.accountType);
+            $("#AcctStatus").val(res.value.accountStatus);
+            $("#IssuingDeptId").val(parseInt(res.value.branchNumber));
+        } else {
+            alert(res.message);
+            $("#Name").val("");
+            $("#AcctType").val("");
+            $("#AcctStatus").val("");
+            $("#IssuingDeptId").val("");
+        }
+    })
+}

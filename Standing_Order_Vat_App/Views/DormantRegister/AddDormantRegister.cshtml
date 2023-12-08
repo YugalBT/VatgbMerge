@@ -4,22 +4,7 @@
 <link href="~/css/link.css" rel="stylesheet" />
 
 <style>
-    .custom_navbars_link {
-        background-color: #fae9d9;
-    }
-
-        .custom_navbars_link .navbar-brand {
-            color: #000;
-        }
-
-        .custom_navbars_link .navbar-nav .nav-link {
-            color: #000;
-            font-size: 14px
-        }
-
-        .custom_navbars_link ul .nav-link img {
-            max-width: 40px;
-        }
+    
 </style>
 
 <div class="custom_navbars_link">
@@ -71,39 +56,39 @@
                 <div class="row mb-3">
                     <div class="col-lg-5" style="padding-left:70px">
                         <div class="form-group">
-                            <label class="form-label" asp-for="AcctNumber">Account Number</label>
-                            <input asp-for="AcctNumber" class="form-control" oninput="GetAccountInfo()"/>
+                            <label class="form-label" asp-for="AcctNumber"></label>
+                            <input asp-for="AcctNumber" type="number" class="form-control" oninput="GetAccountInfo()"/>
                             <span asp-validation-for="AcctNumber" class="text-danger"></span>
                         </div>
                     </div>
                     <br />
                     <div class="col-lg-5">
                         <div class="form-group">
-                            <label class="form-label" for="acctName">Name</label>
-                            <input asp-for="Name" id="Name" class="form-control" />
+                            <label class="form-label" asp-for="Name"></label>
+                            <input asp-for="Name"  class="form-control" disabled/>
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                     </div>
                     <br />
                     <div class="col-lg-5" style="padding-left:70px">
                         <div class="form-group">
-                            <label class="form-label" for="acctType">AcountType</label>
-                            <input asp-for="AcctType" type="number" class="form-control" />
+                            <label class="form-label" asp-for="AcctType"></label>
+                            <input asp-for="AcctType" class="form-control" disabled />
                             <span asp-validation-for="AcctType" class="text-danger"></span>
                         </div>
                     </div>
                     <br />
                     <div class="col-lg-5">
                         <div class="form-group">
-                            <label class="form-label" for="AccountOriginalStatus">Account Original Status</label>
-                            <input asp-for="AcctStatus" id="Status" class="form-control" />
+                            <label class="form-label" asp-for="AcctStatus"></label>
+                            <input asp-for="AcctStatus" class="form-control" disabled />
                             <span asp-validation-for="AcctStatus" class="text-danger"></span>
                         </div>
                     </div>
                     <br />
                     <div class="col-lg-5" style="padding-left:70px">
                         <div class="form-group">
-                            <label class="form-label" for="DateRequested">Entry Date</label>
+                            <label class="form-label" asp-for="DateRequested"></label>
                             <input type="date" asp-for="DateRequested" class="form-control" />
                             <span asp-validation-for="DateRequested" class="text-danger"></span>
                         </div>
@@ -111,8 +96,8 @@
                     <br />
                     <div class="col-lg-5" style="padding-left:8px">
                         <div class="form-group">
-                            <label class="form-label" for="IssuingDepartment">Issuing Department</label>
-                            <select asp-for="IssuingDeptId" class="form-control">
+                            <label class="form-label" asp-for="IssuingDeptId"></label>
+                            <select asp-for="IssuingDeptId" class="form-control" disabled>
                                 <option selected>Select Department</option>
                                 <option value="1">Accounts</option>
                                 <option value="2">Administration</option>
@@ -163,7 +148,7 @@
                     <br />
                     <div class="col-lg-5" style="padding-left:70px">
                         <div class="form-group">
-                            <label class="form-label" for="Particulars">Particulars</label>
+                            <label class="form-label" asp-for="Particulars"></label>
                             <textarea asp-for="Particulars" class="form-control"></textarea>
                             <span asp-validation-for="Particulars" class="text-danger"></span>
                         </div>
@@ -220,14 +205,4 @@
 
     </script> *@
 
-    <script>
-        let GetAccountInfo = () => {
-            let AcctNumber = $("#AcctNumber").val();
-            requestAjax("/DormantRegister/GetAccountInfo", "get" AcctNumber, function (res) {
-                if (res.successful) {
-
-                }
-            })
-        }
-    </script>
 }

@@ -46,7 +46,22 @@ body {
 .custom_navbars_link ul .nav-link img {
     max-width: 40px;
 }
+.custom_navbars_link {
+    background-color: #fae9d9;
+}
 
+    .custom_navbars_link .navbar-brand {
+        color: #000;
+    }
+
+    .custom_navbars_link .navbar-nav .nav-link {
+        color: #000;
+        font-size: 14px
+    }
+
+    .custom_navbars_link ul .nav-link img {
+        max-width: 40px;
+    }
 .customfooter {
     background-color: #002c36;
     text-align: center;
