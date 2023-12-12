@@ -221,9 +221,15 @@ body {
 
 .navbar-light .navbar-nav .show > .nav-link, .navbar-light .navbar-nav .nav-link.active {
     background-color: #ffdbb8;
+    font-weight: 600;
     font-size: 18px;
 }
 .custom_navbars_link .nav-link.active {
     background-color: #ffdbb8 !important;
-    font-size:18px;
+    font-weight: 700;
+    font-size: 18px;
+}
+.side_bar_custom .active{
+    font-weight:800;
+    font-size:17px;
 }

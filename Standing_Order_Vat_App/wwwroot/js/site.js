@@ -5,8 +5,17 @@
 function highlightActiveMenuItem() {
 
     $("a[class='nav-link']").removeClass("active");
-    //var cparr = ["/Client/AddOrEditReferral", "/Client/AddNotes", "/Client/AddOrEditClientEligibility", "/Client/SSP"]
     var url = window.location.pathname;
+    var gbLink = ["/DormantRegister/Index", "/FrgnChks/Index"]
+    if (gbLink.indexOf(url) > -1 || url.includes("DormantRegister") || url.includes("FrgnChks")) {
+        $('a[href="/GBRegister/Index"]').addClass('active');
+    }
+    if (url.includes("DormantRegister")) {
+        $('a[href="/DormantRegister/Index"]').addClass('active');
+    }
+    if (url.includes("FrgnChks")) {
+        $('a[href="/FrgnChks/Index"]').addClass('active');
+    }
     $('a[href="' + url + '"]').addClass('active');
 }
 
