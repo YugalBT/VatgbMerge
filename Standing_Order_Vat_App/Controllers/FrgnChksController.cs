@@ -17,22 +17,26 @@ using DocumentFormat.OpenXml.Drawing.Charts;
 using VATCustomServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using static Standing_Order_Vat_App.MvcHelper.Enumration;
+using Standing_Order_Vat_App.Common.Services;
 
 namespace Standing_Order_Vat_App.Controllers
 {
-    // [Authorize(Roles = "Foreign Check")]
+    // [Authorize(Roles = ApplicationAccess.Foreign_Check.GetEnumDisplayName())]
     public class FrgnChksController : Controller
     {
         private readonly IFrgnChks _frgnchks;
+        private readonly IUserRole userRoleService;
         private readonly General_Banking_RegistersContext _context;
         private readonly SKNANBLIVEContext _sKNANBLIVEContext;
         private readonly INotyfService _notyf;
         private readonly IAccountRepo accountRepo;
 
 
-        public FrgnChksController(IFrgnChks frgnChks, General_Banking_RegistersContext context, SKNANBLIVEContext sKNANBLIVEContext, INotyfService notyf, IAccountRepo accountRepo)
+        public FrgnChksController(IFrgnChks frgnChks, IUserRole userRoleService, General_Banking_RegistersContext context, SKNANBLIVEContext sKNANBLIVEContext, INotyfService notyf, IAccountRepo accountRepo)
         {
             _frgnchks = frgnChks;
+            this.userRoleService = userRoleService;
             _context = context;
             _sKNANBLIVEContext = sKNANBLIVEContext;
             _notyf = notyf;
@@ -41,25 +45,25 @@ namespace Standing_Order_Vat_App.Controllers
 
         public IActionResult Index()
         {
-            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            userRoleService.GetUserRole(User.Identity.Name);
+
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
-                _notyf.Information("Access Denied.");
-                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+                return RedirectToAction("AccessDenied", "Home");
             }
             var rec = _frgnchks.GetBanks();
             ViewBag.BankName = rec;
             return View();
         }
 
-
-
         [HttpGet]
         public IActionResult AddFrgnCheckAsync()
         {
-            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            userRoleService.GetUserRole(User.Identity.Name);
+
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
-                _notyf.Information("Access Denied.");
-                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+                return RedirectToAction("AccessDenied", "Home");
             }
             ForeignCheckVm vm = new ForeignCheckVm();
             vm.BanksList = _frgnchks.GetBanks();
@@ -69,10 +73,11 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IActionResult> AddFrgnCheckAsync(string actionbtn, ForeignCheckVm foreignChecksDetail)
         {
-            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            userRoleService.GetUserRole(User.Identity.Name);
+
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
-                _notyf.Information("Access Denied.");
-                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+                return RedirectToAction("AccessDenied", "Home");
             }
             try
             {
@@ -151,23 +156,6 @@ namespace Standing_Order_Vat_App.Controllers
 
         }
 
-
-
-
-
-        public JsonResult Status()
-        {
-            var status = _context.EntryStatuses.ToList();
-            return Json(status);
-        }
-
-        public JsonResult Banks()
-        {
-            var banks = _sKNANBLIVEContext.Banks.ToList();
-            return Json(banks);
-        }
-
-
         [HttpGet]
         public JsonResult FrgncheckList()
         {
@@ -177,10 +165,11 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> ViewAsync(FrgnViewCheckVm res)
         {
-            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            userRoleService.GetUserRole(User.Identity.Name);
+
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
-                _notyf.Information("Access Denied.");
-                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+                return RedirectToAction("AccessDenied", "Home");
             }
             //FrgnViewCheckVm res = new FrgnViewCheckVm();
             res.entryStatusVM = new List<ForeignCheckStatusVM>();
@@ -205,10 +194,11 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> UpdateFrgn()
         {
-            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            userRoleService.GetUserRole(User.Identity.Name);
+
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
-                _notyf.Information("Access Denied.");
-                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+                return RedirectToAction("AccessDenied", "Home");
             }
             FrgnViewCheckVm res = new FrgnViewCheckVm();
             res.entryStatusVM = new List<ForeignCheckStatusVM>();
@@ -228,10 +218,11 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateFrgn(FrgnViewCheckVm res)
         {
-            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            userRoleService.GetUserRole(User.Identity.Name);
+
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
-                _notyf.Information("Access Denied.");
-                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+                return RedirectToAction("AccessDenied", "Home");
             }
             // FrgnViewCheckVm res = new FrgnViewCheckVm();
             res.entryStatusVM = new List<ForeignCheckStatusVM>();
@@ -258,9 +249,10 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IGeneralResult<string>> DeletefrgnCheck(int batchid)
         {
+            userRoleService.GetUserRole(User.Identity.Name);
 
             IGeneralResult<string> res = new GeneralResult<string>();
-            if (!accountRepo.GetAppAccessRoles().Contains("Foreign Check"))
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
                 res.Message = "Access Denied";
                 return res;
@@ -277,6 +269,18 @@ namespace Standing_Order_Vat_App.Controllers
             }
             return res;
         }
+        public JsonResult Status()
+        {
+            var status = _context.EntryStatuses.ToList();
+            return Json(status);
+        }
+
+        public JsonResult Banks()
+        {
+            var banks = _sKNANBLIVEContext.Banks.ToList();
+            return Json(banks);
+        }
+
         private List<frgncheckListIncomplete> ListIncomplete(FrgnViewCheckVm res)
         {
 

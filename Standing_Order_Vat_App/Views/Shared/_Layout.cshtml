@@ -1,4 +1,5 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+﻿@using static Standing_Order_Vat_App.MvcHelper.Enumration
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     var ucount = HttpContextAccessor.HttpContext.Session.GetString("ucount");
     var urole = HttpContextAccessor.HttpContext.Session.GetString("urole");
@@ -15,56 +16,55 @@
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
-    @* <link rel="stylesheet" href="~/css/site.css" />*@
     <link rel="stylesheet" href="~/css/CustomStyle.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Standing_Order_Vat_App.styles.css" asp-append-version="true" />
     <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
-    @*<link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />*@
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/bootstrap-multiselect.css" />
     <link rel="stylesheet" href="~/css/icofont.min.css">
-    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true">
-    @*  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">*@
     <link rel="stylesheet" href="~/lib/jquery-toast-plugin/jquery.toast.min.css">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/themes/smoothness/jquery-ui.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true">
+    <link href="~/css/link.css" rel="stylesheet" asp-append-version="true" />
 
 
+    <style>
+        /* .clrclass {
+            background-color: #3e8b8b;
+        } */
+
+        .notyf {
+            justify-content: space-around !important;
+        }
+    </style>
 
 </head>
-<style>
-    .clrclass {
-        background - color: #3e8b8b;
-    }
 
-    .notyf {
-        justify-content: space-around !important;
-    }
-</style>
 <body style="background:#6a4e4fc9; width:100%; border-top:4px solid #897374">
     <div class="main" style="max-width:1143px; width:100%; margin:0 auto;position: relative;">
         <header>
             <div style="width: 100%;padding: 2px;background: #fff;">
                 <img src="~/image/vat.jpg" style="width:100%;border: 1px solid #897374;border-bottom: 4px solid #897374;" />
             </div>
-            <nav class="navbar navbarset navbar-expand-lg navbar-light bg-light align-items-center ps-2" style="height:26px;border: 1px solid #897374;">
+            <nav class="navbar navbarset navbar-expand-lg navbar-light bg-light align-items-center">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0" style="height: 28px;">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                         @{
-                            if (AppAccess != null &&  AppAccess.Contains("Vat"))
+                            if (AppAccess != null && AppAccess.Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
                             {
-                                <li class="nav-item1 active clrclass" style="border: 1px solid #d3c621;padding: 0 4px;font-size: 14px;height: 26px;">
-                                    <a class="navbar-brand" asp-area="" asp-controller="StandingOrderVat" asp-action="TotalSummaryReport" style="line-height:30px;font-size: 14px;">
+                                <li class="nav-item1  clrclass">
+                                    <a class="nav-link" asp-area="" asp-controller="StandingOrderVat" asp-action="TotalSummaryReport">
                                         Total Summary Report
                                     </a>
                                 </li>
-                                <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="CustomerSummary" asp-action="CustomerSummaryReport" style="line-height:30px;font-size: 14px;padding: 1px 13px;">
+                                <li class="nav-item2">
+                                    <a class="nav-link " asp-area="" asp-controller="CustomerSummary" asp-action="CustomerSummaryReport">
                                         Customer Summary Report
                                     </a>
                                 </li>
@@ -74,28 +74,28 @@
                                 {
                                     if (urole.Contains("Admin"))
                                     {
-                                        <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ManageUser" style="line-height:30px;font-size: 14px;padding: 1px 13px;">
+                                        <li class="nav-item2 ">
+                                            <a class="nav-link " asp-area="" asp-controller="Account" asp-action="ManageUser">
                                                 Manage User
                                             </a>
                                         </li>
-                                        <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="CustomServiceVAT" asp-action="InsertRecord" style="line-height:30px;font-size: 14px;padding: 1px 13px;">
+                                        <li class="nav-item2 ">
+                                            <a class="nav-link " asp-area="" asp-controller="CustomServiceVAT" asp-action="InsertRecord">
                                                 Services
                                             </a>
                                         </li>
-                                        <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="OnlineBanking" asp-action="Index" style="line-height:30px;font-size: 14px;padding: 1px 13px;">
+                                        <li class="nav-item2 ">
+                                            <a class="nav-link " asp-area="" asp-controller="OnlineBanking" asp-action="Index">
                                                 E-Banking
                                             </a>
                                         </li>
                                     }
                                 }
                             }
-                            if (AppAccess != null && AppAccess.Contains("Foreign Check"))
+                            if (AppAccess != null && AppAccess.Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
                             {
-                                <li class="nav-item2 active" style="padding: 0 4px;font-size: 14px;height:26px;">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="GBRegister" asp-action="Index" style="line-height:30px;font-size: 14px;padding: 1px 13px;">GB Register</a>
+                                <li class="nav-item2 ">
+                                    <a class="nav-link " asp-area="" asp-controller="GBRegister" asp-action="Index">GB Register</a>
                                 </li>
                             }
                         }
@@ -104,7 +104,7 @@
             </nav>
 
         </header>
-        <div class="container customcontainer" style="background:#fff;min-height: 820px;">
+        <div class="container customcontainer p-0" style="background:#fff;min-height: 820px;">
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
@@ -131,14 +131,17 @@
     <script src="~/js/popper.min.js" asp-append-version="true"></script>
     <script src="~/js/custom.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    <script type="text/javascript">
+        $(document).ready(function () {
+            highlightActiveMenuItem();
+        });
+        
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
 
 
 
-<link href="~/css/custom.css" rel="stylesheet" />
-<script type="text/javascript">
 
-</script>
+

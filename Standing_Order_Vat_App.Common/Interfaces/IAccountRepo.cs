@@ -10,34 +10,27 @@ namespace Standing_Order_Vat_App.Common.Interfaces
 {
     public interface IAccountRepo
     {
-        public int GetUserinfo(ref string result, ref GetCurrentUserInfoVm userinfo);
-        public string GetCurrentUserPersonalInfo(ref GetCurrentUserInfoVm userInfo);
-        public string GetSocSecNum(int empId);
-        public string GetUserId();
-
-        public string GetLastName();
-
-        public string GetFirstName();
-
-        public string GetDepartment();
-
-        public string JobTitle();
-
-        public string GetEmpCode();
-
-        public string GetEmpId();
-
-        public string GetBranchID();
-
-        public string GetBranchName();
-
-        public string GetCoreId();
-
-        public string GetSSnum();
-        public string GetAppAccessRoles();
-
-        public string Geturole();
-        public string Getucount();
+        int GetUserinfo(ref string result, ref GetCurrentUserInfoVm userinfo);
+        void SetUserinfoInSession();
+        string GetCurrentUserPersonalInfo(ref GetCurrentUserInfoVm userInfo);
+        string GetSocSecNum(int empId);
+        string GetUserId();
+        string GetLastName();
+        string GetFirstName();
+        string GetDepartment();
+        string GetJobTitle();
+        string GetEmpCode();
+        string GetEmpId();
+        string GetBranchID();
+        string GetBranchName();
+        string GetCoreId();
+        string GetSSnum();
+        string GetAppAccessRoles();
+        string Geturole();
+        string Getucount();
+        string Getuname();
+        string Getuid();
+        void RemoveSessionData();
 
     }
 }

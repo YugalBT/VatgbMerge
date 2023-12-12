@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Standing_Order_Vat_App.Common.Interfaces;
 using Standing_Order_Vat_App.Models;
 using System.Diagnostics;
 
@@ -7,10 +8,12 @@ namespace Standing_Order_Vat_App.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IUserRole userRoleService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,IUserRole userRoleService)
         {
             _logger = logger;
+            this.userRoleService = userRoleService;
         }
 
         public IActionResult Index()
@@ -27,6 +30,12 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public IActionResult AccessDenied()
+        {
+            userRoleService.GetUserRole(User.Identity.Name);
+
+            return View("AccessDenied");
         }
     }
 }

@@ -23,13 +23,14 @@ namespace Standing_Order_Vat_App.Common.Services
         //string dtable;
 
         private readonly General_Banking_RegistersContext _generalBankingRegistersContext;
+        private readonly IAccountRepo accountRepo;
         string genBnkRegConStr;
 
 
-        public DormantRegisterService(General_Banking_RegistersContext generalBankingRegistersContext )
+        public DormantRegisterService(General_Banking_RegistersContext generalBankingRegistersContext, IAccountRepo accountRepo )
         {
             _generalBankingRegistersContext = generalBankingRegistersContext;
-
+            this.accountRepo = accountRepo;
             genBnkRegConStr = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
         }
 
@@ -53,12 +54,12 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.Parameters.AddWithValue("@acctType", dormantRegister.AcctType);
                 cmd.Parameters.AddWithValue("@particulars", dormantRegister.Particulars);
                 cmd.Parameters.AddWithValue("@acctStat", dormantRegister.AcctStatus);
-                cmd.Parameters.AddWithValue("@intIDEmp", dormantRegister.InitialIdEmployee);
-                cmd.Parameters.AddWithValue("@entryStatusId", dormantRegister.EntryStatusId);
+                cmd.Parameters.AddWithValue("@intIDEmp", accountRepo.GetEmpId());
+                cmd.Parameters.AddWithValue("@entryStatusId", 1);
                 cmd.Parameters.AddWithValue("@coreBrNum", dormantRegister.CoreBranchNumber);
-                cmd.Parameters.AddWithValue("@deptId", dormantRegister.InitialIdEmployee);
+                cmd.Parameters.AddWithValue("@deptId", dormantRegister.IssuingDeptId);
                 conn.Open();
-                int i = cmd.ExecuteNonQuery();
+                string i = (cmd.ExecuteScalar()).ToString();
                 result.Successful = true;
                 result.Message = "Data Saved Successfully.";
 

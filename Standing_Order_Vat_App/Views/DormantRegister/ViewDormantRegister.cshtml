@@ -1,18 +1,12 @@
-﻿@using GbRegister.Core.ViewModel;
-@*@model IEnumerable<GbRegister.Core.ViewModel.VmDormantRegister>*@
-@model GbRegister.Core.ViewModel.VmDormantRegisterData
-<link href="~/css/link.css" rel="stylesheet" />
+﻿@model VmDormantRegisterData
 @{
+    await Html.RenderPartialAsync("GBRegistersMenu");
     var search = ViewBag.search;
 }
 <div class="d-flex">
-    <div id="sidebar-wrapper" class="side_bar_custom">
-        <div class="mt-4">
-        <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnNewSection" value="New" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnNewSection" class="btn-no-style" asp-action="AddDormantRegister">New</a>
-        <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnUpdateSection" value="Update" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnUpdateSection" class="btn-no-style" asp-action="UpdateDormantRegister">Update</a>
-        <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnViewSection" value="View" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnViewSection" class="btn-no-style" asp-action="ViewDormantRegister">View</a>
-        </div>
-    </div>
+    @{
+        await Html.RenderPartialAsync("_DormantLeftMenu");
+    }
     <div class="right_side_content bg-lightorangecolor">
         <br />
         <h2 style="text-align:center;color:#b46000">View Dormant Register Entries</h2>

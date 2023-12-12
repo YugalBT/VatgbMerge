@@ -30,22 +30,8 @@ body {
     justify-content: center;
 }
 
-.custom_navbars_link {
-    background-color: #002c36;
-}
 
-.custom_navbars_link .navbar-brand {
-    color: #ffffff;
-}
 
-.custom_navbars_link .navbar-nav .nav-link {
-    color: #ffffff;
-    font-size: 14px
-}
-
-.custom_navbars_link ul .nav-link img {
-    max-width: 40px;
-}
 .custom_navbars_link {
     background-color: #fae9d9;
 }
@@ -56,7 +42,7 @@ body {
 
     .custom_navbars_link .navbar-nav .nav-link {
         color: #000;
-        font-size: 14px
+        font-size: 16px
     }
 
     .custom_navbars_link ul .nav-link img {
@@ -221,3 +207,23 @@ body {
         position: absolute;
         right: 10px;
     }
+
+.navbarset .nav-link {
+    font-size: 16px;
+    color: #000000 !important;
+    padding: 10px 16px !important;
+}
+
+.navbarset {
+    background-color: #ffeede !important;
+    padding: 0;
+}
+
+.navbar-light .navbar-nav .show > .nav-link, .navbar-light .navbar-nav .nav-link.active {
+    background-color: #ffdbb8;
+    font-size: 18px;
+}
+.custom_navbars_link .nav-link.active {
+    background-color: #ffdbb8 !important;
+    font-size:18px;
+}

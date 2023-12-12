@@ -10,7 +10,7 @@ namespace GbRegister.Core.ViewModel
 {
     public class VmDormantRegister
     {
-        //public int RecordId { get; set; }
+        public int RecordId { get; set; }
 
         [Required (ErrorMessage="Date Requested is required"), Display(Name = "Date Requestd")]
         public DateTime? DateRequested { get; set; }
@@ -35,7 +35,7 @@ namespace GbRegister.Core.ViewModel
 
         //public int? AcctTypeId { get; set; }
 
-        //public string? CoreBranchNumber { get; set; }
+        public string? CoreBranchNumber { get; set; }
         [Display(Name = "Issuing Department")]
         public int? IssuingDeptId { get; set; }
 

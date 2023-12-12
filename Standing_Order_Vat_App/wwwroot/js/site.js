@@ -2,7 +2,13 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+function highlightActiveMenuItem() {
 
+    $("a[class='nav-link']").removeClass("active");
+    //var cparr = ["/Client/AddOrEditReferral", "/Client/AddNotes", "/Client/AddOrEditClientEligibility", "/Client/SSP"]
+    var url = window.location.pathname;
+    $('a[href="' + url + '"]').addClass('active');
+}
 
 function requestAjax (targetUrl, ajaxType, params, callback) {
 
@@ -26,16 +32,16 @@ function GetAccountInfo() {
     let AcctNumber = $("#AcctNumber").val();
     requestAjax("/DormantRegister/GetAccountInfo", "get", { AccNo: AcctNumber }, function (res) {
         if (res.successful) {
-            $("#Name").val(res.value.name);
-            $("#AcctType").val(res.value.accountType);
-            $("#AcctStatus").val(res.value.accountStatus);
-            $("#IssuingDeptId").val(parseInt(res.value.branchNumber));
+            $("[id='Name']").val(res.value.name);
+            $("[id='AcctType']").val(res.value.accountType);
+            $("[id='AcctStatus']").val(res.value.accountStatus);
+            $("[id='CoreBranchNumber']").val(res.value.branchNumber);
         } else {
             alert(res.message);
-            $("#Name").val("");
-            $("#AcctType").val("");
-            $("#AcctStatus").val("");
-            $("#IssuingDeptId").val("");
+            $("[id='Name']").val("");
+            $("[id='AcctType']").val("");
+            $("[id='AcctStatus']").val("");
+            $("[id='CoreBranchNumber']").val("");
         }
     })
 }

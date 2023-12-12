@@ -1,39 +1,68 @@
-﻿using GbRegister.Core.ViewModel;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using GbRegister.Core.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Standing_Order_Vat_App.Common.GeneralResult;
 using Standing_Order_Vat_App.Common.Interfaces;
+using Standing_Order_Vat_App.Common.Services;
 using Standing_Order_Vat_App.Common.ViewModels;
+using static Standing_Order_Vat_App.MvcHelper.Enumration;
 
 namespace Standing_Order_Vat_App.Controllers
 {
     public class DormantRegisterController : Controller
     {
         private readonly IDormantRegister _dormantRegister;
-        public DormantRegisterController(Common.Interfaces.IDormantRegister dormantRegister)
+        private readonly IAccountRepo accountRepo;
+        private readonly IUserRole userRoleService;
+        private readonly INotyfService notyf;
+
+        public DormantRegisterController(IDormantRegister dormantRegister,IAccountRepo accountRepo, IUserRole userRoleService, INotyfService notyf)
         {
             _dormantRegister = dormantRegister;
+            this.accountRepo = accountRepo;
+            this.userRoleService = userRoleService;
+            this.notyf = notyf;
         }
         public IActionResult Index()
         {
+            userRoleService.GetUserRole(User.Identity.Name);
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
             return View();
         }
 
         [HttpGet]
         public IActionResult AddDormantRegister()
         {
+            userRoleService.GetUserRole(User.Identity.Name);
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
             return View();
         }
 
         [HttpPost]
         public IActionResult AddDormantRegister(VmDormantRegister dormantRegister)
         {
-            if (ModelState.IsValid)
+            userRoleService.GetUserRole(User.Identity.Name);
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
-                var result = _dormantRegister.AddDormantRegister(dormantRegister);
-                ViewBag.record = result;
+                return RedirectToAction("AccessDenied", "Home");
             }
-            return View("AddDormantRegister");
+            var result = _dormantRegister.AddDormantRegister(dormantRegister);
+            if (result.Successful)
+            {
+                notyf.Success(result.Message);
+            }
+            else
+            {
+                notyf.Warning(result.Message);
+            }
+            return RedirectToAction("AddDormantRegister");
         }
         public IGeneralResult<Accountinfo> GetAccountInfo(string AccNo)
         {

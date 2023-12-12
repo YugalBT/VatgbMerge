@@ -10,6 +10,7 @@ using Standing_Order_Vat_App.DAL.Directory_DB;
 using Standing_Order_Vat_App.Models;
 using VATCustomServices;
 using X.PagedList;
+using static Standing_Order_Vat_App.MvcHelper.Enumration;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -31,7 +32,7 @@ namespace Standing_Order_Vat_App.Controllers
         const string Sessionurole = "urole";
         const string Sessionusercount = "ucount";
 
-        public AccountController(IUserRole userRoleService,IAccountRepo accountRepo, IUsers userRepo, IApplicationRolesRepo applicationAccessRoleRepo, IApplicationUserRolesRepo applicationUserAccessRoles,
+        public AccountController(IUserRole userRoleService, IAccountRepo accountRepo, IUsers userRepo, IApplicationRolesRepo applicationAccessRoleRepo, IApplicationUserRolesRepo applicationUserAccessRoles,
             IUserRole userRole, IApplication applicationRepo, IApplicationUserRole applicationUserRole, INotyfService notyf, IUserPermission userPermission)
         {
             this.applicationUserRoleRepo = applicationUserRole;
@@ -50,36 +51,36 @@ namespace Standing_Order_Vat_App.Controllers
         {
 
             VATServices tes = new VATServices();
+            userRoleService.GetUserRole(User.Identity.Name);
 
-            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains("Vat"))
+            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {
-                notyf.Information("Access Denied.");
-                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+                return RedirectToAction("AccessDenied", "Home");
+            }
+
+            ViewBag.search = search;
+            if (String.IsNullOrEmpty(search))
+            {
+                IPagedList<Users_VM> users = userRepo.GetAllUser().OrderByDescending(x => x.UserId).ToPagedList(page ?? 1, 10);
+                return View(users);
             }
             else
             {
-                ViewBag.search = search;
-                if (String.IsNullOrEmpty(search))
-                {
-                    IPagedList<Users_VM> users = userRepo.GetAllUser().OrderByDescending(x=>x.UserId).ToPagedList(page ?? 1, 10);
-                    return View(users);
-                }
-                else
-                {
-                    IPagedList<Users_VM> users = userRepo.GetAllUser().Where(x => x.UserName.ToLower().Contains(search.ToLower())).ToPagedList(page ?? 1, 10);
-                    return View(users);
-                }
+                IPagedList<Users_VM> users = userRepo.GetAllUser().Where(x => x.UserName.ToLower().Contains(search.ToLower())).ToPagedList(page ?? 1, 10);
+                return View(users);
             }
+
         }
 
 
         [HttpGet]
         public IActionResult AddUser(int? userid)
         {
-            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains("Vat"))
+            userRoleService.GetUserRole(User.Identity.Name);
+
+            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {
-                notyf.Information("Access Denied.");
-                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+                return RedirectToAction("AccessDenied", "Home");
             }
 
             List<Role_VM> vm = new List<Role_VM>();
@@ -114,65 +115,65 @@ namespace Standing_Order_Vat_App.Controllers
         {
             try
             {
-                if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains("Vat"))
-                {
-                    notyf.Information("Access Denied.");
-                    return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
-                }
-                else
-                {
-                    List<Role_VM> vm = new List<Role_VM>();
-                    vm = userRoleRepo.GetAllUserRole().Select(s => new Role_VM
-                    {
-                        RoleID = s.RoleId,
-                        RoleName = s.RoleName
-                    }).ToList();
-                    var applicationAccessRoles = applicationRoleRepo.GetAll().Result.Where(x => x.IsActive == true).Select(y => new ApplicationAccessRoles
-                    {
-                        Id = y.RoleId,
-                        Name = y.RoleName
-                    }).ToList();
-                    model.UserRoles = vm;
-                    if (ModelState.IsValid)
-                    {
+                userRoleService.GetUserRole(User.Identity.Name);
 
-                        var result = userRepo.CheckDuplicateRecord(model);
-                        if (!result.Successful)
+                if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+                {
+                    return RedirectToAction("AccessDenied", "Home");
+                }
+
+                List<Role_VM> vm = new List<Role_VM>();
+                vm = userRoleRepo.GetAllUserRole().Select(s => new Role_VM
+                {
+                    RoleID = s.RoleId,
+                    RoleName = s.RoleName
+                }).ToList();
+                var applicationAccessRoles = applicationRoleRepo.GetAll().Result.Where(x => x.IsActive == true).Select(y => new ApplicationAccessRoles
+                {
+                    Id = y.RoleId,
+                    Name = y.RoleName
+                }).ToList();
+                model.UserRoles = vm;
+                if (ModelState.IsValid)
+                {
+
+                    var result = userRepo.CheckDuplicateRecord(model);
+                    if (!result.Successful)
+                    {
+                        var res = model.userId > 0 ? userRepo.UpdateUserData(model) : userRepo.AddUserData(model);
+                        if (res.Successful)
                         {
-                            var res = model.userId > 0 ? userRepo.UpdateUserData(model) : userRepo.AddUserData(model);
-                            if (res.Successful)
+                            if (model.userId > 0)
                             {
-                                if (model.userId > 0)
-                                {
-                                    notyf.Success("User updated successfully");
-                                }
-                                else
-                                {
-                                    notyf.Success("User created successfully");
-                                };
-                                return RedirectToAction("ManageUser");
+                                notyf.Success("User updated successfully");
                             }
                             else
                             {
-                                notyf.Error("Something went wrong.");
-                                model.UserRoles = vm;
-                                return View(model);
-                            }
+                                notyf.Success("User created successfully");
+                            };
+                            return RedirectToAction("ManageUser");
                         }
                         else
                         {
-                            notyf.Error("User is already exist");
+                            notyf.Error("Something went wrong.");
                             model.UserRoles = vm;
                             return View(model);
                         }
                     }
                     else
                     {
-                        notyf.Error("Something went wrong.");
+                        notyf.Error("User is already exist");
                         model.UserRoles = vm;
                         return View(model);
                     }
                 }
+                else
+                {
+                    notyf.Error("Something went wrong.");
+                    model.UserRoles = vm;
+                    return View(model);
+                }
+                //}
             }
             catch (Exception ex)
             {
@@ -184,10 +185,11 @@ namespace Standing_Order_Vat_App.Controllers
 
         public IActionResult DeleteUser(int userid)
         {
-            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains("Vat"))
+            userRoleService.GetUserRole(User.Identity.Name);
+
+            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {
-                notyf.Information("Access Denied.");
-                return RedirectToAction("TotalSummaryReport", "StandingOrderVat");
+                return RedirectToAction("AccessDenied", "Home");
             }
             else
             {
@@ -206,6 +208,6 @@ namespace Standing_Order_Vat_App.Controllers
                 }
             }
         }
-        
+
     }
 }
