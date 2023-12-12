@@ -8,36 +8,36 @@ using System.Threading.Tasks;
 
 namespace Standing_Order_Vat_App.Common.Interfaces
 {
-    public interface IAccountRepo
+   public  interface IAccountRepo
     {
-        public int GetUserinfo(ref string result, ref GetCurrentUserInfoVm userinfo);
-        public string GetCurrentUserPersonalInfo(ref GetCurrentUserInfoVm userInfo);
-        public string GetSocSecNum(int empId);
-        public string GetUserId();
+         int GetUserinfo(ref string result, ref GetCurrentUserInfoVm userinfo);
+         string GetCurrentUserPersonalInfo(ref GetCurrentUserInfoVm userInfo);
+         string GetSocSecNum(int empId);
+         string GetUserId();
 
-        public string GetLastName();
+         string GetLastName();
 
-        public string GetFirstName();
+         string GetFirstName();
 
-        public string GetDepartment();
+         string GetDepartment();
 
-        public string JobTitle();
+         string JobTitle();
 
-        public string GetEmpCode();
+         string GetEmpCode();
 
-        public string GetEmpId();
+         string GetEmpId();
 
-        public string GetBranchID();
+         string GetBranchID();
 
-        public string GetBranchName();
+         string GetBranchName();
 
-        public string GetCoreId();
+         string GetCoreId();
 
-        public string GetSSnum();
-        public string GetAppAccessRoles();
+         string GetSSnum();
+         string GetAppAccessRoles();
 
-        public string Geturole();
-        public string Getucount();
+         string Geturole();
+         string Getucount();
 
     }
 }

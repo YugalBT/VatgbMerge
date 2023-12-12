@@ -19,7 +19,7 @@ namespace Standing_Order_Vat_App.Common.Services
 {
     public class DormantRegisterService : IDormantRegister
     {
-        //string dtable;
+        
 
         private readonly General_Banking_RegistersContext _generalBankingRegistersContext;
         private string genBnkRegConStr;
@@ -69,7 +69,7 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             return result;
         }
-        public IGeneralResult<DataTable> GetDormRegRecsByAcctNum(ref DataTable dtable, string acct, string coreBranch, int entry, string jobTitle)
+        public IGeneralResult<DataTable> GetDormRegRecsByAcctNum( string acct, string coreBranch, int entry, string jobTitle,string dep)
         {
             IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
             try
@@ -78,7 +78,9 @@ namespace Standing_Order_Vat_App.Common.Services
                 SqlConnection conn = new SqlConnection();
                 SqlCommand cmd = new SqlCommand();
                 conn.ConnectionString = genBnkRegConStr;
+                cmd.Connection = conn;
                 cmd.CommandType = CommandType.StoredProcedure;
+                
                 if (entry == 1)
                     cmd.CommandText = "FindAllIncompleteDormantEntryByDate";
                 else
@@ -87,10 +89,12 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.Parameters.AddWithValue("@acctNum", acct);
                 cmd.Parameters.AddWithValue("@userBranch", coreBranch);
                 cmd.Parameters.AddWithValue("@title", jobTitle);
+                cmd.Parameters.AddWithValue("@dept", dep);
 
                 DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(genBnkRegConDbconn, cmd);
                 var dataTable = new DataTable();
                 adp.Fill(dataTable);
+                conn.Close();
                 if (dataTable.Rows.Count > 0)
                 {
                     result.Successful = true;
@@ -104,7 +108,7 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             return result;
         }
-        public IGeneralResult<DataTable> GetDormRegRecsByDate(ref DataTable dtable, DateTime? dtFrom, DateTime? dtTo, string coreBranch, int entry, string jobTitle)
+        public IGeneralResult<DataTable> GetDormRegRecsByDate( DateTime? dtFrom, DateTime? dtTo, string coreBranch, int entry, string jobTitle)
         {
             IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
             try
@@ -113,6 +117,7 @@ namespace Standing_Order_Vat_App.Common.Services
                 SqlConnection conn = new SqlConnection();
                 SqlCommand cmd = new SqlCommand();
                 conn.ConnectionString = genBnkRegConStr;
+                cmd.Connection = conn;
                 cmd.CommandType = CommandType.StoredProcedure;
                 if (entry == 1)
                     cmd.CommandText = "FindIncompleteDormantEntryByDate";
@@ -127,6 +132,7 @@ namespace Standing_Order_Vat_App.Common.Services
                 DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(genBnkRegConDbconn, cmd);
                 var dataTable = new DataTable();
                 adp.Fill(dataTable);
+                conn.Close();
                 if (dataTable.Rows.Count > 0)
                 {
                     result.Successful = true;
@@ -140,7 +146,7 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             return result;
         }
-        public IGeneralResult<DataTable> GetDormRegRecsByStatus(ref DataTable dtable, int status, string coreBranch, string jobTitle)
+        public IGeneralResult<DataTable> GetDormRegRecsByStatus( int status, string coreBranch, string jobTitle)
         {
             IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
             try
@@ -149,15 +155,18 @@ namespace Standing_Order_Vat_App.Common.Services
                 SqlConnection conn = new SqlConnection();
                 SqlCommand cmd = new SqlCommand();
                 conn.ConnectionString = genBnkRegConStr;
+                cmd.Connection = conn;
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "FindDormantEntryByStatus";
                 cmd.Parameters.AddWithValue("@status", status);
+
                 cmd.Parameters.AddWithValue("@userBranch", coreBranch);
                 cmd.Parameters.AddWithValue("@title", jobTitle);
-
+                conn.Open();
                 DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(genBnkRegConDbconn, cmd);
                 var dataTable = new DataTable();
                 adp.Fill(dataTable);
+                conn.Close();
                 if (dataTable.Rows.Count > 0)
                 {
                     result.Successful = true;
@@ -209,6 +218,32 @@ namespace Standing_Order_Vat_App.Common.Services
                 result.Message = "Error retrieving the branch number for account " + acct + ": " + ex.Message;
             }
             return result;
+        }
+
+        public async Task<IGeneralResult<string>> DeleteDormant(int id)
+        {
+            IGeneralResult<string> res = new GeneralResult<string>();
+            try
+            {
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = genBnkRegConStr;
+                cmd.Connection = conn;
+                cmd.CommandText = "DelDormantEntry";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@recId", id);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+
+                res.Successful = true;
+                res.Message = "Record deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                res.Message = "Error deleting dormant entry record id = " + id + ": " + ex.Message;
+            }
+            return res;
         }
     }
 }

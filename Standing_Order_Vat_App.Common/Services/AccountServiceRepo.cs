@@ -74,7 +74,7 @@ namespace Standing_Order_Vat_App.Common.Services
         }
         public string GetCoreId()
         {
-            return httpContext.HttpContext.Session.GetString("CoreId");
+            return httpContext.HttpContext.Session.GetString("CoreID");
         }
         public string GetSSnum()
         {

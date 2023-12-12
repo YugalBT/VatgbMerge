@@ -13,9 +13,10 @@ namespace Standing_Order_Vat_App.Common.Interfaces
     public interface IDormantRegister
     {
         Task<IGeneralResult<string>> AddDormantRegister(VmDormantRegister dormantRegister);
-        IGeneralResult<DataTable> GetDormRegRecsByAcctNum(ref DataTable dtable, string acct, string coreBranch, int entry, string jobTitle);
-        IGeneralResult<DataTable> GetDormRegRecsByDate(ref DataTable dtable, DateTime? dtFrom, DateTime? dtTo, string coreBranch, int entry, string jobTitle);
-        IGeneralResult<DataTable> GetDormRegRecsByStatus(ref DataTable dtable, int status, string coreBranch, string jobTitle);
+        IGeneralResult<DataTable> GetDormRegRecsByAcctNum(string acct, string coreBranch, int entry, string jobTitle,string dept);
+        IGeneralResult<DataTable> GetDormRegRecsByDate( DateTime? dtFrom, DateTime? dtTo, string coreBranch, int entry, string jobTitle);
+        IGeneralResult<DataTable> GetDormRegRecsByStatus(int status, string coreBranch, string jobTitle);
         IGeneralResult<Accountinfo> GetAcctCoreInfo(ref Accountinfo vm, string acct);
+        Task<IGeneralResult<string>> DeleteDormant(int id);
     }
 }

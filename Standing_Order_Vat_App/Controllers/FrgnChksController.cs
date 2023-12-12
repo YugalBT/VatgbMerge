@@ -358,7 +358,6 @@ namespace Standing_Order_Vat_App.Controllers
             return result;
 
         }
-
     }
 
 }

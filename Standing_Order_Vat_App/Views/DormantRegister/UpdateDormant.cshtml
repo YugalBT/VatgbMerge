@@ -1,0 +1,258 @@
+﻿@model Standing_Order_Vat_App.Common.ViewModels.DormantUpdateVmm
+<link href="~/css/link.css" rel="stylesheet" />
+<style>
+    .custom_navbars_link {
+        background-color: #fae9d9;
+    }
+
+        .custom_navbars_link .navbar-brand {
+            color: #000;
+        }
+
+        .custom_navbars_link .navbar-nav .nav-link {
+            color: #000;
+            font-size: 14px
+        }
+
+
+
+        .custom_navbars_link ul .nav-link img {
+            max-width: 40px;
+        }
+</style>
+<div class="custom_navbars_link">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">GB Registries</a>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        @* <a class="nav-link active" asp-controller="DormantRegister" asp-action="Index">Dormant Register</a>*@
+                    </li>
+                    <li class="nav-item">
+
+                        <a class="nav-link active" asp-controller="FrgnChks" asp-action="Index">Foreign Checks</a>
+                    </li>
+                </ul>
+                <ul class="ml-0">
+                    <li class="nav-item">
+                        <a class="nav-link p-0" href="#"><img src="~/Image/help.png" /></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div class="d-flex">
+    <div id="sidebar-wrapper" class="side_bar_custom">
+        <div class="mt-4">
+            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnNewSection" value="New Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnNewSection" class="btn-no-style" asp-action="AddFrgnCheck">New Batch</a>
+            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnUpdateSection" value="Update Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnUpdateSection" class="btn-no-style" asp-controller="DormantRegister" asp-action="UpdateDormant">Update Batch</a>
+            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnViewSection" value="View Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnViewSection" class="btn-no-style" asp-controller="FrgnChks" asp-action="View">View Batch</a>
+        </div>
+    </div>
+    <div class="right_side_content bg-lightorangecolor w-100">
+        <h2 class="main_heading">Update Foreign Checks Batches</h2>
+
+        <form method="post" asp-action="UpdateDormant" asp-controller="DormantRegister" class="p-4">
+            <div class="row align-items-end">
+                
+                <div class="col-3" >
+                    <div class="form-group mb-3">
+                        <label for="Options" class="d-block">Options</label>
+                        <select class="form-control" asp-for="Options" onchange="OptDrp()">
+                            <option value="">--- Select ---</option>
+                            <option value="1">Account Number </option>
+                            <option value="2">Date</option>
+                            <option value="3">Entry Status</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3" id="accountno">
+                    <div class="form-group mb-3">
+                        <label class="d-block">Account Number</label>
+
+                        <input type="number" asp-for="AccountNumber" class="form-control">
+
+                    </div>
+                </div>
+
+                <div class="col-3" id="Entrystatus">
+                    <div class="form-group mb-3">
+                        <label class="d-block">Status</label>
+
+                        <select id="Select2" asp-for=status class="form-select" asp-items="@(new SelectList(Model.entryStatusVM,"StatusId", "StatusName"))">
+                            <option value="">--- Select ---</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="col-6" id="dt">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="branch mb-3">
+                                <label class="date-from d-block" for="inlineFormCustomSelect">Date From:</label>
+                                <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="dtFrom" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="branch mb-3">
+                                <label class="ms-auto d-block" for="inlineFormCustomSelect">Date To:</label>
+                                <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="dtTo" />
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            
+          
+            <div >
+                <div class="mb-3">
+                    <input type="submit" class="btn btn-primary main_btn  h-auto w-100" value="Search" asp-controller="DormantRegister" asp-action="UpdateDormant" />
+                </div>
+            </div>
+
+            @if ((Model.DormantCheckListRecVms != null && Model.DormantCheckListRecVms.Count > 0) || (Model.DormantListIncompletes != null && Model.DormantListIncompletes.Count > 0))
+            {
+                <div class="spl">
+                    <div style="height: 420px;overflow-y: auto;">
+                        <div class="table-responsive">
+                            <table class="table custom_tble" id="table">
+                                <thead>
+                                    <tr class="table-active">
+                                        <th>Date Requested</th>
+                                        <th> Account</th>
+                                        <th>Customer Name</th>
+                                        <th>Particular</th>
+                                        <th>Issuing Department</th>
+                                        <th>Entry Status</th>
+                                        <th>Acct type</th>
+                                        <th>Acct Status</th>
+                                        <th>Initiated By</th>
+                                        <th>Branch</th>
+                                        <th scope="col">#</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.status == 1)
+                                    {
+                                        @foreach (var dormant in Model.DormantListIncompletes)
+                                        {
+                                            <tr>
+                                                <td>@dormant.DateRequested.ToShortDateString()</td>
+                                                <td>@dormant.Acct_Number</td>
+                                                <td>@dormant.Name</td>
+                                                <td>@dormant.Particulars</td>
+                                                <td>@dormant.IssuingDepartment</td>
+                                                <td>@dormant.EntryStatusDescription</td>
+                                                <td>@dormant.AcctType</td>
+                                                <td>@dormant.AcctStatus</td>
+                                                <td>@dormant.initName</td>
+                                                <td>@dormant.Branch</td>
+                                                <td><a href="javascript:void(0)" onclick="DeleteDormantBatch(@dormant.RecordID,this)" class="edit_icon"><i class="fa-solid fa-trash"></i></a></td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @foreach (var dormant in Model.DormantCheckListRecVms)
+                                        {
+                                            <tr>
+
+                                                <td>@dormant.DateRequested.ToShortDateString()</td>
+
+                                                <td>@dormant.Acct_Number</td>
+                                                <td>@dormant.Name</td>
+                                                <td>@dormant.Particulars</td>
+                                                <td>@dormant.IssuingDepartment</td>
+                                                <td>@dormant.EntryStatusDescription</td>
+                                                <td>@dormant.AcctType</td>
+                                                <td>@dormant.AcctStatus</td>
+                                                <td>@dormant.initName</td>
+                                                <td>@dormant.Branch</td>
+                                                <td><a href="javascript:void(0)" onclick="DeleteDormantBatch(@dormant.RecordID,this)" class="edit_icon"><i class="fa-solid fa-trash"></i></a></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            }
+            else if (Model.status > 0)
+            {
+                <div class="spl">
+                    <div style="height: 420px;overflow-y: auto;border-top: 2px solid #000;">
+                        <div class="table-responsive">
+                            <table class="table custom_tble">
+                                <thead>
+                                    <tr>
+                                        <th>Date Requested</th>
+                                        <th> Account</th>
+                                        <th>Customer Name</th>
+                                        <th>Particular</th>
+                                        <th>Issuing Department</th>
+                                        <th>Entry Status</th>
+                                        <th>Acct type</th>
+                                        <th>Acct Status</th>
+                                        <th>Initiated By</th>
+                                        <th>Branch</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            No Record Found
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </form>
+</div>
+</div>
+<script src="~/js/dormantcheck.js"></script>
+@section Scripts{
+
+    <script src="~/js/DormantCheck.js" asp-append-version="true"></script>
+
+    <script >
+        function OptDrp() {
+            if ($("#Options").val() == 1) {
+                $('#dt').hide();
+                $('#accountno').show();
+                $('#Entrystatus').hide();
+            }
+            else if ($("#Options").val() == 2) {
+                $('#dt').show();
+                $('#accountno').hide();
+                $('#Entrystatus').hide();
+            }
+            else if ($("#Options").val() == 3) {
+                $('#dt').hide();
+                $('#accountno').hide();
+                $('#Entrystatus').show();
+            }
+            else {
+                $('#dt').hide();
+                $('#accountno').hide();
+                $('#Entrystatus').hide();
+            }
+        }
+        $(document).ready(function () {
+            OptDrp();
+
+        });
+    </script>
+}
+
+        
