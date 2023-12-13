@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Standing_Order_Vat_App.Common.GeneralResult;
+using Standing_Order_Vat_App.Common.Helper;
 using Standing_Order_Vat_App.Common.Interfaces;
 using Standing_Order_Vat_App.Common.ViewModels;
 using Standing_Order_Vat_App.DAL.GB_Register;
@@ -22,17 +23,18 @@ namespace Standing_Order_Vat_App.Common.Services
         
 
         private readonly General_Banking_RegistersContext _generalBankingRegistersContext;
-        private string genBnkRegConStr;
-        private DbConnection genBnkRegConDbconn;
+        private readonly IAccountRepo accountRepo;
+        string genBnkRegConStr;
 
-        public DormantRegisterService(General_Banking_RegistersContext generalBankingRegistersContext)
+
+        public DormantRegisterService(General_Banking_RegistersContext generalBankingRegistersContext, IAccountRepo accountRepo )
         {
             _generalBankingRegistersContext = generalBankingRegistersContext;
-            genBnkRegConDbconn = _generalBankingRegistersContext.Database.GetDbConnection();
-            genBnkRegConStr = genBnkRegConDbconn.ConnectionString;
+            this.accountRepo = accountRepo;
+            genBnkRegConStr = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
         }
 
-        public async Task<IGeneralResult<string>> AddDormantRegister(VmDormantRegister dormantRegister)
+        public IGeneralResult<string> AddDormantRegister(VmDormantRegister dormantRegister)
         {
 
             IGeneralResult<string> result = new GeneralResult<string>();
@@ -52,12 +54,12 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.Parameters.AddWithValue("@acctType", dormantRegister.AcctType);
                 cmd.Parameters.AddWithValue("@particulars", dormantRegister.Particulars);
                 cmd.Parameters.AddWithValue("@acctStat", dormantRegister.AcctStatus);
-                cmd.Parameters.AddWithValue("@intIDEmp", dormantRegister.InitialIdEmployee);
-                cmd.Parameters.AddWithValue("@entryStatusId", dormantRegister.EntryStatusId);
+                cmd.Parameters.AddWithValue("@intIDEmp", accountRepo.GetEmpId());
+                cmd.Parameters.AddWithValue("@entryStatusId", 1);
                 cmd.Parameters.AddWithValue("@coreBrNum", dormantRegister.CoreBranchNumber);
-                cmd.Parameters.AddWithValue("@deptId", dormantRegister.InitialIdEmployee);
+                cmd.Parameters.AddWithValue("@deptId", dormantRegister.IssuingDeptId);
                 conn.Open();
-                int i = cmd.ExecuteNonQuery();
+                string i = (cmd.ExecuteScalar()).ToString();
                 result.Successful = true;
                 result.Message = "Data Saved Successfully.";
 
@@ -77,6 +79,7 @@ namespace Standing_Order_Vat_App.Common.Services
                 DormantAllAccountVm vm = new DormantAllAccountVm();
                 SqlConnection conn = new SqlConnection();
                 SqlCommand cmd = new SqlCommand();
+                DbConnection genBnkRegConDbconn = _generalBankingRegistersContext.Database.GetDbConnection();
                 conn.ConnectionString = genBnkRegConStr;
                 cmd.Connection = conn;
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -116,6 +119,7 @@ namespace Standing_Order_Vat_App.Common.Services
                 DormantAllAccountVm vm = new DormantAllAccountVm();
                 SqlConnection conn = new SqlConnection();
                 SqlCommand cmd = new SqlCommand();
+                DbConnection genBnkRegConDbconn = _generalBankingRegistersContext.Database.GetDbConnection();
                 conn.ConnectionString = genBnkRegConStr;
                 cmd.Connection = conn;
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -154,6 +158,7 @@ namespace Standing_Order_Vat_App.Common.Services
                 DormantAllAccountVm vm = new DormantAllAccountVm();
                 SqlConnection conn = new SqlConnection();
                 SqlCommand cmd = new SqlCommand();
+                DbConnection genBnkRegConDbconn = _generalBankingRegistersContext.Database.GetDbConnection();
                 conn.ConnectionString = genBnkRegConStr;
                 cmd.Connection = conn;
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -187,32 +192,46 @@ namespace Standing_Order_Vat_App.Common.Services
             IGeneralResult<Accountinfo> result = new GeneralResult<Accountinfo>();
             try
             {
-                SqlConnection conn = new SqlConnection();
-                SqlCommand cmd = new SqlCommand();
-                conn.ConnectionString = genBnkRegConStr;
-                cmd.CommandText = "GetCoreInfo";
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@acct", acct);
-                DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(genBnkRegConDbconn, cmd);
-                var dataTable = new DataTable();
-                adp.Fill(dataTable);
-                if (dataTable.Rows.Count > 0)
+                if (string.IsNullOrEmpty(acct))
                 {
-                    vm.Name = dataTable.Rows[0]["Name"].ToString();
-                    vm.BranchNumber = dataTable.Rows[0]["BranchNumber"].ToString();
-                    vm.AccountType = dataTable.Rows[0]["AccountType"].ToString();
-                    vm.AccountStatus = dataTable.Rows[0]["AccountStatus"].ToString();
-                    result.Successful = true;
-                    result.Message = "Data fetch Successfully.";
-                    result.Value = vm;
+                    result.Message = "Invalid account number.";
                 }
                 else
                 {
-                    result.Message = "Error, no such account was found, please verify and reenter.";
+                    var dataTable = new DataTable();
 
+                    SqlConnection conn = new SqlConnection();
+                    SqlCommand command = new SqlCommand();
+                    conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+                    command.Connection = conn;
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = "GetCoreInfo";
+                    command.Parameters.AddWithValue("@acct", acct);
+                    conn.Open();
+                    command.CommandTimeout = 600;
+                    //command.ExecuteNonQuery();
+                    DbDataAdapter adp = DataAdapterUD.CreateDataAdapter(conn, command);
+
+                    adp.Fill(dataTable);
+                    conn.Close();
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        vm.Name = dataTable.Rows[0]["Name"].ToString();
+                        vm.BranchNumber = dataTable.Rows[0]["BranchNumber"].ToString();
+                        vm.AccountType = dataTable.Rows[0]["AccountType"].ToString();
+                        vm.AccountStatus = dataTable.Rows[0]["AccountStatus"].ToString();
+                        result.Successful = true;
+                        result.Message = "Data fetch Successfully.";
+                        result.Value = vm;
+                    }
+                    else
+                    {
+                        result.Message = "Error, no such account was found, please verify and reenter.";
+
+                    }
                 }
             }
-            
+
             catch (SqlException ex)
             {
                 result.Message = "Error retrieving the branch number for account " + acct + ": " + ex.Message;

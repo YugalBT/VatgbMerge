@@ -51,7 +51,7 @@ namespace Standing_Order_Vat_App.Common.Services
         {
             return httpContext.HttpContext.Session.GetString("Department");
         }
-        public string JobTitle()
+        public string GetJobTitle()
         {
             return httpContext.HttpContext.Session.GetString("JobTitle");
 
@@ -92,12 +92,50 @@ namespace Standing_Order_Vat_App.Common.Services
         {
             return httpContext.HttpContext.Session.GetString("ucount");
         }
+        public string Getuname()
+        {
+            return httpContext.HttpContext.Session.GetString("uname");
+        } 
+        public string Getuid()
+        {
+            return httpContext.HttpContext.Session.GetString("uid");
+        }
+
+        
         public int GetUserinfo(ref string result, ref GetCurrentUserInfoVm userinfo)
         {
-            GetCurrentUserInfoVm getCurrentUserInfoVm = new GetCurrentUserInfoVm();
+            try
+            {
+                SetUserinfoInSession();
+                GetCurrentUserInfoVm vm = new GetCurrentUserInfoVm();
+                vm.FirstName = GetFirstName();
+                vm.BranchName = GetBranchName();
+                vm.LASTNAME = GetLastName();
+                vm.EmpCode = GetEmpCode();
+                vm.ssnum = GetSSnum();
+                vm.CoreID = GetCoreId();
+                vm.EmpID = GetEmpId();
+                vm.JobTitle = GetJobTitle();
+                vm.UserId = GetUserId();
+                vm.Department = GetDepartment();
+                vm.BranchID = GetBranchID();
+                userinfo = vm;
+                result = "Success";
+            }
+
+            catch (Exception e)
+            {
+                result = "Error retrieving EmpID for user " + GetFirstName() + ": " + e.Message;
+            }
+
+            return Convert.ToInt32(userinfo.EmpID);
+        }
+        public void SetUserinfoInSession()
+        {
+            GetCurrentUserInfoVm userinfo = new GetCurrentUserInfoVm();
             var connString = _directorycontext.Database.GetDbConnection();
             // get all ids needed to access the relevant pages
-            result = "success";
+            //result = "success";
             int empID = 0;
             string uname = Environment.UserName;
             try
@@ -121,17 +159,16 @@ namespace Standing_Order_Vat_App.Common.Services
                 conn.Close();
                 if (dataTable.Rows.Count > 0)
                 {
-                    getCurrentUserInfoVm.EmpID = dataTable.Rows[0]["EmployeeID"].ToString();
-                    empID = Convert.ToInt32(getCurrentUserInfoVm.EmpID);
+                    userinfo.EmpID = dataTable.Rows[0]["EmployeeID"].ToString();
+                    empID = Convert.ToInt32(userinfo.EmpID);
 
-                    if (Convert.ToInt32(getCurrentUserInfoVm.EmpID) > 0)
+                    if (Convert.ToInt32(userinfo.EmpID) > 0)
                     {
-                        getCurrentUserInfoVm.UserId = dataTable.Rows[0]["UserID"].ToString();
-                        getCurrentUserInfoVm.ssnum = GetSocSecNum(Convert.ToInt32(getCurrentUserInfoVm.EmpID));
-                        if (!string.IsNullOrEmpty(getCurrentUserInfoVm.ssnum))
+                        userinfo.UserId = dataTable.Rows[0]["UserID"].ToString();
+                        userinfo.ssnum = GetSocSecNum(Convert.ToInt32(userinfo.EmpID));
+                        if (!string.IsNullOrEmpty(userinfo.ssnum))
                         {
-                            result = GetCurrentUserPersonalInfo(ref getCurrentUserInfoVm);
-                            userinfo = getCurrentUserInfoVm;
+                            GetCurrentUserPersonalInfo(ref userinfo);
                             httpContext.HttpContext.Session.SetString("FirstName", userinfo.FirstName);
                             httpContext.HttpContext.Session.SetString("BranchName", userinfo.BranchName);
                             httpContext.HttpContext.Session.SetString("LastName", userinfo.LASTNAME);
@@ -149,17 +186,12 @@ namespace Standing_Order_Vat_App.Common.Services
 
                 }
 
-                else
-                    result = "Error, employee:  " + uname + " is not in Bank9.Directory Database";
             }
             catch (Exception e)
             {
-                result = "Error retrieving EmpID for user " + uname + ": " + e.Message;
+
             }
-
-            return empID;
         }
-
         public string GetCurrentUserPersonalInfo(ref GetCurrentUserInfoVm userInfo)
         {
 
@@ -214,7 +246,6 @@ namespace Standing_Order_Vat_App.Common.Services
 
             return result;
         }
-
         public string GetSocSecNum(int empId)
         {
             string ssnum = "";
@@ -239,6 +270,10 @@ namespace Standing_Order_Vat_App.Common.Services
                 ssnum = "Error " + s.Message;
             }
             return ssnum;
+        }
+        public void RemoveSessionData()
+        {
+            httpContext.HttpContext.Session.Clear();
         }
     }
 }

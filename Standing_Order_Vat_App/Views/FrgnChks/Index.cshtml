@@ -1,86 +1,28 @@
-﻿<link href="~/css/link.css" rel="stylesheet" />
-<style>
-    .custom_navbars_link {
-        background-color: #fae9d9;
-        border-bottom: 2px solid #efd0b2
-    }
-
-        .custom_navbars_link .navbar-brand {
-            color: #000;
-        }
-
-        .custom_navbars_link .navbar-nav .nav-link {
-            color: #000;
-            font-size: 14px
-        }
-
-        .custom_navbars_link ul .nav-link img {
-            max-width: 40px;
-        }
-.customfooter{
-        background-color: #002c36;
-        text-align: center;
-        color: #fff;
-        height: 60px;
-        vertical-align: bottom;
-        padding-top: 15px;
+﻿@{
+    await Html.RenderPartialAsync("GBRegistersMenu");
 }
 
-</style>
-
-<div class="custom_navbars_link">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+<div class="d-flex">
+    @{
+        await Html.RenderPartialAsync("_FrgnChecksLeftMenu");
+    }
+    <div class="right_side_content">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">GB Registries</a>
-            @*<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>*@
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        @* <a class="btn btn-primary" asp-controller="FrgnChks" asp-action="Index">Foreign Checks</a>*@
-                        @*<a class="nav-link active" asp-controller="DormantRegister" asp-action="Index">Dormant Register</a>*@
-                    </li>
-                    <li class="nav-item">
-
-                        <a class="nav-link active" asp-controller="FrgnChks" asp-action="Index">Foreign Checks</a>
-                    </li>
-                </ul>
-                <ul class="ml-0">
-                    <li class="nav-item">
-                        <a class="nav-link p-0" href="#"><img src="~/Image/help.png" /></a>
-                    </li>
-                </ul>
+            <div class="row" style="text-align:center;color:#b46000">
+                <div class="col-md-12">
+                    <br />
+                    <br />
+                    <br />
+                    <h3>Foreign Check Registry Application</h3>
+                    <br />
+                </div>
+                <p style="color:black">
+                    The application allows users to record and search for foreign checks received.
+                    <br />
+                    Please select an option from the menu on the right.
+                </p>
             </div>
         </div>
-    </nav>
-</div>
-<div class="d-flex">
-    <div id="sidebar-wrapper" class="side_bar_custom">
-        <div class="mt-4">
-        <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnNewSection" value="New Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnNewSection" class="btn-no-style" asp-action="AddFrgnCheck">New Batch</a>
-            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnUpdateSection" value="Update Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnUpdateSection" class="btn-no-style" asp-action="UpdateFrgn">Update Batch</a>
-        <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnViewSection" asp-controller="FrgnChks" value="View Batch" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnViewSection" class="btn-no-style" asp-action="View">View Batch</a>
-   </div>
-</div>
- <div class="right_side_content">
-<div class="container-fluid">
-        <div class="row" style="text-align:center;color:#b46000">
-        <div class="col-md-12">
-            <br />
-            <br />
-            <br />
-            <h3>Foreign Check Registry Application</h3>
-            <br />
-            <br />
-        </div>
-        <p style="color:black">
-            The application allows users to record and search for foreign checks received.
-            <br />
-            Please select an option from the menu on the right.
-        </p>
     </div>
-</div>
-</div>
 </div>
 <footer class="customfooter">&copy;St.Kitts-Nevis-Anguilla National Bank 2017</footer>

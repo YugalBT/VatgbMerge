@@ -1,63 +1,12 @@
 ﻿@model GbRegister.Core.ViewModel.VmDormantRegister
-<link href="~/css/link.css" rel="stylesheet" />
-
-<link href="~/css/link.css" rel="stylesheet" />
-
-<style>
-    .custom_navbars_link {
-        background-color: #fae9d9;
-    }
-
-        .custom_navbars_link .navbar-brand {
-            color: #000;
-        }
-
-        .custom_navbars_link .navbar-nav .nav-link {
-            color: #000;
-            font-size: 14px
-        }
-
-        .custom_navbars_link ul .nav-link img {
-            max-width: 40px;
-        }
-</style>
-
-<div class="custom_navbars_link">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">GB Registries</a>
-            @*<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>*@
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        @* <a class="btn btn-primary" asp-controller="FrgnChks" asp-action="Index">Foreign Checks</a>*@
-                        <a class="nav-link active" asp-controller="DormantRegister" asp-action="Index">Dormant Register</a>
-                    </li>
-                    <li class="nav-item">
-
-                        <a class="nav-link active" asp-controller="FrgnChks" asp-action="Index">Foreign Checks</a>
-                    </li>
-                </ul>
-                <ul class="ml-0">
-                    <li class="nav-item">
-                        <a class="nav-link p-0" href="#"><img src="~/Image/help.png" /></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-</div>
+@{
+    await Html.RenderPartialAsync("GBRegistersMenu");
+}
 
 <div class="d-flex">
-    <div id="sidebar-wrapper" class="side_bar_custom">
-        <div class="mt-4">
-            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnNewSection" value="New" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnNewSection" class="btn-no-style" asp-action="AddDormantRegister">New</a>
-            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnUpdateSection" value="Update" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnUpdateSection" class="btn-no-style" asp-action="UpdateDormantRegister">Update</a>
-            <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnViewSection" value="View" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnViewSection" class="btn-no-style" asp-action="ViewDormantRegister">View</a>
-        </div>
-    </div>
+    @{
+        await Html.RenderPartialAsync("_DormantLeftMenu");
+    }
 
     <div class="right_side_content bg-lightorangecolor">
         <br />
@@ -68,42 +17,46 @@
             <form asp-action="AddDormantRegister" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input asp-for="RecordId" hidden />
+                <input asp-for="Name" hidden />
+                <input asp-for="AcctType" hidden />
+                <input asp-for="AcctStatus" hidden />
+                <input asp-for="CoreBranchNumber" hidden />
                 <div class="row mb-3">
                     <div class="col-lg-5" style="padding-left:70px">
                         <div class="form-group">
-                            <label class="form-label" asp-for="AcctNumber">Account Number</label>
-                            <input asp-for="AcctNumber" class="form-control" oninput="GetAccountInfo()"/>
+                            <label class="form-label" asp-for="AcctNumber"></label>
+                            <input asp-for="AcctNumber" type="number" class="form-control" oninput="GetAccountInfo()"/>
                             <span asp-validation-for="AcctNumber" class="text-danger"></span>
                         </div>
                     </div>
                     <br />
                     <div class="col-lg-5">
                         <div class="form-group">
-                            <label class="form-label" for="acctName">Name</label>
-                            <input asp-for="Name" id="Name" class="form-control" />
+                            <label class="form-label" asp-for="Name"></label>
+                            <input asp-for="Name"  class="form-control" disabled/>
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                     </div>
                     <br />
                     <div class="col-lg-5" style="padding-left:70px">
                         <div class="form-group">
-                            <label class="form-label" for="acctType">AcountType</label>
-                            <input asp-for="AcctType" type="number" class="form-control" />
+                            <label class="form-label" asp-for="AcctType"></label>
+                            <input asp-for="AcctType" class="form-control" disabled />
                             <span asp-validation-for="AcctType" class="text-danger"></span>
                         </div>
                     </div>
                     <br />
                     <div class="col-lg-5">
                         <div class="form-group">
-                            <label class="form-label" for="AccountOriginalStatus">Account Original Status</label>
-                            <input asp-for="AcctStatus" id="Status" class="form-control" />
+                            <label class="form-label" asp-for="AcctStatus"></label>
+                            <input asp-for="AcctStatus" class="form-control" disabled />
                             <span asp-validation-for="AcctStatus" class="text-danger"></span>
                         </div>
                     </div>
                     <br />
                     <div class="col-lg-5" style="padding-left:70px">
                         <div class="form-group">
-                            <label class="form-label" for="DateRequested">Entry Date</label>
+                            <label class="form-label" asp-for="DateRequested"></label>
                             <input type="date" asp-for="DateRequested" class="form-control" />
                             <span asp-validation-for="DateRequested" class="text-danger"></span>
                         </div>
@@ -111,7 +64,7 @@
                     <br />
                     <div class="col-lg-5" style="padding-left:8px">
                         <div class="form-group">
-                            <label class="form-label" for="IssuingDepartment">Issuing Department</label>
+                            <label class="form-label" asp-for="IssuingDeptId"></label>
                             <select asp-for="IssuingDeptId" class="form-control">
                                 <option selected>Select Department</option>
                                 <option value="1">Accounts</option>
@@ -163,7 +116,7 @@
                     <br />
                     <div class="col-lg-5" style="padding-left:70px">
                         <div class="form-group">
-                            <label class="form-label" for="Particulars">Particulars</label>
+                            <label class="form-label" asp-for="Particulars"></label>
                             <textarea asp-for="Particulars" class="form-control"></textarea>
                             <span asp-validation-for="Particulars" class="text-danger"></span>
                         </div>
@@ -220,14 +173,4 @@
 
     </script> *@
 
-    <script>
-        let GetAccountInfo = () => {
-            let AcctNumber = $("#AcctNumber").val();
-            requestAjax("/DormantRegister/GetAccountInfo", "get" AcctNumber, function (res) {
-                if (res.successful) {
-
-                }
-            })
-        }
-    </script>
 }

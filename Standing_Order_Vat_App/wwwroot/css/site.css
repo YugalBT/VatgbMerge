@@ -30,23 +30,24 @@ body {
     justify-content: center;
 }
 
+
+
 .custom_navbars_link {
-    background-color: #002c36;
+    background-color: #fae9d9;
 }
 
-.custom_navbars_link .navbar-brand {
-    color: #ffffff;
-}
+    .custom_navbars_link .navbar-brand {
+        color: #000;
+    }
 
-.custom_navbars_link .navbar-nav .nav-link {
-    color: #ffffff;
-    font-size: 14px
-}
+    .custom_navbars_link .navbar-nav .nav-link {
+        color: #000;
+        font-size: 16px
+    }
 
-.custom_navbars_link ul .nav-link img {
-    max-width: 40px;
-}
-
+    .custom_navbars_link ul .nav-link img {
+        max-width: 40px;
+    }
 .customfooter {
     background-color: #002c36;
     text-align: center;
@@ -206,3 +207,29 @@ body {
         position: absolute;
         right: 10px;
     }
+
+.navbarset .nav-link {
+    font-size: 16px;
+    color: #000000 !important;
+    padding: 10px 16px !important;
+}
+
+.navbarset {
+    background-color: #ffeede !important;
+    padding: 0;
+}
+
+.navbar-light .navbar-nav .show > .nav-link, .navbar-light .navbar-nav .nav-link.active {
+    background-color: #ffdbb8;
+    font-weight: 600;
+    font-size: 18px;
+}
+.custom_navbars_link .nav-link.active {
+    background-color: #ffdbb8 !important;
+    font-weight: 700;
+    font-size: 18px;
+}
+.side_bar_custom .active{
+    font-weight:800;
+    font-size:17px;
+}

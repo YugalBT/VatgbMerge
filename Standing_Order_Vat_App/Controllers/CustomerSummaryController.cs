@@ -23,6 +23,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.Net.Mail;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
+using static Standing_Order_Vat_App.MvcHelper.Enumration;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -58,6 +59,7 @@ namespace Standing_Order_Vat_App.Controllers
         }
         public IActionResult Index()
         {
+            userRoleService.GetUserRole(User.Identity.Name);
             return View();
         }
 
@@ -66,7 +68,11 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult CustomerSummaryReport(CustomerSummary_VM obj, int pn = 1, int recordPerPage = 10, int customer = 0, int report = 0, DateTime Startdate = default, DateTime Enddate = default, string search = "")
         {
-
+            var rec = userRoleService.GetUserRole(User.Identity.Name);
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
             printlog("Status: Application Start");
 
             CustomerSummary_VM record = new CustomerSummary_VM();
@@ -92,11 +98,10 @@ namespace Standing_Order_Vat_App.Controllers
             obj.search = search;
             ViewBag.pageno = pn;
 
-            var rec = userRoleService.GetUserRole(User.Identity.Name);
+            
             userRolelist = rec.Select(x => ((UserRole_VM)x)).ToList();
 
             printlog("User List Count: " + userRolelist.Count.ToString());
-
             printlog("User Name: " + User.Identity.Name);
             printlog("App Name: NB_VAT_FEES");
 
@@ -107,15 +112,8 @@ namespace Standing_Order_Vat_App.Controllers
             HttpContext.Session.SetString(Sessionusercount, userRolelist.Count.ToString());
             if (userRolelist.Count() > 0)
             {
-
-
-                HttpContext.Session.SetInt32(Sessionuid, Convert.ToInt32(userRolelist.FirstOrDefault().RoleID));
                 printlog("Role ID: " + userRolelist.FirstOrDefault().RoleID.ToString());
-
-                HttpContext.Session.SetString(Sessionuname, userRolelist.FirstOrDefault().UserName);
                 printlog("User Name: " + userRolelist.FirstOrDefault().UserName.ToString());
-
-                HttpContext.Session.SetString(Sessionurole, userRolelist.FirstOrDefault().RoleName);
                 printlog("User Role Name: " + userRolelist.FirstOrDefault().RoleName.ToString());
 
                 customers = customerdetail.GetCustomerDetail(obj.Report);
@@ -201,7 +199,6 @@ namespace Standing_Order_Vat_App.Controllers
                             }
                             break;
                         }
-
                     case 4:
                         {
                             record.acct = obj.acct;
@@ -314,6 +311,11 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> ExportListUsingEPPlus(int pn = 1, int recordPerPage = 10, int brchno = 0, int report = 0, DateTime fdate = default, DateTime tdate = default, int doctype = 3, string search = "")
         {
+            userRoleService.GetUserRole(User.Identity.Name);
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
             CustomerSummary_VM record = new CustomerSummary_VM();
             ulong TotalRecord = 0;
             record.acct = brchno;
