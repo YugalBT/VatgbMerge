@@ -3,6 +3,7 @@ using GbRegister.Core.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Standing_Order_Vat_App.Common.GeneralResult;
+using Standing_Order_Vat_App.Common.Helper;
 using Standing_Order_Vat_App.Common.Interfaces;
 using Standing_Order_Vat_App.Common.Services;
 using Standing_Order_Vat_App.Common.ViewModels;
@@ -13,21 +14,24 @@ namespace Standing_Order_Vat_App.Controllers
     public class DormantRegisterController : Controller
     {
         private readonly IDormantRegister _dormantRegister;
-        private readonly IAccountRepo accountRepo;
+        private readonly IAccountRepo _accountrepo;
         private readonly IUserRole userRoleService;
         private readonly INotyfService notyf;
+        private readonly IFrgnChks _frgnChks;
 
-        public DormantRegisterController(IDormantRegister dormantRegister,IAccountRepo accountRepo, IUserRole userRoleService, INotyfService notyf)
+        public DormantRegisterController(IDormantRegister dormantRegister,IAccountRepo accountRepo, IUserRole userRoleService, INotyfService notyf,IFrgnChks frgnChks)
         {
             _dormantRegister = dormantRegister;
-            this.accountRepo = accountRepo;
+            _accountrepo = accountRepo;
             this.userRoleService = userRoleService;
             this.notyf = notyf;
+            _frgnChks = frgnChks;
+           
         }
         public IActionResult Index()
         {
             userRoleService.GetUserRole(User.Identity.Name);
-            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
+            if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
             }
@@ -38,7 +42,7 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult AddDormantRegister()
         {
             userRoleService.GetUserRole(User.Identity.Name);
-            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
+            if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
             }
@@ -49,7 +53,7 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult AddDormantRegister(VmDormantRegister dormantRegister)
         {
             userRoleService.GetUserRole(User.Identity.Name);
-            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
+            if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
             }
@@ -71,10 +75,10 @@ namespace Standing_Order_Vat_App.Controllers
             return res;
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult>UpdateDormant(DormantUpdateVmm res)
         {
-            res.entryStatusVM = await _frgnchks.GetEntryStatus();
+            res.entryStatusVM = await _frgnChks.GetEntryStatus();
             res.status = 1;
             if (res.status == 1)
             {
@@ -93,7 +97,7 @@ namespace Standing_Order_Vat_App.Controllers
            
             List<DormantListRecVm> result1 = new List<DormantListRecVm>();
             res.coreBranch = _accountrepo.GetCoreId();
-            res.jobTitle = _accountrepo.JobTitle();
+            res.jobTitle = _accountrepo.GetJobTitle();
             res.Department = _accountrepo.GetDepartment();
             
             switch (res.Options)
@@ -139,7 +143,7 @@ namespace Standing_Order_Vat_App.Controllers
         {
             List<DormantListIncomplete> result1 = new List<DormantListIncomplete>();
             res.coreBranch = _accountrepo.GetCoreId();
-            res.jobTitle = _accountrepo.JobTitle();
+            res.jobTitle = _accountrepo.GetJobTitle();
             res.Department = _accountrepo.GetDepartment();
 
             switch (res.Options)
