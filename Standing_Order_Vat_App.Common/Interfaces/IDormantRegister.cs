@@ -19,5 +19,6 @@ namespace Standing_Order_Vat_App.Common.Interfaces
         IGeneralResult<Accountinfo> GetAcctCoreInfo(ref Accountinfo vm, string acct);
         Task<IGeneralResult<string>> DeleteDormant(int id);
         IGeneralResult<DataTable> GetDepartmentsList();
+        IGeneralResult<string> UpdateDormRegRecs(UpdateDormantEntryVm vm);
     }
 }
