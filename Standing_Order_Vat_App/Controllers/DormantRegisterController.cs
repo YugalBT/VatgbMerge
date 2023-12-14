@@ -46,6 +46,11 @@ namespace Standing_Order_Vat_App.Controllers
             {
                 return RedirectToAction("AccessDenied", "Home");
             }
+            var dprts = _dormantRegister.GetDepartmentsList();
+            if (dprts.Successful)
+            {
+            ViewBag.Departments = dprts.Value.Rows;
+            }
             return View();
         }
 

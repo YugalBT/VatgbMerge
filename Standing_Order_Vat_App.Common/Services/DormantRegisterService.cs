@@ -264,6 +264,35 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             return res;
         }
+
+        public IGeneralResult<DataTable> GetDepartmentsList()
+        {
+            IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
+            try
+            {
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = genBnkRegConStr;
+                cmd.Connection = conn;
+                cmd.CommandText = "GetDepartments";
+                cmd.CommandType = CommandType.StoredProcedure;
+                DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(conn, cmd);
+                var dataTable = new DataTable();
+                adp.Fill(dataTable);
+                conn.Close();
+                if (dataTable.Rows.Count > 0)
+                {
+                    result.Successful = true;
+                    result.Message = "Data Fethed Successfully.";
+                    result.Value = dataTable;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = "Error fetching departments: " + ex.Message;
+            }
+            return result;
+        }
     }
 }
 
