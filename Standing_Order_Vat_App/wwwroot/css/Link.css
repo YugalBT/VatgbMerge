@@ -113,7 +113,7 @@
 }
 
     .custom_tble thead tr th {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 500;
         border-color: #002c36;
         border-color: transparent;
@@ -121,7 +121,7 @@
     }
 
 .custom_tble tbody tr td {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 400;
     border-color: #002c36;
     border-color: transparent;

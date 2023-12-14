@@ -19,6 +19,7 @@
         public string? IssuingDepartment { get; set; }
         public string initName { get; set; }
         public string Branch { get; set; }
+        public int? entsts { get; set; }
 
 
     }

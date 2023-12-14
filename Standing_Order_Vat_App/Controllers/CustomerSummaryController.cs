@@ -489,7 +489,32 @@ namespace Standing_Order_Vat_App.Controllers
                     case 1:
                         {
                             IWSection section = document.AddSection();
+                            string dataPath = @"E:\GGGGG\Standing_Order_Vat_App\Word\OleTemplate.docx";
+                            //FileStream fileStream1 = System.IO.File.Open(dataPath, FileMode.Open,
+                            //FileAccess.Read, FileShare.None);
+
+                            //FileStream fileStream = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+
+                            section.AddParagraph().ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+
+                            FileStream imageStream = System.IO.File.Open(@"wwwroot\Image\vatq.jpg", FileMode.Open, FileAccess.Read, FileShare.None);
+                            WPicture picture = (WPicture)section.AddParagraph().AppendPicture(imageStream);
+
+                            picture.AddCaption("Figure", CaptionNumberingFormat.Roman, CaptionPosition.AfterImage);
+                            ApplyFormattingForCaption(document.LastParagraph);
+
+
+
+                            //IWPicture iWPicture = section.AddParagraph().AppendPicture("..Image//vat.jpg");
                             section.AddParagraph().AppendText("Standing Orders Customer Report");
+                            WTextBody body;
+                            section.AddParagraph().AppendText($"CustomerName: {customers.Where(w => w.Acct == record.acct.ToString()).Select(s => s.CustomerName).FirstOrDefault()}");
+                            section.AddParagraph().AppendText($"Branch:Report: {Extensions.GetEnumDisplayName((ReportsName)record.Report)}");
+                            section.AddParagraph().AppendText($"Date From: {record.Startdate.Date.ToString("MM/dd/yyyy")}");
+                            section.AddParagraph().AppendText($"Date To: {record.Enddate.Date.ToString("MM/dd/yyyy")}");
+                            section.AddParagraph();
+                        
 
                             //Draw grid to the page of PDF document.
                             pdfGrid.Draw(page, new Syncfusion.Drawing.PointF(10, 80));
@@ -768,6 +793,20 @@ namespace Standing_Order_Vat_App.Controllers
                     case 4:
                         {
                             IWSection section = document.AddSection();
+                            string dataPath = @"E:\GGGGG\Standing_Order_Vat_App\Word\OleTemplate.docx";
+                            //FileStream fileStream1 = System.IO.File.Open(dataPath, FileMode.Open,
+                            //FileAccess.Read, FileShare.None);
+
+                            //FileStream fileStream = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+
+                            section.AddParagraph().ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+
+                            FileStream imageStream = System.IO.File.Open(@"wwwroot\Image\vatq.jpg", FileMode.Open, FileAccess.Read, FileShare.None);
+                            WPicture picture = (WPicture)section.AddParagraph().AppendPicture(imageStream);
+
+                            picture.AddCaption("Figure", CaptionNumberingFormat.Roman, CaptionPosition.AfterImage);
+                            ApplyFormattingForCaption(document.LastParagraph);
                             section.AddParagraph().AppendText("Stop Pay Customer report");
 
                             section.AddParagraph().AppendText($"CustomerName: {customers.Where(w => w.Acct == record.acct.ToString()).Select(s => s.CustomerName).FirstOrDefault()}");
@@ -864,6 +903,20 @@ namespace Standing_Order_Vat_App.Controllers
                         {
                             IWSection section = document.AddSection();
                             section.AddParagraph().AppendText("Transfer Charges Summary Report");
+                            string dataPath = @"E:\GGGGG\Standing_Order_Vat_App\Word\OleTemplate.docx";
+                            //FileStream fileStream1 = System.IO.File.Open(dataPath, FileMode.Open,
+                            //FileAccess.Read, FileShare.None);
+
+                            //FileStream fileStream = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+
+                            section.AddParagraph().ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+
+                            FileStream imageStream = System.IO.File.Open(@"wwwroot\Image\vatq.jpg", FileMode.Open, FileAccess.Read, FileShare.None);
+                            WPicture picture = (WPicture)section.AddParagraph().AppendPicture(imageStream);
+
+                            picture.AddCaption("Figure", CaptionNumberingFormat.Roman, CaptionPosition.AfterImage);
+                            ApplyFormattingForCaption(document.LastParagraph);
 
                             section.AddParagraph().AppendText($"CustomerName: {customers.Where(w => w.Acct == record.acct.ToString()).Select(s => s.CustomerName).FirstOrDefault()}");
                             section.AddParagraph().AppendText($"Report: {Extensions.GetEnumDisplayName((ReportsName)record.Report)}");

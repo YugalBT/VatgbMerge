@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols;
 using Standing_Order_Vat_App.Common.GeneralResult;
 using Standing_Order_Vat_App.Common.Helper;
 using Standing_Order_Vat_App.Common.Interfaces;
@@ -85,14 +86,15 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.CommandType = CommandType.StoredProcedure;
                 
                 if (entry == 1)
-                    cmd.CommandText = "FindAllIncompleteDormantEntryByDate";
+                    cmd.CommandText = "FindAllIncompleteDormantEntryByAcctNum";
                 else
-                    cmd.CommandText = "FindAllCompletedDormantEntryByDate";
-                cmd.CommandText = "FindAllCompletedDormantEntryByAcctNum";
+                    cmd.CommandText = "FindAllCompletedDormantEntryByAcctNum";
+               
                 cmd.Parameters.AddWithValue("@acctNum", acct);
                 cmd.Parameters.AddWithValue("@userBranch", coreBranch);
                 cmd.Parameters.AddWithValue("@title", jobTitle);
                 cmd.Parameters.AddWithValue("@dept", dep);
+                conn.Open();
 
                 DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(genBnkRegConDbconn, cmd);
                 var dataTable = new DataTable();
@@ -186,7 +188,6 @@ namespace Standing_Order_Vat_App.Common.Services
             return result;
 
         }
-
         public IGeneralResult<Accountinfo> GetAcctCoreInfo(ref Accountinfo vm, string acct)
         {
             IGeneralResult<Accountinfo> result = new GeneralResult<Accountinfo>();
@@ -238,7 +239,6 @@ namespace Standing_Order_Vat_App.Common.Services
             }
             return result;
         }
-
         public async Task<IGeneralResult<string>> DeleteDormant(int id)
         {
             IGeneralResult<string> res = new GeneralResult<string>();
@@ -263,6 +263,41 @@ namespace Standing_Order_Vat_App.Common.Services
                 res.Message = "Error deleting dormant entry record id = " + id + ": " + ex.Message;
             }
             return res;
+        }
+
+        public IGeneralResult<string> UpdateDormRegRecs(UpdateDormantEntryVm vm)
+        {
+            IGeneralResult<string> result = new GeneralResult<string>();
+            if (vm != null && vm.RecordId > 0 && Convert.ToInt64(vm.AccountNo) > 0)
+            {
+                try
+                {
+                    SqlConnection conn = new SqlConnection();
+                    SqlCommand cmd = new SqlCommand();
+                    conn.ConnectionString = genBnkRegConStr;
+                    cmd.Connection = conn;
+                    cmd.CommandText = "UpdDormantRegistry";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@date", Convert.ToDateTime(DateTime.Now.ToShortDateString()));
+                    cmd.Parameters.AddWithValue("@reactId", Convert.ToInt32(vm.Reactive_id));
+                    cmd.Parameters.AddWithValue("@entryStatId", Convert.ToInt32(vm.Status));
+                    cmd.Parameters.AddWithValue("@recid", Convert.ToInt32(vm.RecordId));
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                    result.Message = "Record updated.";
+                }
+                catch (SqlException ex)
+                {
+                    result.Message = "Error updating Dormant Registry recordID " + vm.RecordId + ":" +
+                         ex.Message;
+                }
+            }
+            else
+            {
+                result.Message = "Record not found.";
+            }
+            return result;
         }
     }
 }

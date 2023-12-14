@@ -7,7 +7,6 @@
         public string Acct_Number { get; set; } = null!;
         public string Name { get; set; } = null!;
         public string? Particulars { get; set; }
-
         public string Initial_Id_Employee { get; set; }
         public string? Reactivate_Id_Employee { get; set; }
         public DateTime? DatePerformed { get; set; }
@@ -18,5 +17,6 @@
         public string? IssuingDepartment { get; set; }
         public string initName { get; set; }
         public string Branch { get; set; }
+        public int? entsts { get; set; }
     }
 }

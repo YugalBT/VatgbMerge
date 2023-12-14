@@ -1,5 +1,4 @@
 ﻿@model Standing_Order_Vat_App.Common.ViewModels.DormantUpdateVmm
-
 @{
     await Html.RenderPartialAsync("GBRegistersMenu");
 }
@@ -7,14 +6,14 @@
     @{
         await Html.RenderPartialAsync("_DormantLeftMenu");
     }
-    <div class="right_side_content bg-lightorangecolor  w-100">
+    <div class="right_side_content bg-lightorangecolor w-100">
         <br />
-        <h2 style="text-align:center;color:#b46000">Update Foreign Checks Batches</h2>
+        <h2 style="text-align:center;color:#b46000">View Foreign Checks Batches</h2>
         <br />
         <br />
 
-
-        <form method="post" asp-action="UpdateDormant" asp-controller="DormantRegister" class="p-4">
+        
+            <form method="post" asp-action="ViewDormant" asp-controller="DormantRegister" class="p-4">
             <div class="row ">
                 <div class="col-3">
                     <div class="form-group mb-3">
@@ -38,8 +37,8 @@
                 <div class="col-3" id="Entrystatus" style="display:none;">
                     <div class="form-group mb-3">
                         <label class="d-block">Status</label>
-                        <select id="Select2" asp-for=status class="form-select"  style="pointer-events:none" asp-items="@(new SelectList(Model.entryStatusVM,"StatusId", "StatusName"))">
-                            @*<option value="">--- Select ---</option>*@
+                        <select id="Select2" asp-for=status class="form-select" asp-items="@(new SelectList(Model.entryStatusVM,"StatusId", "StatusName"))">
+                            <option value="">--- Select ---</option>
                         </select>
                         <span asp-validation-for="status" class="text-danger"></span>
                     </div>
@@ -49,25 +48,26 @@
                         <div class="col-6">
                             <div class="branch mb-3">
                                 <label class="date-from d-block" for="inlineFormCustomSelect">Date From:</label>
-                                <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="dtFrom" />
+                                <input type="date" style="width:100%;height: 38px;" class="form-control" asp-for="dtFrom" />
                                 <span asp-validation-for="dtFrom" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="branch mb-3">
                                 <label class="ms-auto d-block" for="inlineFormCustomSelect">Date To:</label>
-                                <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="dtTo" />
+                                <input type="date" style="width:100%;height: 38px;" class="form-control" asp-for="dtTo" />
                                 <span asp-validation-for="dtTo" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
             <div class="row">
                 <div class="col-3">
-                    <input type="submit" class="btn btn-primary main_btn  h-auto w-100" />
+                    <input type="submit" class="btn btn-primary main_btn  h-auto w-100" value="Submit" name="actbtn" />
+                </div>
+                <div class="col-3">
+                    <button type="submit" class="btn btn-primary main_btn  h-auto w-100" value="excel" name="actbtn">Excel <img style="width: 20px;" src="~/image/excel.png" /></button>
                 </div>
             </div>
 
@@ -98,41 +98,17 @@
                                         @foreach (var dormant in Model.DormantListIncompletes)
                                         {
                                             <tr>
-                                                <td>
-                                                    <input type="hidden" asp-for="@dormant.Acct_Number">
-                                                    <input type="hidden" asp-for="@dormant.Reactivate_Id_Employee">
-                                                    <input type="hidden" asp-for="@dormant.RecordID">
-                                                    @dormant.DateRequested.ToShortDateString()
-                                                </td>
+                                                <td>@dormant.DateRequested.ToShortDateString()</td>
                                                 <td>@dormant.Acct_Number</td>
                                                 <td>@dormant.Name</td>
                                                 <td>@dormant.Particulars</td>
                                                 <td>@dormant.IssuingDepartment</td>
-                                                <td>
-                                                    @{
-                                                        dormant.entsts = dormant.EntryStatusDescription.Contains("Incomplete") ? 1 : 2;
-                                                    }
-                                                    <select asp-for="@dormant.entsts" class="form-control custom_box">
-                                                        <option value="1">Incomplete</option>
-                                                        <option value="2">Complete</option>
-                                                    </select>
-                                                </td>
+                                                <td>@dormant.EntryStatusDescription</td>
                                                 <td>@dormant.AcctType</td>
                                                 <td>@dormant.AcctStatus</td>
                                                 <td>@dormant.initName</td>
-                                                <td><input type="text" value="@dormant.Branch" class="form-control custom_box" asp-for="@dormant.Branch" /></td>
-                                                <td>
-                                                    <a href="javascript:void(0)" class="edit_icon" onclick="Editmenuopen(this)"><i class="fa-solid fa-pencil"></i></a>
-                                                    <a href="javascript:void(0)" onclick="DeleteDormantBatch(@dormant.RecordID,this)" class="edit_icon">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </a>
-                                                    <div class="d_none">
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <a href="javascript:void(0)" class="check_icon" onclick="UpdateDormantJs(this)"><i class="fa-regular fa-circle-check"></i></a>
-                                                            <a href="javascript:void(0)" class="close_icon"><i class="fa-solid fa-xmark"></i></a>
-                                                        </div>
-                                                    </div>
-                                                </td>
+                                                <td>@dormant.Branch</td>
+                                                <td></td>
                                             </tr>
                                         }
                                     }
@@ -142,42 +118,18 @@
                                         {
                                             <tr>
 
-                                                <td>
-                                                    <input type="hidden" asp-for="@dormant.Acct_Number">
-                                                    <input type="hidden" asp-for="@dormant.Reactivate_Id_Employee">
-                                                    <input type="hidden" asp-for="@dormant.RecordID">
-                                                    @dormant.DateRequested.ToShortDateString()
-                                                </td>
+                                                <td>@dormant.DateRequested.ToShortDateString()</td>
 
                                                 <td>@dormant.Acct_Number</td>
                                                 <td>@dormant.Name</td>
                                                 <td>@dormant.Particulars</td>
                                                 <td>@dormant.IssuingDepartment</td>
-                                                <td>
-                                                    @{
-                                                        dormant.entsts = dormant.EntryStatusDescription.Contains("Incomplete") ? 1 : 2;
-                                                    }
-                                                    <select asp-for="@dormant.entsts" class="form-control custom_box">
-                                                        <option value="1">Incomplete</option>
-                                                        <option value="2">Complete</option>
-                                                    </select>
-                                                </td>
+                                                <td>@dormant.EntryStatusDescription</td>
                                                 <td>@dormant.AcctType</td>
                                                 <td>@dormant.AcctStatus</td>
                                                 <td>@dormant.initName</td>
-                                                <td>
-                                                    <input type="text" value="@dormant.Branch" class="form-control custom_box" asp-for="@dormant.Branch" />
-                                                </td>
-                                                <td>
-                                                    <a href="javascript:void(0)" class="edit_icon" onclick="Editmenuopen(this)"><i class="fa-solid fa-pencil"></i></a>
-                                                    <div class="d_none">
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <a href="javascript:void(0)" class="check_icon" onclick="UpdateDormantJs(this)"><i class="fa-regular fa-circle-check"></i></a>
-                                                            <a href="javascript:void(0)" class="close_icon"><i class="fa-solid fa-xmark"></i></a>
-                                                        </div>
-                                                    </div>
-                                                    <a href="javascript:void(0)" onclick="DeleteDormantBatch(@dormant.RecordID,this)" class="edit_icon"><i class="fa-solid fa-trash"></i></a>
-                                                </td>
+                                                <td>@dormant.Branch</td>
+                                                <td></td>
                                             </tr>
                                         }
                                     }
@@ -206,6 +158,7 @@
                                         <th>Acct Status</th>
                                         <th>Initiated By</th>
                                         <th>Branch</th>
+                                        <th>#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -222,13 +175,16 @@
                 </div>
             }
         </form>
+ 
     </div>
 </div>
+<script src="~/js/dormantcheck.js"></script>
 @section Scripts{
+
+    <script src="~/js/DormantCheck.js" asp-append-version="true"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
     <script>
-        
         function OptDrp() {
             if ($("#Options").val() == 1) {
                 $('#dt').hide();
@@ -238,7 +194,7 @@
             else if ($("#Options").val() == 2) {
                 $('#dt').show();
                 $('#accountno').hide();
-                $('#Entrystatus').hide();
+                $('#Entrystatus').show();
             }
             else if ($("#Options").val() == 3) {
                 $('#dt').hide();
@@ -251,9 +207,6 @@
                 $('#Entrystatus').hide();
             }
         }
-        function Editmenuopen(e) {
-            $(e).parent().parent().addClass("active");
-        }
         $(document).ready(function () {
             OptDrp();
             $('#table').DataTable();
@@ -262,15 +215,14 @@
             $("#table_length").addClass("m-2");
 
         });
-        $(document).ready(function () {
-            $('#table').DataTable();
-            
-            
-            $(".check_icon, .close_icon").click(function () {
-                $("tr").removeClass("active");
-            });
-        });
     </script>
 }
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#table').DataTable();
+    });
+</script>
+
+
 
 
