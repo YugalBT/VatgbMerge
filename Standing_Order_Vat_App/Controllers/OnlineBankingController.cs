@@ -25,6 +25,7 @@ namespace Standing_Order_Vat_App.Controllers
 
         public IActionResult Index()
         {
+            accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(User.Identity.Name);
 
             if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
@@ -35,6 +36,7 @@ namespace Standing_Order_Vat_App.Controllers
         }
         public IActionResult onlineBanking()
         {
+            accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(User.Identity.Name);
 
             if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))

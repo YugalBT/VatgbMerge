@@ -59,6 +59,7 @@ namespace Standing_Order_Vat_App.Controllers
         }
         public IActionResult Index()
         {
+            accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(User.Identity.Name);
             return View();
         }
@@ -68,6 +69,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult CustomerSummaryReport(CustomerSummary_VM obj, int pn = 1, int recordPerPage = 10, int customer = 0, int report = 0, DateTime Startdate = default, DateTime Enddate = default, string search = "")
         {
+            accountRepo.SetUserinfoInSession();
             var rec = userRoleService.GetUserRole(User.Identity.Name);
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {

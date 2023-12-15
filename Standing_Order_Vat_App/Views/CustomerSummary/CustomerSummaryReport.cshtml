@@ -5,6 +5,10 @@
     DateTime abc = Model.Startdate;
 }
 <style>
+    .validateDiv > span {
+        display: block;
+    }
+
     .tblsize {
         /*display: block;*/
         width: 100%;
@@ -50,43 +54,56 @@
                 <div class="col-lg-6">
                     <div class="d-flex branch">
                         <label class="" for="inlineFormCustomSelect">Report:</label>
-                        <select id="inputState" asp-for="Report" class="select-list" onchange="getcustomer()">
-                            <option selected>Select One</option>
-                            <option value="1">Standing Order Customer Report</option>
-                            <option value="2">DDA Service Charge Customer Report</option>
-                            <option value="3">Loan Customer Late Charges Summary</option>
-                            <option value="4">Stop Pay Customer Report </option>
-                            <option value="5">Transfer Charges Report </option>
-                            <option value="6">SafeKeeping Charges Report </option>
-                        </select>
+                        <div class="validateDiv">
+                            <select id="inputState" asp-for="Report" class="select-list" onchange="getcustomer()">
+                                <option value="">Select One</option>
+                                <option value="1">Standing Order Customer Report</option>
+                                <option value="2">DDA Service Charge Customer Report</option>
+                                <option value="3">Loan Customer Late Charges Summary</option>
+                                <option value="4">Stop Pay Customer Report </option>
+                                <option value="5">Transfer Charges Report </option>
+                                <option value="6">SafeKeeping Charges Report </option>
+                            </select>
+                            <span asp-validation-for="Report" class="text-danger"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="d-flex branch">
                         <label class="ms-auto" for="inlineFormCustomSelect">Customer:</label>
-                        <select class="select-list" asp-for="acct" id="customerlist" asp-items=@(new SelectList(@ViewBag.ddlrec,"Acct", "Customer"))>
-                            <option selected>Select One</option>
-                        </select>
+                        <div class="validateDiv">
+                            <select class="select-list" asp-for="acct" id="customerlist" asp-items=@(new SelectList(@ViewBag.ddlrec,"Acct", "Customer"))>
+                                <option value="">Select One</option>
+                            </select>
+                            <span asp-validation-for="acct" class="text-danger"></span>
+                        </div>
                     </div>
+
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-lg-6">
                     <div class="d-flex branch">
                         <label class="date-from" for="inlineFormCustomSelect">Date From:</label>
-                        <input type="date" asp-for="Startdate" />
+                        <div class="validateDiv">
+                            <input type="date" asp-for="Startdate" />
+                            <span asp-validation-for="Startdate" class="text-danger"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="d-flex branch">
                         <label class="ms-auto" for="inlineFormCustomSelect">Date To:</label>
-                        <input type="date" asp-for="Enddate" />
+                        <div class="validateDiv">
+                            <input type="date" asp-for="Enddate" />
+                            <span asp-validation-for="Enddate" class="text-danger"></span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="buttons d-flex justify-content-between">
-                <div class="col-auto my-1">
-                    <button type="submit" id="setmodel" class="btn btn-primary" style="margin-left: 133px;">Get Report</button>
+            <div class="row mb-3 row mb-3 justify-content-end">
+                <div class="col-lg-6 text-end">
+                    <button type="submit" id="setmodel" class="btn btn-primary">Get Report</button>
                 </div>
             </div>
             @{
@@ -135,16 +152,16 @@
                             <h2 style="display: flex;">Customer Safe Keeping Charges</h2>
                         </div>
                     }
-                    
 
-                        <div class="get_report_PDF_excel_word" style="margin-top: 10px;">
-                            <input id="searchbox" on asp-for=search />
-                            <button type="submit" id="setmodel" class="btn btn-primary" style="height: 30px;">Search</button>
-                            <a asp-action="ExportListUsingEPPlus" asp-controller="CustomerSummary" asp-route-report="@Model.Report" asp-route-fdate="@Model.Startdate" asp-route-tdate="@Model.Enddate" asp-route-brchno="@customer" asp-route-doctype="1" asp-route-search="@Model.search" class=""><img style="width: 20px;" src="~/image/excel.png" /></a>
-                            <a asp-action="ExportListUsingEPPlus" asp-controller="CustomerSummary" asp-route-report="@Model.Report" asp-route-fdate="@Model.Startdate" asp-route-tdate="@Model.Enddate" asp-route-brchno="@customer" asp-route-doctype="2" asp-route-search="@Model.search" class=" "><img style="width: 20px;" src="~/image/pdf.png" /></a>
-                            <a asp-action="ExportListUsingEPPlus" asp-controller="CustomerSummary" asp-route-report="@Model.Report" asp-route-fdate="@Model.Startdate" asp-route-tdate="@Model.Enddate" asp-route-brchno="@customer" asp-route-doctype="3" asp-route-search="@Model.search" class=" "><img style="width: 20px;" src="~/image/word.png" /></a>
-                        </div>
-                    
+
+                    <div class="get_report_PDF_excel_word" style="margin-top: 10px;display: flex;gap: 10px;align-items: center;margin-bottom: 10px;">
+                        <input id="searchbox" on asp-for=search />
+                        <button type="submit" id="setmodel" class="btn btn-primary" style="height: 30px;padding: 0px 20px;">Search</button>
+                        <a style="height: auto;" asp-action="ExportListUsingEPPlus" asp-controller="CustomerSummary" asp-route-report="@Model.Report" asp-route-fdate="@Model.Startdate" asp-route-tdate="@Model.Enddate" asp-route-brchno="@customer" asp-route-doctype="1" asp-route-search="@Model.search" class=""><img style="width: 20px;" src="~/image/excel.png" /></a>
+                        <a style="height: auto;" asp-action="ExportListUsingEPPlus" asp-controller="CustomerSummary" asp-route-report="@Model.Report" asp-route-fdate="@Model.Startdate" asp-route-tdate="@Model.Enddate" asp-route-brchno="@customer" asp-route-doctype="2" asp-route-search="@Model.search" class=" "><img style="width: 20px;" src="~/image/pdf.png" /></a>
+                        <a style="height: auto;" asp-action="ExportListUsingEPPlus" asp-controller="CustomerSummary" asp-route-report="@Model.Report" asp-route-fdate="@Model.Startdate" asp-route-tdate="@Model.Enddate" asp-route-brchno="@customer" asp-route-doctype="3" asp-route-search="@Model.search" class=" "><img style="width: 20px;" src="~/image/word.png" /></a>
+                    </div>
+
                 </div>
             }
         </div>
@@ -219,19 +236,19 @@
 
 <script type="text/javascript">
 
-    $("#setmodel").click(function() {
-        $("#divLoader").css("display", "block")
+    $("#setmodel").click(function () {
+        // $("#divLoader").css("display", "block")
     });
     function getcustomer() {
         let reportval = $('#inputState option:selected').val();
         $('#customerlist option:not(:first)').remove;
         debugger;
         $.ajax({
-            url: '@Url.Action("GetCustomer","CustomerSummary")',
+            url: '@Url.Action("GetCustomer", "CustomerSummary")',
             type: "POST",
             data: { reportid: reportval },
-            success: function(result) {
-                $.each(result, function(data, value) {
+            success: function (result) {
+                $.each(result, function (data, value) {
                     let name = value.customer;
                     $("#customerlist").append($("<option></option>").val(value.acct).html(name));
                 });
@@ -244,7 +261,7 @@
 {
     <script type="text/javascript">
 
-        window.onload = function() {
+        window.onload = function () {
             alert("@ViewBag.errormsg");
         };
     </script>
@@ -253,7 +270,7 @@
 {
     <script type="text/javascript">
 
-        window.onload = function() {
+        window.onload = function () {
             alert("@ViewBag.Message");
         };
     </script>

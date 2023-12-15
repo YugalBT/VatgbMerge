@@ -29,6 +29,7 @@ namespace Standing_Order_Vat_App.Controllers
         Prop prop = new Prop();
         public IActionResult Index()
         {
+            accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(User.Identity.Name);
 
             if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
@@ -40,6 +41,7 @@ namespace Standing_Order_Vat_App.Controllers
 
         public IActionResult InsertRecord()
         {
+            accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(User.Identity.Name);
 
             if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))

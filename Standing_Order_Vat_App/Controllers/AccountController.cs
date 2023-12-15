@@ -51,6 +51,7 @@ namespace Standing_Order_Vat_App.Controllers
         {
 
             VATServices tes = new VATServices();
+            accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(User.Identity.Name);
 
             if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
@@ -76,6 +77,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult AddUser(int? userid)
         {
+            accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(User.Identity.Name);
 
             if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))

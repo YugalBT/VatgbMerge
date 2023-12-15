@@ -9,11 +9,13 @@ namespace Standing_Order_Vat_App.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUserRole userRoleService;
+        private readonly IAccountRepo accountRepo;
 
-        public HomeController(ILogger<HomeController> logger,IUserRole userRoleService)
+        public HomeController(ILogger<HomeController> logger,IUserRole userRoleService, IAccountRepo accountRepo)
         {
             _logger = logger;
             this.userRoleService = userRoleService;
+            this.accountRepo = accountRepo;
         }
 
         public IActionResult Index()

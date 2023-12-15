@@ -45,6 +45,7 @@ namespace Standing_Order_Vat_App.Controllers
 
         public IActionResult Index()
         {
+            accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(User.Identity.Name);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
@@ -59,6 +60,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult AddFrgnCheckAsync()
         {
+            accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(User.Identity.Name);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
@@ -127,6 +129,7 @@ namespace Standing_Order_Vat_App.Controllers
                             ModelState.Clear();
                             _notyf.Success("Check Saved successfully.");
                             foreignChecksDetail.TotalAmount = Convert.ToDecimal(response.Value);
+                            foreignChecksDetail.TotalAmount = Math.Round((decimal)foreignChecksDetail.TotalAmount, 2);
                             var list = await _frgnchks.GetFrgnChksByBatchID(foreignChecksDetail.BatchId);
                             if (list.Successful)
                             {
@@ -165,6 +168,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> ViewAsync(FrgnViewCheckVm res)
         {
+            accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(User.Identity.Name);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
@@ -194,6 +198,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> UpdateFrgn()
         {
+            accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(User.Identity.Name);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
