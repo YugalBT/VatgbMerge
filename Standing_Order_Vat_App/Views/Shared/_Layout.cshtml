@@ -56,7 +56,7 @@
                 <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
                     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                         @{
-                            if (AppAccess != null && AppAccess.Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+                            if (!string.IsNullOrEmpty(AppAccess ) && AppAccess.Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
                             {
                                 <li class="nav-item1  clrclass">
                                     <a class="nav-link" asp-area="" asp-controller="StandingOrderVat" asp-action="TotalSummaryReport">
@@ -104,12 +104,13 @@
             </nav>
 
         </header>
-        <div class="customcontainer p-0 m-0" style="background:#fff;min-height: 820px;">
+        <div class="customcontainer p-0 m-0" style="background:#fff;min-height:400px;">
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
         </div>
         @await Component.InvokeAsync("Notyf")
+        <footer class="customfooter">&copy;St.Kitts-Nevis-Anguilla National Bank 2017</footer>
         @* <footer class="border-top footer text-muted">
         <div class="container">
         &copy; 2022 - Standing_Order_Vat_App - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>

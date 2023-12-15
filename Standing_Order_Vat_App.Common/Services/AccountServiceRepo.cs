@@ -82,15 +82,15 @@ namespace Standing_Order_Vat_App.Common.Services
         }
         public string GetAppAccessRoles()
         {
-            return httpContext.HttpContext.Session.GetString("AppAccessRoles");
+            return httpContext.HttpContext.Session.GetString("AppAccessRoles") ?? "";
         }
         public string Geturole()
         {
-            return httpContext.HttpContext.Session.GetString("urole");
+            return httpContext.HttpContext.Session.GetString("urole") ?? "";
         }
         public string Getucount()
         {
-            return httpContext.HttpContext.Session.GetString("ucount");
+            return httpContext.HttpContext.Session.GetString("ucount") ?? "";
         }
         public string Getuname()
         {

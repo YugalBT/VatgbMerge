@@ -1,88 +1,86 @@
 ﻿@model Standing_Order_Vat_App.Common.ViewModels.AddUserVm;
 
-<div>
-    <form asp-action="AddUser" method="post">
-       
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input asp-for="userId" type="hidden" />
+<div class="m-0 p-5">
+    <div class="right_side_content bg-lightorangecolor">
+        <br />
+        @{
+            if (Model.userId > 0)
+            {
+                <h2 style="text-align:center;color:#b46000">Update User</h2>
 
-        <div class="vat_summary max-660">
-            @{
-                if (Model.userId > 0)
-                {
-                    <h2>Update User</h2>
-                }
-                else
-                {
-                    <h2>Add User</h2>
-                }
             }
-            <div class="row">
-                <div class="col-lg-3 col-md-6 mb-lg-3 mb-md-3 mb-3">
-                    <label asp-for="UserName" class="mb-2">User Name</label>
-                    <div>
-                        <input asp-for="UserName" type="text" class="form-control">
-                        <span asp-validation-for="UserName" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-lg-3 mb-md-3 mb-3">
-                    <label asp-for="DisplayName" class="mb-2">Display Name</label>
-                    <div>
-                        <input type="text" class="form-control" asp-for="DisplayName">
-                        <span asp-validation-for="DisplayName" class="text-danger"></span>
-                    </div>
-                </div>
+            else
+            {
+                <h2 style="text-align:center;color:#b46000">Add User</h2>
+            }
+        }
+        <br />
+        <div class="middle-content-sec">
+            <div>
+                <form asp-action="AddUser" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="userId" type="hidden" />
+                    <div class="vat_summary max-660">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 mb-lg-3 mb-md-3 mb-3">
+                                <label asp-for="UserName" class="mb-2">User Name</label>
+                                <div>
+                                    <input asp-for="UserName" type="text" class="form-control">
+                                    <span asp-validation-for="UserName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-lg-3 mb-md-3 mb-3">
+                                <label asp-for="DisplayName" class="mb-2">Display Name</label>
+                                <div>
+                                    <input type="text" class="form-control" asp-for="DisplayName">
+                                    <span asp-validation-for="DisplayName" class="text-danger"></span>
+                                </div>
+                            </div>
 
-                <div class="col-lg-3 col-md-6 mb-lg-3 mb-md-3 mb-3">
-                    <label asp-for="RoleId" class="mb-2">User Role</label>
-                    <div class="multi_section">
-                        <div class="non_select">
-                            <select class="form-select" asp-for="RoleId" aria-label="Default select example"
-                                    asp-items="@(new SelectList(Model?.UserRoles,"RoleID", "RoleName"))">
-                                <option value="Select Role">Select Role</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+                            <div class="col-lg-3 col-md-6 mb-lg-3 mb-md-3 mb-3">
+                                <label asp-for="RoleId" class="mb-2">User Role</label>
+                                <div class="multi_section">
+                                    <div class="non_select">
+                                        <select class="form-select" asp-for="RoleId" aria-label="Default select example"
+                                                asp-items="@(new SelectList(Model?.UserRoles,"RoleID", "RoleName"))">
+                                            <option value="Select Role">Select Role</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
-                <div class="col-lg-3 col-md-6 mb-lg-3 mb-md-3 mb-3">
-                    <label asp-for="RoleId" class="mb-2">Application Role</label>
-                    <div class="multi_section">
-                        <div class="non_select">
-                            <div class="mutliSelect">
-                                @Html.ListBoxFor(model => model.UserPermissionId,new MultiSelectList(Model?.ProcessDropDown, "Id", "Name",@Model.UserPermissionIds), new { @class = "form-control", multiple = "multiple", id = "Subjects_dropdown" })
-                                <span asp-validation-for="UserPermissionId" class="text-danger"></span>
+                            <div class="col-lg-3 col-md-6 mb-lg-3 mb-md-3 mb-3">
+                                <label asp-for="RoleId" class="mb-2">Application Role</label>
+                                <div class="multi_section">
+                                    <div class="non_select">
+                                        <div class="mutliSelect">
+                                            @Html.ListBoxFor(model => model.UserPermissionId, new MultiSelectList(Model?.ProcessDropDown, "Id", "Name", @Model.UserPermissionIds), new { @class = "form-control", multiple = "multiple", id = "Subjects_dropdown" })
+                                            <span asp-validation-for="UserPermissionId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
                             </div>
                         </div>
-
                     </div>
-                </div>
 
-                <div class="col-lg-12">
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </div>
+
+                </form>
             </div>
         </div>
-
-
-    </form>
+    </div>
 </div>
-
-
-@*<script type="text/javascript">
-    $(function () {
-
-        $('.select-list').multiselect({
-            includeSelectAllOption: true
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#Subjects_dropdown').multiselect();
         });
-    });
-</script>
-   *@
-<script>
-    $(document).ready(function () {
-        $('#Subjects_dropdown').multiselect();
+    </script>
+}
 
-    });
-</script>
