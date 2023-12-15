@@ -290,11 +290,11 @@ namespace Standing_Order_Vat_App.Controllers
         {
 
             List<frgncheckListIncomplete> result1 = new List<frgncheckListIncomplete>();
-
+            string branch = accountRepo.GetBranchID();
             switch (res.Options)
             {
                 case 1:
-                    var a = _frgnchks.record(res.Status, "00", res.Banks, res.From, res.To);
+                    var a = _frgnchks.record(res.Status, branch, res.Banks, res.From, res.To);
                     if (a.Result.Value != null)
                     {
 
@@ -303,7 +303,7 @@ namespace Standing_Order_Vat_App.Controllers
 
                     break;
                 case 2:
-                    var b = _frgnchks.record1(res.Status, "00", res.Banks, res.From, res.To);
+                    var b = _frgnchks.record1(res.Status, branch, res.Banks, res.From, res.To);
                     if (b.Result.Value != null)
                     {
                         if (res.Status == 1)
@@ -315,7 +315,7 @@ namespace Standing_Order_Vat_App.Controllers
                     }
                     break;
                 case 3:
-                    var c = _frgnchks.record2(res.Status, "00", res.Banks, res.From, res.To);
+                    var c = _frgnchks.record2(res.Status, branch, res.Banks, res.From, res.To);
                     if (c.Result.Value != null)
                     {
                         if (res.Status == 1)
@@ -333,18 +333,18 @@ namespace Standing_Order_Vat_App.Controllers
         private List<FrgnCheckListRecVm> ListComplete(FrgnViewCheckVm res)
         {
             List<FrgnCheckListRecVm> result = new List<FrgnCheckListRecVm>();
-
+            string branch = accountRepo.GetBranchID();
             switch (res.Options)
             {
                 case 1:
-                    var a = _frgnchks.record(res.Status, "00", res.Banks, res.From, res.To);
+                    var a = _frgnchks.record(res.Status, branch, res.Banks, res.From, res.To);
                     if (a.Result.Value != null)
                     {
                         result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(a.Result.Value);
                     }
                     break;
                 case 2:
-                    var b = _frgnchks.record1(res.Status, "00", res.Banks, res.From, res.To);
+                    var b = _frgnchks.record1(res.Status, branch, res.Banks, res.From, res.To);
                     if (b.Result.Value != null)
                     {
                         if (res.Status == 1)
@@ -355,7 +355,7 @@ namespace Standing_Order_Vat_App.Controllers
                     }
                     break;
                 case 3:
-                    var c = _frgnchks.record2(res.Status, "00", res.Banks, res.From, res.To);
+                    var c = _frgnchks.record2(res.Status, branch, res.Banks, res.From, res.To);
                     if (c.Result.Value != null)
                     {
                         result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(c.Result.Value);
