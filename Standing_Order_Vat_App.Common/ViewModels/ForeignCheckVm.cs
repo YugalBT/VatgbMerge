@@ -15,7 +15,7 @@ namespace GbRegister.Core.ViewModel
         public long RecordId { get; set; }
         [Required]
         [Display(Name ="Check Number")]
-        public int? CheckNumber { get; set; } 
+        public long? CheckNumber { get; set; } 
         [Required]
         [Display(Name = "Payer Account Number")]
         public long? PayerAcctNumber { get; set; }

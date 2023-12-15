@@ -101,10 +101,9 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.Connection = conn;
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "UpdFrgnChkDtls";
-
-
+                //cmd.CommandText = "UpdFrgnChkDtls_New";
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@btchId", Convert.ToInt16(model.BatchId));
+                cmd.Parameters.AddWithValue("@btchId", Convert.ToInt32(model.BatchId));
                 cmd.Parameters.AddWithValue("@chkNum", model.CheckNumber);
                 cmd.Parameters.AddWithValue("@payAcctNum", model.PayerAcctNumber);
                 cmd.Parameters.AddWithValue("@payAcctName", model.PayerAcctName);
@@ -112,14 +111,15 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.Parameters.AddWithValue("@depAcctName", model.DepositAcctName);
                 cmd.Parameters.AddWithValue("@chkAmt", Convert.ToDouble(model.CheckAmount));
                 cmd.Parameters.AddWithValue("@recId", Convert.ToInt32(model.RecordId));
-
+                //cmd.Parameters.Add("@btchTotal", SqlDbType.Money, 100);
+                //cmd.Parameters["@btchTotal"].Direction = ParameterDirection.Output;
                 conn.Open();
                 int i = cmd.ExecuteNonQuery();
                 var batchTotal = Convert.ToDecimal(cmd.ExecuteScalar());
                 conn.Close();
                 result.Successful = true;
                 result.Message = "Data Updated Successfully.";
-
+                result.Value = batchTotal.ToString();
             }
             catch (SqlException ex)
             {

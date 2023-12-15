@@ -137,7 +137,8 @@ namespace Standing_Order_Vat_App.Common.Services
             // get all ids needed to access the relevant pages
             //result = "success";
             int empID = 0;
-            string uname = Environment.UserName;
+            //string uname = Environment.UserName;
+            string uname = "LISAME";
             try
             {
                 SqlConnection conn = new SqlConnection();

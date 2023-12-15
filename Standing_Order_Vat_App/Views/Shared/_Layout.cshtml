@@ -56,7 +56,7 @@
                 <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
                     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                         @{
-                            if (!string.IsNullOrEmpty(AppAccess) && AppAccess.Contains(ApplicationAccess.Vat.GetEnumDisplayName()) && !urole.Contains(""))
+                            if (!string.IsNullOrEmpty(AppAccess) && AppAccess.Contains(ApplicationAccess.Vat.GetEnumDisplayName()) && !string.IsNullOrEmpty(urole))
                             {
                                 <li class="nav-item1  clrclass">
                                     <a class="nav-link" asp-area="" asp-controller="StandingOrderVat" asp-action="TotalSummaryReport">

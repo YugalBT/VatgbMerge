@@ -252,6 +252,29 @@ namespace Standing_Order_Vat_App.Controllers
         }
 
         [HttpPost]
+        public async Task<IGeneralResult<string>> UpdateFrgnCheck(ForeignCheckvmm foreignCheck)
+        {
+            IGeneralResult<string> result = new GeneralResult<string>();
+            try
+            {
+                if (foreignCheck == null)
+                {
+                    result.Message = "Something Went Wrong";
+                }
+                else
+                {
+                    var response = await _frgnchks.UpdateFrgn(foreignCheck);
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = "Server error: " + ex.Message;
+            }
+            return result;
+        }
+
+        [HttpPost]
         public async Task<IGeneralResult<string>> DeletefrgnCheck(int batchid)
         {
             userRoleService.GetUserRole(User.Identity.Name);

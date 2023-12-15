@@ -143,6 +143,7 @@ function UpdateFrgnCheck(e) {
             /* loadData();*/
             if (result.successful) {
                 $("tr").removeClass("active");
+                $("[id='TotalAmount']").val(result.value);
                 alert(result.message);
             }
             else {
