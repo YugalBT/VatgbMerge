@@ -116,6 +116,10 @@ namespace Standing_Order_Vat_App.Common.Services
 
                 // For get User roles
                 sp_UserRoles = dirdbcontext.Sp_UserRoles.FromSqlRaw("exec getUserAccess_New @userName,@appName", userName, appName).AsEnumerable().ToList();
+                if(sp_UserRoles.FirstOrDefault().RoleName == "No Access")
+                {
+                    sp_UserRoles.FirstOrDefault().RoleName = "";
+                }
                 httpContext.HttpContext.Session.SetString("ucount", sp_UserRoles.Count.ToString());
                 httpContext.HttpContext.Session.SetInt32("uid", Convert.ToInt32(sp_UserRoles.FirstOrDefault().RoleID));
                 httpContext.HttpContext.Session.SetString("uname", sp_UserRoles.FirstOrDefault().UserName);

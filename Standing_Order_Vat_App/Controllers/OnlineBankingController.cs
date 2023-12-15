@@ -39,7 +39,7 @@ namespace Standing_Order_Vat_App.Controllers
             accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(User.Identity.Name);
 
-            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+            if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
             }
@@ -50,7 +50,7 @@ namespace Standing_Order_Vat_App.Controllers
         {
             userRoleService.GetUserRole(User.Identity.Name);
 
-            if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+            if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
             }

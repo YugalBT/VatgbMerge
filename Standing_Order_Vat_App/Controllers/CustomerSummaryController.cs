@@ -71,7 +71,7 @@ namespace Standing_Order_Vat_App.Controllers
         {
             accountRepo.SetUserinfoInSession();
             var rec = userRoleService.GetUserRole(User.Identity.Name);
-            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
             {
                 return RedirectToAction("AccessDenied", "Home");
             }
@@ -295,8 +295,8 @@ namespace Standing_Order_Vat_App.Controllers
             }
             return View(record);
         }
+        
         [HttpPost]
-
         public JsonResult GetCustomer(int reportid)
         {
             List<Customer_VM> customers = new List<Customer_VM>();
@@ -314,7 +314,7 @@ namespace Standing_Order_Vat_App.Controllers
         public async Task<IActionResult> ExportListUsingEPPlus(int pn = 1, int recordPerPage = 10, int brchno = 0, int report = 0, DateTime fdate = default, DateTime tdate = default, int doctype = 3, string search = "")
         {
             userRoleService.GetUserRole(User.Identity.Name);
-            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
             {
                 return RedirectToAction("AccessDenied", "Home");
             }

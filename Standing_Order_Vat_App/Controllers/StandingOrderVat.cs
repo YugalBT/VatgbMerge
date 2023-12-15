@@ -89,7 +89,7 @@ namespace Standing_Order_Vat_App.Controllers
             var rec = userRoleService.GetUserRole(User.Identity.Name);
 
             printlog("Status: Application Start");
-            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
             {
                 return RedirectToAction("AccessDenied","Home");
             }
@@ -406,7 +406,7 @@ namespace Standing_Order_Vat_App.Controllers
         public async Task<IActionResult> ExportListUsingEPPlus(int pn = 1, int recordPerPage = 10, int brchno = 0, int report = 0, DateTime fdate = default, DateTime tdate = default, int doctype = 0, string search = "")
         {
             userRoleService.GetUserRole(User.Identity.Name);
-            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
             {
                 return RedirectToAction("AccessDenied", "Home");
             }
