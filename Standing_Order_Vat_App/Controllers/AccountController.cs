@@ -201,13 +201,12 @@ namespace Standing_Order_Vat_App.Controllers
                 if (result.Successful == true)
                 {
                     notyf.Success("User deleted successfully");
-                    return RedirectToAction("ManageUser");
                 }
                 else
                 {
                     notyf.Error("Internal server error");
-                    return View();
                 }
+                return RedirectToAction("ManageUser");
             }
         }
 

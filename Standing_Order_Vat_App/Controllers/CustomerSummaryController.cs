@@ -457,10 +457,11 @@ namespace Standing_Order_Vat_App.Controllers
             PdfGrid pdfGrid = new PdfGrid();
             if (doctype == 2)
             {
+                //doc.PageSettings.Orientation = PdfPageOrientation.Portrait;
                 pdfGrid.DataSource = result;
                 //Draw grid to the page of PDF document.
 
-                pdfGrid.Draw(page, new Syncfusion.Drawing.PointF(0, 200));
+                pdfGrid.Draw(page, new Syncfusion.Drawing.PointF(0, 180));
 
                 PdfPageBase page1 = doc.Pages[0] as PdfPageBase;
                 PdfGraphics graphics = page.Graphics;
@@ -471,10 +472,39 @@ namespace Standing_Order_Vat_App.Controllers
                 PdfBitmap image = new PdfBitmap(imageStream);
                 //Set layout property to make the element break across the pages
                 PdfLayoutFormat format = new PdfLayoutFormat();
-                format.Break = PdfLayoutBreakType.FitPage;
-                format.Layout = PdfLayoutType.Paginate;
+
+
+
+                float PageWidth = page.Graphics.ClientSize.Width;
+                float PageHeight = page.Graphics.ClientSize.Height;
+                float myWidth = image.Width;
+                float myHeight = image.Height;
+
+                float shrinkFactor;
+
+                if (myWidth > PageWidth)
+                {
+                    shrinkFactor = myWidth / PageWidth;
+                    myWidth = PageWidth;
+                    myHeight = myHeight / shrinkFactor;
+                }
+
+                if (myHeight > PageHeight)
+                {
+                    shrinkFactor = myHeight / PageHeight;
+                    myHeight = PageHeight;
+                    myWidth = myWidth / shrinkFactor;
+                }
+
+                float XPosition = (PageWidth - myWidth) / 2;
+                float YPosition = (PageHeight - myHeight) / 2;
+
+                graphics.DrawImage(image, 0, 0, myWidth, myHeight);
+
+
+
                 //Draw image
-                image.Draw(page, 0, 0, format);
+                //image.Draw(page, 0, 0, format);
                 PdfFont graphicFont = new PdfStandardFont(PdfFontFamily.Helvetica, 10);
 
 
@@ -516,7 +546,7 @@ namespace Standing_Order_Vat_App.Controllers
                             section.AddParagraph().AppendText($"Date From: {record.Startdate.Date.ToString("MM/dd/yyyy")}");
                             section.AddParagraph().AppendText($"Date To: {record.Enddate.Date.ToString("MM/dd/yyyy")}");
                             section.AddParagraph();
-                        
+
 
                             //Draw grid to the page of PDF document.
                             pdfGrid.Draw(page, new Syncfusion.Drawing.PointF(10, 80));
@@ -1235,6 +1265,7 @@ namespace Standing_Order_Vat_App.Controllers
                 }
             }
         }
+
         public void printlog(string message)
         {
             string status = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["IsPrintLog"];
