@@ -136,14 +136,14 @@ function UpdateFrgnCheck(e) {
         RecordId: recId
     }
     $.ajax({
-        url: "/FrgnChks/UpdateFrgnCheck",
+        url: $(e).data('request-url'),
         data: { foreignCheck: empObj },
         type: "POST",
         success: function (result) {
             /* loadData();*/
             if (result.successful) {
                 $("tr").removeClass("active");
-                $("[id='TotalAmount']").val(result.value);
+                $("[id='TotalAmount']").val(parseFloat(result.value).toFixed(2));
                 alert(result.message);
             }
             else {
@@ -160,7 +160,7 @@ function UpdateFrgnCheck(e) {
 function DeleteBatch(batchId, e) {
     if (confirm('Are you sure you want to delete this Batch?')) {
         $.ajax({
-            url: "/FrgnChks/DeletefrgnCheck",
+            url: ("/FrgnChks/DeletefrgnCheck"),
             data: { batchid: batchId },
             type: "POST",
             success: function (result) {

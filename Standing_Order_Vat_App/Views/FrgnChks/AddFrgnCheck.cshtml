@@ -48,7 +48,7 @@
 
 
                             <div class="d-flex align-items-center flex-column gap-2">
-                                <button type="submit" id="savBatchbtn" name="actionbtn" value="batchHeader" class="btn btn-primary main_btn w-100">Save Batch Header</button>
+                                <button type="submit"  id="savBatchbtn" name="actionbtn" value="batchHeader" class="btn btn-primary main_btn w-100">Save Batch Header</button>
                                 @*  <button type="submit" name="actionbtn" value="saveCheck" class="btn btn-primary main_btn w-100">Close Batch</button>*@
                             </div>
 
@@ -193,7 +193,7 @@
 
                                                             <div class="d_none">
                                                                 <div class="d-flex align-items-center gap-2">
-                                                                    <a href="javascript:void(0)" class="check_icon" onclick="UpdateFrgnCheck(this)"><i class="fa-regular fa-circle-check"></i></a>
+                                                                    <a href="javascript:void(0)" class="check_icon" data-request-url="@Url.Action("UpdateFrgnCheck", "FrgnChks")" onclick="UpdateFrgnCheck(this)"><i class="fa-regular fa-circle-check"></i></a>
                                                                     <a href="javascript:void(0)" class="close_icon"><i class="fa-solid fa-xmark"></i></a>
                                                                 </div>
                                                             </div>

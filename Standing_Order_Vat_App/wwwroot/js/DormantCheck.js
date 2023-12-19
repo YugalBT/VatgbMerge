@@ -1,7 +1,7 @@
 ﻿function DeleteDormantBatch(id, e) {
     if (confirm('Are you sure you want to delete Dormant ?')) {
         $.ajax({
-            url: "/DormantRegister/DeleteDormant",
+            url: $(e).data('request-url'),
             data: { id: id },
             type: "POST",
             success: function (result) {
@@ -35,7 +35,7 @@ function UpdateDormantJs(e) {
         BranchName: branch,
         Status: sts
     }
-    requestAjax("/DormantRegister/UpdateDormantEntry", "post", { vm: obj }, function (res) {
+    requestAjax($(e).data('request-url'), "post", { vm: obj }, function (res) {
         if (res.successful) {
             alert(res.message)
         } else {
