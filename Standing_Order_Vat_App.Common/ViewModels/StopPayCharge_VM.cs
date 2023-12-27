@@ -10,7 +10,7 @@
         public string? Transcode { get; set; }
         public string? ProofSequence { get; set; }
         public string? CheckNumber { get; set; }
-        public string? TransAmt { get; set; }
+        public string TransAmt { get; set; }
         public double? NationalFees { get; set; }
         public string? Vat { get; set; }
         public ulong TotalRecordCount { get; set; } = 0;
