@@ -29,8 +29,8 @@ namespace Standing_Order_Vat_App.Common.Services
                      Dateactive = s.Dateactive,
                      LoanChargeId = s.LoanChargeId,
                      Name = s.Name,
-                     Nationalfees = s.Nationalfees,
-                     Totalfees = Convert.ToString(s.Totalfees),
+                     Nationalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Nationalfees)),
+                     Totalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Totalfees)),
                      Vat = String.Format("{0:0.00}", Convert.ToDouble(s.Vat)),
                  }).ToList();
                 if (record.Count > 0)
@@ -45,7 +45,7 @@ namespace Standing_Order_Vat_App.Common.Services
                       Totalfees= String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Totalfees))),
                    
 
-                    Nationalfees = record.Sum(s => s.Nationalfees),
+                    Nationalfees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Nationalfees))),
                         Vat = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Vat)))
                     });
                     record = record.Skip(pageNum * recordPerPage).Take(recordPerPage).ToList();
@@ -68,9 +68,9 @@ namespace Standing_Order_Vat_App.Common.Services
                         Dateactive = s.Dateactive,
                         LoanChargeId = s.LoanChargeId,
                         Name = s.Name,
-                        Nationalfees = s.Nationalfees,
-                        Totalfees = Convert.ToString(s.Totalfees),
-                         Vat = String.Format("{0:0.00}", Convert.ToDouble(s.Vat)),
+                        Nationalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Nationalfees)),
+                        Totalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Totalfees)),
+                        Vat = String.Format("{0:0.00}", Convert.ToDouble(s.Vat)),
                     }).ToList();
                 if (record.Count > 0)
                 {
@@ -78,7 +78,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     {
                         Acct = "Totals:",
                         Totalfees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Totalfees))),
-                        Nationalfees = record.Sum(s => s.Nationalfees),
+                        Nationalfees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Nationalfees))),
                         Vat = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Vat)))
                     });
                     record = record.Skip(pageNum * recordPerPage).Take(recordPerPage).ToList();
@@ -106,8 +106,8 @@ namespace Standing_Order_Vat_App.Common.Services
                      Dateactive = s.Dateactive.Value.ToString("MM/dd/yyyy"),
                      LoanChargeId = s.LoanChargeId,
                      Name = s.Name,
-                     Nationalfees = s.Nationalfees,
-                     Totalfees =Convert.ToString(s.Totalfees),
+                     Nationalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Nationalfees)),
+                     Totalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Totalfees)),
                      Vat = s.Vat
                  }).ToList();
             }
@@ -123,7 +123,7 @@ namespace Standing_Order_Vat_App.Common.Services
                      Dateactive = s.Dateactive.Value.ToString("MM/dd/yyyy"),
                      LoanChargeId = s.LoanChargeId,
                      Name = s.Name,
-                     Nationalfees = s.Nationalfees,
+                     Nationalfees =String.Format("{0:0.00}", Convert.ToDouble(s.Nationalfees)),
                      Totalfees = Convert.ToString(s.Totalfees),
                      Vat = s.Vat
                  }).ToList();
@@ -135,7 +135,7 @@ namespace Standing_Order_Vat_App.Common.Services
                 {
                     Acct = "Totals:",
                     Totalfees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Totalfees))),
-                    Nationalfees = record.Sum(s => s.Nationalfees),
+                    Nationalfees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Nationalfees))),
                     Vat = record.Sum(s => s.Vat)
                 });
                 //ulong totalcout = (ulong)record.Count();
@@ -158,9 +158,9 @@ namespace Standing_Order_Vat_App.Common.Services
                         Dateactive = s.Dateactive,
                         LoanChargeId = s.LoanChargeId,
                         Name = s.Name,
-                        Nationalfees = s.Nationalfees,
-                        Totalfees =Convert.ToString (s.Totalfees),
-                         Vat = String.Format("{0:0.00}", Convert.ToDouble(s.Vat)),
+                        Nationalfees = String.Format("{0:0.00}",Convert.ToDouble(s.Nationalfees)),
+                        Totalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Totalfees)),
+                        Vat = String.Format("{0:0.00}", Convert.ToDouble(s.Vat)),
                     }).ToList();
                 if (record.Count > 0)
                 {
@@ -168,7 +168,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     {
                         Acct = "Totals:",
                         Totalfees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Totalfees))),
-                        Nationalfees = record.Sum(s => s.Nationalfees),
+                        Nationalfees = String.Format("{0:0.00}",record.Sum(s=>Convert.ToDouble(s.Nationalfees))),
                         Vat = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Vat)))
                     });
                     record = record.Skip(pageNum * recordPerPage).Take(recordPerPage).ToList();
@@ -189,8 +189,8 @@ namespace Standing_Order_Vat_App.Common.Services
                        Dateactive = s.Dateactive,
                        LoanChargeId = s.LoanChargeId,
                        Name = s.Name,
-                       Nationalfees = s.Nationalfees,
-                       Totalfees = Convert.ToString(s.Totalfees),
+                       Nationalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Nationalfees)),
+                       Totalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Totalfees)),
                        Vat = String.Format("{0:0.00}", Convert.ToDouble(s.Vat)),
                    }).ToList();
                 if (record.Count > 0)
@@ -199,7 +199,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     {
                         Acct = "Totals:",
                         Totalfees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Totalfees))),
-                        Nationalfees = record.Sum(s => s.Nationalfees),
+                        Nationalfees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Nationalfees))),
                         Vat = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Vat)))
                     });
                     record = record.Skip(pageNum * recordPerPage).Take(recordPerPage).ToList();
@@ -240,8 +240,8 @@ namespace Standing_Order_Vat_App.Common.Services
                         Dateactive = s.Dateactive.Value.ToString("MM/dd/yyyy"),
                         LoanChargeId = s.LoanChargeId,
                         Name = s.Name,
-                        Nationalfees = s.Nationalfees,
-                        Totalfees = Convert.ToString(s.Totalfees),
+                        Nationalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Nationalfees)),
+                        Totalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Totalfees)),
                         Vat = s.Vat
                     }).ToList();
             }
@@ -259,8 +259,8 @@ namespace Standing_Order_Vat_App.Common.Services
                     Dateactive = s.Dateactive.Value.ToString("MM/dd/yyyy"),
                     LoanChargeId = s.LoanChargeId,
                     Name = s.Name,
-                    Nationalfees = s.Nationalfees,
-                    Totalfees = Convert.ToString(s.Totalfees),
+                    Nationalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Nationalfees)),
+                    Totalfees = String.Format("{0:0.00}", Convert.ToDouble(s.Totalfees)),
                     Vat = s.Vat
                 }).ToList();
             }
@@ -271,7 +271,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     Acct = "Totals:",
                     //String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Totalfees)))
                     Totalfees = String.Format("{0:0.00}", record.Sum(s =>Convert.ToDouble(s.Totalfees))),
-                    Nationalfees = record.Sum(s => s.Nationalfees),
+                    Nationalfees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Nationalfees))),
                     Vat = record.Sum(s => s.Vat)
                 });
                 //ulong totalrecord = (ulong)record.Count();
