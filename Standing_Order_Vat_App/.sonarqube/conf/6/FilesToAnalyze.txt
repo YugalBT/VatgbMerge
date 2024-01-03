@@ -1,7 +1,0 @@
-﻿D:\Gaurav Yadav\NewRepo9\VATCustomServices\DataTableConvertor.cs
-D:\Gaurav Yadav\NewRepo9\VATCustomServices\DbAccess.cs
-D:\Gaurav Yadav\NewRepo9\VATCustomServices\Model\DayTrnFormateVm.cs
-D:\Gaurav Yadav\NewRepo9\VATCustomServices\Model\JhhistoryFormatsVm.cs
-D:\Gaurav Yadav\NewRepo9\VATCustomServices\OnlineBankingSerices.cs
-D:\Gaurav Yadav\NewRepo9\VATCustomServices\Prop.cs
-D:\Gaurav Yadav\NewRepo9\VATCustomServices\VATServices.cs
