@@ -9,9 +9,13 @@ namespace Standing_Order_Vat_App.Common.ViewModels
     public class FrgnCheckListRecVm
     {
         public long BatchId { get; set; }
-        public DateOnly DatePaymentRequested { get; set; }
+        public DateTime DatePaymentRequested { get; set; }
         public decimal BatchTotal { get; set; }
-        public DateOnly DateSettled { get; set; }
+        public DateTime DateProcessed  { get; set; }
+        public DateTime DateReceived  { get; set; }
+
+        public DateTime DateSettled { get; set; }
+        public int BankId { get; set; }
         public string? BankName { get; set; } = null!;
         public int ProcessedBy_ID_Employee { get; set; } 
         public int SettledBy_ID_Employee { get; set; } 

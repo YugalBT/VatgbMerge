@@ -168,7 +168,8 @@ namespace Standing_Order_Vat_App.Common.Services
                      NationalFees = String.Format("{0:0.00}", Convert.ToDouble(s.NationalFees)),
                      OffsetAcctNumber = s.OffsetAcctNumber,
                      TotalFees =Convert.ToString(s.TotalFees),
-                     Vat =Convert.ToString(s.Vat),
+                     Vat = String.Format("{0:0.00}",Convert.ToDouble(s.Vat)),
+                     //Convert.ToString(s.Vat),
                  }).ToList();
                 if (lst.Count > 0)
                 {
@@ -197,7 +198,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     NationalFees = String.Format("{0:0.00}", Convert.ToDouble(s.NationalFees)),
                     OffsetAcctNumber = s.OffsetAcctNumber,
                     TotalFees =Convert.ToString(s.TotalFees),
-                    Vat =Convert.ToString(s.Vat),
+                    Vat =String.Format("{0:0.00}",Convert.ToDouble(s.Vat)),
                 }).ToList();
                 if (lst.Count > 0)
                 {

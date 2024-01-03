@@ -18,6 +18,14 @@ using Syncfusion.Pdf.Graphics;
 using Syncfusion.Drawing;
 using System.Reflection;
 using static Standing_Order_Vat_App.Controllers.CustomerSummaryController;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.ExtendedProperties;
+using AspNetCoreHero.ToastNotification.Abstractions;
+using Standing_Order_Vat_App.Common.Helper;
+using static Standing_Order_Vat_App.MvcHelper.Enumration;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -38,10 +46,20 @@ namespace Standing_Order_Vat_App.Controllers
         private readonly IVATOnFraudCharge vATOnFraudCharge;
         private readonly ITransactionCharges transactionCharge;
         private readonly ICustomerdetail customerdetail;
+        private readonly IAccountRepo accountRepo;
+        private readonly INotyfService notyf;
+        //private readonly SetUserPermissions setUserPermissions;
+        string result;
+        int userId;
+        string ssnum;
+        int empID;
+        GetCurrentUserInfoVm userInfo;
+
 
         public StandingOrderVatController(IUserRole userRoleService, IgetSummary summaryrecordservices, IGetDDACReport getDDACReportservice,
             IGetLoanCharge getLoanChargeservice, IStopPayCharge getstopPayChargeservice, ITansChargeBranch getTansChargeBranchservise
-            , ISafekeepingPayments getSafekeepingPayments, IVATOnFraudCharge vATOnFraudCharge, ITransactionCharges transactionCharge, ICustomerdetail customerdetail)
+            , ISafekeepingPayments getSafekeepingPayments, IVATOnFraudCharge vATOnFraudCharge, ITransactionCharges transactionCharge,
+            ICustomerdetail customerdetail, IAccountRepo accountRepo, INotyfService notyf)
         {
             this.userRoleService = userRoleService;
             this.summaryrecordservices = summaryrecordservices;
@@ -53,6 +71,9 @@ namespace Standing_Order_Vat_App.Controllers
             this.vATOnFraudCharge = vATOnFraudCharge;
             this.transactionCharge = transactionCharge;
             this.customerdetail = customerdetail;
+            this.accountRepo = accountRepo;
+            this.notyf = notyf;
+            //this.setUserPermissions = setUserPermissions;
         }
         public IActionResult Index()
         {
@@ -63,9 +84,15 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> TotalSummaryReport(Summery_VM obj, int pn = 1, int recordPerPage = 10, int branche = 0, int report = 0, DateTime fdate = default, DateTime tdate = default)
         {
+            //setUserPermissions.SetPermissionsInSession();
+            int empid = accountRepo.GetUserinfo(ref result, ref userInfo);
+            var rec = userRoleService.GetUserRole(User.Identity.Name);
 
             printlog("Status: Application Start");
-
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
+            {
+                return RedirectToAction("AccessDenied","Home");
+            }
             List<Customer_VM> customers = new List<Customer_VM>();
 
             Summery_VM record = new Summery_VM();
@@ -89,59 +116,35 @@ namespace Standing_Order_Vat_App.Controllers
             customers = customerdetail.GetCustomerDetail(obj.Report);
             printlog("User Name: " + User.Identity.Name);
             List<UserRole_VM> userRolelist = new List<UserRole_VM>();
-
-            ViewBag.pageno = pn;
-            var rec = userRoleService.GetUserRole(User.Identity.Name);
-
             userRolelist = rec.Select(x => ((UserRole_VM)x)).ToList();
 
-            printlog("User List Count: " + userRolelist.Count.ToString());
+            ViewBag.pageno = pn;
 
+            printlog("User List Count: " + userRolelist.Count.ToString());
             printlog("User Name: " + User.Identity.Name);
             printlog("App Name: NB_VAT_FEES");
 
             record.UserRole_VMs = userRolelist;
 
-            HttpContext.Session.SetString(Sessionusercount, userRolelist.Count.ToString());
+            //HttpContext.Session.SetString(Sessionusercount, userRolelist.Count.ToString());
 
             if (userRolelist.Count > 0)
             {
 
-                //var claims = new List<Claim>
-                //        {
-                //            new Claim(ClaimTypes.Role, userRolelist.FirstOrDefault().RoleName.ToString()),
-                //            new Claim(ClaimTypes.Name,userRolelist.FirstOrDefault().UserName.ToString()),
-                //            new Claim("RoleName",userRolelist.FirstOrDefault().RoleName.ToString()),
-                //            new Claim("uCount", userRolelist.Count.ToString()),
-                //        };
-                //var claimsIdentity = new ClaimsIdentity(
-                //    claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                //var authProperties = new AuthenticationProperties
-                //{
-                //    IsPersistent = true,
-                //    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(2),
-                //};
-                //await HttpContext.SignInAsync(
-                //    CookieAuthenticationDefaults.AuthenticationScheme,
-                //    new ClaimsPrincipal(claimsIdentity),
-                //    authProperties);
-
-                HttpContext.Session.SetInt32(Sessionuid, Convert.ToInt32(userRolelist.FirstOrDefault().RoleID));
                 printlog("Role ID: " + userRolelist.FirstOrDefault().RoleID.ToString());
-
-                HttpContext.Session.SetString(Sessionuname, userRolelist.FirstOrDefault().UserName);
                 printlog("User Name: " + userRolelist.FirstOrDefault().UserName.ToString());
-
-                HttpContext.Session.SetString(Sessionurole, userRolelist.FirstOrDefault().RoleName);
                 printlog("User Role Name: " + userRolelist.FirstOrDefault().RoleName.ToString());
 
-                //List<UserRole_VM> userRolelist = new List<UserRole_VM>();
+                //HttpContext.Session.SetInt32(Sessionuid, Convert.ToInt32(userRolelist.FirstOrDefault().RoleID));
+                //HttpContext.Session.SetString(Sessionuname, userRolelist.FirstOrDefault().UserName);
+                //HttpContext.Session.SetString(Sessionurole, userRolelist.FirstOrDefault().RoleName);
+
                 string branch;
                 long TotalRecord = 0;
                 // Summery_VM record = new Summery_VM();
                 record.isvalue = false;
                 TempData["pn"] = pn + "";
-                switch (HttpContext.Session.GetString(Sessionurole)?.ToString())
+                switch (accountRepo.Geturole())
                 {
                     case "Main Branch":
                     case "Credit":
@@ -399,10 +402,14 @@ namespace Standing_Order_Vat_App.Controllers
 
         }
 
-
         [HttpGet]
         public async Task<IActionResult> ExportListUsingEPPlus(int pn = 1, int recordPerPage = 10, int brchno = 0, int report = 0, DateTime fdate = default, DateTime tdate = default, int doctype = 0, string search = "")
         {
+            userRoleService.GetUserRole(User.Identity.Name);
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
             Summery_VM record = new Summery_VM();
             ulong TotalRecord = 0;
             record.Branch = brchno;
@@ -1424,6 +1431,7 @@ public static class Extensions
             return value.ToString();
     }
 }
+
 
 
 

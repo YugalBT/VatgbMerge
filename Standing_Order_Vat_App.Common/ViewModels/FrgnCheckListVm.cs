@@ -8,7 +8,7 @@ namespace Standing_Order_Vat_App.Common.ViewModels
 {
     public class FrgnCheckListVm
     {
-        public long RecordId { get; set; } = 1234567;
+        public long RecordId { get; set; } 
         public string CheckNumber { get; set; } = null!;
         public string PayerAcctNumber { get; set; } = null!;
         public string PayerAcctName { get; set; } = null!;

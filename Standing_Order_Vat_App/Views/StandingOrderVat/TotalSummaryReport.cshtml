@@ -4,12 +4,11 @@
 }
 
 <style>
+    .validateDiv > span {
+        display: block;
+    }
     .tblsize {
-        /*display: block;*/
         width: 100%;
-        /*        overflow: scroll;
-                                    overflow-y: scroll;*/
-        /*height: 550px;*/
     }
 
     .vat_summary {
@@ -60,29 +59,36 @@
                         <div class="col-lg-6">
                             <div class="d-flex branch">
                                 <label class="" for="inlineFormCustomSelect">Branch:</label>
-                                <select class="select-list" asp-for=Branch id="inputStatebranch">
-                                    <option value="0">Basseterre</option>
-                                    <option value="1">Nevis</option>
-                                    <option value="4">Pelican Mail</option>
-                                    <option value="2">Sandy Point</option>
-                                </select>
+                                <div class="validateDiv">
+                                    <select class="select-list" asp-for=Branch id="inputStatebranch">
+                                        <option value="0">Basseterre</option>
+                                        <option value="1">Nevis</option>
+                                        <option value="4">Pelican Mail</option>
+                                        <option value="2">Sandy Point</option>
+                                    </select>
+                                    <span asp-validation-for="Branch" class="text-danger"></span>
+                                </div>
                             </div>
                         </div>
+
                     }
                     <div class="col-lg-6">
                         <div class="d-flex branch">
                             <label class="ms-auto" for="inlineFormCustomSelect">Report:</label>
-                            <select class="select-list" asp-for=Report id="inputStatereport">
-                                <option selected>Select One</option>
-                                <option value="1">Standing Orders</option>
-                                <option value="2">DDA Service Charge</option>
-                                <option value="3">Late Charges Report</option>
-                                <option value="4">Stop Pay Charges</option>
-                                <option value="5">Transfer Charges</option>
-                                <option value="6">Safekeeping Charges</option>
-                                <option value="7">VAT On Fraud Charges</option>
-                                <option value="8">VAT On Transaction Charge</option>
-                            </select>
+                            <div class="validateDiv">
+                                <select class="select-list" asp-for=Report id="inputStatereport" required>
+                                    <option value="">Select One</option>
+                                    <option value="1">Standing Orders</option>
+                                    <option value="2">DDA Service Charge</option>
+                                    <option value="3">Late Charges Report</option>
+                                    <option value="4">Stop Pay Charges</option>
+                                    <option value="5">Transfer Charges</option>
+                                    <option value="6">Safekeeping Charges</option>
+                                    <option value="7">VAT On Fraud Charges</option>
+                                    <option value="8">VAT On Transaction Charge</option>
+                                </select>
+                                <span asp-validation-for="Report" class="text-danger"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,21 +96,27 @@
                     <div class="col-lg-6">
                         <div class="d-flex branch">
                             <label class="date-from" for="inlineFormCustomSelect">Date From:</label>
-                            <input type="date" asp-for=dateFrom />
+                            <div class="validateDiv">
+                                <input type="date" asp-for=dateFrom />
+                                <span asp-validation-for="dateFrom" class="text-danger"></span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="col-lg-6">
                         <div class="d-flex branch">
                             <label class="ms-auto" for="inlineFormCustomSelect">Date To:</label>
-                            <input type="date" asp-for=DateTo />
+                            <div class="validateDiv">
+                                <input type="date" asp-for=DateTo />
+                                <span asp-validation-for="DateTo" class="text-danger"></span>
+                            </div>
                         </div>
+
                     </div>
                 </div>
-
-                <div class="class=" col-lg-6">
-                    <div class="d-flex branch">
-                        <button type="submit" id="setmodel" style="margin-left: 133px;" class="btn btn-primary">Get Report</button>
+                <div class="row mb-3 row mb-3 justify-content-end">
+                    <div class="col-lg-6 text-end">
+                        <button type="submit" id="setmodel" class="btn btn-primary">Get Report</button>
                     </div>
                 </div>
                 <div id="divLoader" style="text-align: center; display:none;vertical-align: middle;"> <img src="~/Image/Spinner-3.gif" alt="Loader" /> </div>
@@ -155,9 +167,9 @@
                                 <h2 style="display: flex;">VAT on Fraud Charge</h2>
                             </div>
                             <div class="get_report_PDF_excel_word" style="margin-top: 10px;">
-                               <a id="btnExport12"    onclick="Export12()" > <img style="width: 20px;" src="~/image/excel.png" /></a>
-                                <a id="btnExport"   onclick="Export()" ><img style="width: 20px;" src="~/image/pdf.png"/></a>
-                                <a id="btnExportword"   onclick="ExportToDoc()" ><img style="width: 20px;" src="~/image/word.png"/></a>
+                                <a id="btnExport12" onclick="Export12()"> <img style="width: 20px;" src="~/image/excel.png" /></a>
+                                <a id="btnExport" onclick="Export()"><img style="width: 20px;" src="~/image/pdf.png" /></a>
+                                <a id="btnExportword" onclick="ExportToDoc()"><img style="width: 20px;" src="~/image/word.png" /></a>
                             </div>
                         }
                         else if (Model.Report == 8)
@@ -166,19 +178,19 @@
                                 <h2 style="display: flex;">VAT on Transaction Charge</h2>
                             </div>
                             <div class="get_report_PDF_excel_word" style="margin-top: 10px;">
-                               <a id="btnExport123"    onclick="Export12()" > <img style="width: 20px;" src="~/image/excel.png" /></a>
-                                <a id="btnExport1234"   onclick="Export()" ><img style="width: 20px;" src="~/image/pdf.png"/></a>
-                                <a id="btnExport1234"   onclick="ExportToDoc()" ><img style="width: 20px;" src="~/image/word.png"/></a>
+                                <a id="btnExport123" onclick="Export12()"> <img style="width: 20px;" src="~/image/excel.png" /></a>
+                                <a id="btnExport1234" onclick="Export()"><img style="width: 20px;" src="~/image/pdf.png" /></a>
+                                <a id="btnExport1234" onclick="ExportToDoc()"><img style="width: 20px;" src="~/image/word.png" /></a>
                             </div>
                         }
                         @if (Model.Report != 7 && Model.Report != 8)
                         {
-                            <div class="get_report_PDF_excel_word" style="margin-top: 10px;">
+                            <div class="get_report_PDF_excel_word" style="margin-top: 10px;display: flex;gap: 10px;align-items: center;margin-bottom: 10px;">
                                 <input id="searchbox" on asp-for=search />
-                                <button type="submit" id="setmodel" class="btn btn-primary" style="height: 30px;">Search</button>
-                                <a asp-action="ExportListUsingEPPlus" asp-controller="StandingOrderVat" asp-route-report="@Model.Report" asp-route-fdate="@Model.dateFrom" asp-route-tdate="@Model.DateTo" asp-route-brchno="@Model.Branch" asp-route-doctype="1" asp-route-search="@Model.search" class=""><img style="width: 20px;" src="~/image/excel.png" /></a>
-                                <a asp-action="ExportListUsingEPPlus" asp-controller="StandingOrderVat" asp-route-report="@Model.Report" asp-route-fdate="@Model.dateFrom" asp-route-tdate="@Model.DateTo" asp-route-brchno="@Model.Branch" asp-route-doctype="2" asp-route-search="@Model.search" class=" "><img style="width: 20px;" src="~/image/pdf.png" /></a>
-                                <a asp-action="ExportListUsingEPPlus" asp-controller="StandingOrderVat" asp-route-report="@Model.Report" asp-route-fdate="@Model.dateFrom" asp-route-tdate="@Model.DateTo" asp-route-brchno="@Model.Branch" asp-route-doctype="3" asp-route-search="@Model.search" class=" "><img style="width: 20px;" src="~/image/word.png" /></a>
+                                <button type="submit" id="setmodel" class="btn btn-primary" style="height: 30px;padding: 0px 20px;">Search</button>
+                                <a style="height: auto;" asp-action="ExportListUsingEPPlus" asp-controller="StandingOrderVat" asp-route-report="@Model.Report" asp-route-fdate="@Model.dateFrom" asp-route-tdate="@Model.DateTo" asp-route-brchno="@Model.Branch" asp-route-doctype="1" asp-route-search="@Model.search" class=""><img style="width: 20px;" src="~/image/excel.png" /></a>
+                                <a style="height: auto;" asp-action="ExportListUsingEPPlus" asp-controller="StandingOrderVat" asp-route-report="@Model.Report" asp-route-fdate="@Model.dateFrom" asp-route-tdate="@Model.DateTo" asp-route-brchno="@Model.Branch" asp-route-doctype="2" asp-route-search="@Model.search" class=" "><img style="width: 20px;" src="~/image/pdf.png" /></a>
+                                <a style="height: auto;" asp-action="ExportListUsingEPPlus" asp-controller="StandingOrderVat" asp-route-report="@Model.Report" asp-route-fdate="@Model.dateFrom" asp-route-tdate="@Model.DateTo" asp-route-brchno="@Model.Branch" asp-route-doctype="3" asp-route-search="@Model.search" class=" "><img style="width: 20px;" src="~/image/word.png" /></a>
                             </div>
                         }
                     </div>
@@ -276,7 +288,7 @@
 {
     <script type="text/javascript">
 
-        window.onload = function() {
+        window.onload = function () {
             alert("@ViewBag.errormsg");
         };
     </script>
@@ -286,7 +298,7 @@
     <script type="text/javascript">
 
 
-        window.onload = function() {
+        window.onload = function () {
             alert("@ViewBag.Message");
         };
 
@@ -295,20 +307,39 @@
 
 <script>
 
-    $("#setmodel").click(function() {
-        $("#divLoader").css("display", "block")
+    $("#setmodel").click(function () {
+        //$("#divLoader").css("display", "block")
     });
 
-    $(document).on('click', '#setmodel', function() {
-        debugger;
+    $(document).on('click', '#setmodel', function () {
         let branchval = $('#inputStatebranch').val();
         let repo = $("#inputStatereport").val();
         let datef = $('#dateFrom').val();
         let dateto = $('#DateTo').val();
-        $('#branch').val(branchval);
-        $('#report').val(repo);
-        $('#datefrom').val(datef);
-        $('#dateto').val(dateto);
+        let err = 0;
+        if (branchval == "") {
+            err += 1;
+            //$('[data-valmsg-for="Branch"]').html("This field is required");
+        }
+        if (repo == "0" || repo == "" || repo == null) {
+            err += 1;
+            //$('[data-valmsg-for="Report"]').html("This field is required");
+        }
+        if (datef == "") {
+            err += 1;
+            //$('[data-valmsg-for="dateFrom"]').html("This field is required");
+        }
+        if (dateto == "") {
+            err += 1;
+            //$('[data-valmsg-for="DateTo"]').html("This field is required");
+        }
+        if (err == 0) {
+            $("#divLoader").css("display", "block")
+            $('#branch').val(branchval);
+            $('#report').val(repo);
+            $('#datefrom').val(datef);
+            $('#dateto').val(dateto);
+        }
     });
 
 

@@ -170,7 +170,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     NationalFees = s.NationalFees,
                     ProofSequence = s.ProofSequence,
                     StopchargeId = s.StopchargeId,
-                    TransAmt =Convert.ToString(s.TransAmt),
+                    TransAmt =String.Format("{0:0.00}",Convert.ToDouble(s.TransAmt)),
                     Transcode = s.Transcode,
                     Vat = String.Format("{0:0.00}", Convert.ToDouble(s.Vat)),
                 }).ToList();
@@ -206,7 +206,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     NationalFees = s.NationalFees,
                     ProofSequence = s.ProofSequence,
                     StopchargeId = s.StopchargeId,
-                    TransAmt =Convert.ToString(s.TransAmt),
+                    TransAmt = String.Format("{0:0.00}", Convert.ToDouble(s.TransAmt)),
                     Transcode = s.Transcode,
                     Vat = String.Format("{0:0.00}", Convert.ToDouble(s.Vat)),
                 }).ToList();
@@ -246,7 +246,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     NationalFees = s.NationalFees,
                     ProofSequence = s.ProofSequence,
                     StopchargeId = s.StopchargeId,
-                    TransAmt =Convert.ToString(s.TransAmt),
+                    TransAmt = String.Format("{0:0.00}", Convert.ToDouble(s.TransAmt)),
                     Transcode = s.Transcode,
                     Vat = String.Format("{0:0.00}", Convert.ToDouble(s.Vat)),
                 }).ToList();
@@ -267,7 +267,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     NationalFees = s.NationalFees,
                     ProofSequence = s.ProofSequence,
                     StopchargeId = s.StopchargeId,
-                    TransAmt =Convert.ToString(s.TransAmt),
+                    TransAmt =String.Format("{0:0.00}", Convert.ToDouble(s.TransAmt)),
                     Transcode = s.Transcode,
                     Vat = String.Format("{0:0.00}", Convert.ToDouble(s.Vat)),
                 }).ToList();

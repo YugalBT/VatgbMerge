@@ -5,12 +5,14 @@ using Standing_Order_Vat_App.Common.Interfaces;
 using Standing_Order_Vat_App.Common.ViewModels;
 using Standing_Order_Vat_App.Models;
 using VATCustomServices;
+using static Standing_Order_Vat_App.MvcHelper.Enumration;
 
 namespace Standing_Order_Vat_App.Controllers
 {
     public class CustomServiceVATController : Controller
     {
         private readonly INotyfService notyf;
+        private readonly IAccountRepo accountRepo;
         private readonly IUserRole userRoleService;
         const string Sessionuid = "uid";
         const string Sessionuname = "uname";
@@ -18,26 +20,45 @@ namespace Standing_Order_Vat_App.Controllers
         const string Sessionusercount = "ucount";
         Enumes enm = new Enumes();
 
-        public CustomServiceVATController(INotyfService notyf)
+        public CustomServiceVATController(INotyfService notyf, IUserRole userRoleService, IAccountRepo accountRepo)
         {
             this.notyf = notyf;
+            this.userRoleService = userRoleService;
+            this.accountRepo = accountRepo;
         }
         Prop prop = new Prop();
         public IActionResult Index()
         {
+            accountRepo.SetUserinfoInSession();
+            userRoleService.GetUserRole(User.Identity.Name);
+
+            if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
             return View();
         }
 
         public IActionResult InsertRecord()
         {
+            accountRepo.SetUserinfoInSession();
+            userRoleService.GetUserRole(User.Identity.Name);
 
+            if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> InsertRecord(CustomService customService)
         {
-           
+            userRoleService.GetUserRole(User.Identity.Name);
 
+            if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
             string connectioString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["ServiceDbConnection"];
             string ServiceFilePathdda = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["ServiceFilePath"]+"DDA\\";
             string ServiceFilePathlon = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["ServiceFilePath"] + "LON\\";

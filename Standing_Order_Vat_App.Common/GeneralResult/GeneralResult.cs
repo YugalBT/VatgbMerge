@@ -15,7 +15,7 @@ namespace Standing_Order_Vat_App.Common.GeneralResult
     public interface IGeneralResult<T>
     {
         bool Successful { get; set; }
-        string Message { get; set; }
+        string ? Message { get; set; } 
         T Value { get; set; }
     }
 }

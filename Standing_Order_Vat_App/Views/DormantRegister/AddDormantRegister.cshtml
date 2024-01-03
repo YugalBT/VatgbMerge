@@ -1,198 +1,103 @@
 ﻿@model GbRegister.Core.ViewModel.VmDormantRegister
-<link href="~/css/link.css" rel="stylesheet" />
-
-<link href="~/css/link.css" rel="stylesheet" />
-
-<style>
-    .custom_navbars_link {
-        background-color: #002c36;
-    }
-
-        .custom_navbars_link .navbar-brand {
-            color: #ffffff;
-        }
-
-        .custom_navbars_link .navbar-nav .nav-link {
-            color: #ffffff;
-            font-size: 14px
-        }
-
-        .custom_navbars_link ul .nav-link img {
-            max-width: 40px;
-        }
-</style>
-
-<div class="custom_navbars_link">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">GB Registries</a>
-            @*<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>*@
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        @* <a class="btn btn-primary" asp-controller="FrgnChks" asp-action="Index">Foreign Checks</a>*@
-                        <a class="nav-link active" asp-controller="DormantRegister" asp-action="Index">Dormant Register</a>
-                    </li>
-                    <li class="nav-item">
-
-                        <a class="nav-link active" asp-controller="FrgnChks" asp-action="Index">Foreign Checks</a>
-                    </li>
-                </ul>
-                <ul class="ml-0">
-                    <li class="nav-item">
-                        <a class="nav-link p-0" href="#"><img src="~/Image/help.png" /></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-</div>
+@{
+    await Html.RenderPartialAsync("GBRegistersMenu");
+}
 
 <div class="d-flex">
-    <div id="sidebar-wrapper" class="side_bar_custom">
-        <div class="mt-4">
-    <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnNewSection" value="New" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnNewSection" class="btn-no-style" asp-action="AddDormantRegister">New</a>
-    <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnUpdateSection" value="Update" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnUpdateSection" class="btn-no-style" asp-action="UpdateDormantRegister">Update</a>
-    <a input type="submit" name="ctl00$ctl00$GB_Reg_Parent_Mstr_ContPlaceHolder$btnViewSection" value="View" id="GB_Reg_Parent_Mstr_ContPlaceHolder_btnViewSection" class="btn-no-style" asp-action="ViewDormantRegister">View</a>
-</div>
-</div>
+    @{
+        await Html.RenderPartialAsync("_DormantLeftMenu");
+    }
 
-<div class="right_side_content bg-lightorangecolor">
-<br />
-<h2 style="text-align:center;color:#b46000">New Dormant Register Entry</h2>
-<br />
-<br />
-<div class="row" style="align-items:center">
-    <form asp-action="AddDormantRegister" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input asp-for="RecordId" hidden />
-        <div class="row mb-3">
-            <div class="col-lg-5" style="padding-left:70px">
-            <div class="form-group">
-                <label for="txtAcctNum">Account Number</label>
-                <input asp-for="AcctNumber" id="txtName" class="form-control"/>
-                <span asp-validation-for="AcctNumber" class="text-danger"></span>
-            </div>
-        </div>
+    <div class="right_side_content bg-lightorangecolor">
+        <br />
+        <h2 style="text-align:center;color:#b46000">New Dormant Register Entry</h2>
         <br />
         <br />
-        <div class="col-lg-5">
-            <div class="form-group">
-                <label for="acctName">Name</label>
-                <input asp-for="Name" id="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+        <div class="row" style="align-items:center">
+            <form asp-action="AddDormantRegister" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input asp-for="RecordId" hidden />
+                <input asp-for="Name" hidden />
+                <input asp-for="AcctType" hidden />
+                <input asp-for="AcctStatus" hidden />
+                <input asp-for="CoreBranchNumber" hidden />
+                <div class="row mb-3">
+                    <div class="col-lg-5" style="padding-left:70px">
+                        <div class="form-group">
+                            <label class="form-label" asp-for="AcctNumber"></label>
+                            <input asp-for="AcctNumber" type="number" class="form-control" oninput="GetAccountInfo()"/>
+                            <span asp-validation-for="AcctNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label class="form-label" asp-for="Name"></label>
+                            <input asp-for="Name"  class="form-control" disabled/>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="col-lg-5" style="padding-left:70px">
+                        <div class="form-group">
+                            <label class="form-label" asp-for="AcctType"></label>
+                            <input asp-for="AcctType" class="form-control" disabled />
+                            <span asp-validation-for="AcctType" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label class="form-label" asp-for="AcctStatus"></label>
+                            <input asp-for="AcctStatus" class="form-control" disabled />
+                            <span asp-validation-for="AcctStatus" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="col-lg-5" style="padding-left:70px">
+                        <div class="form-group">
+                            <label class="form-label" asp-for="DateRequested"></label>
+                            <input type="date" asp-for="DateRequested" class="form-control" />
+                            <span asp-validation-for="DateRequested" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="col-lg-5" style="padding-left:8px">
+                        <div class="form-group">
+                            <label class="form-label" asp-for="IssuingDeptId"></label>
+                            <select asp-for="IssuingDeptId" class="form-control">
+                                <option value="">Select</option>
+                                @foreach (var item in ViewBag.Departments)
+                                {
+                                    <option value="@item["DeptId"]">@item["DeptName"]</option>
+                                }
+                            </select>
+                            <span asp-validation-for="IssuingDeptId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="col-lg-5" style="padding-left:70px">
+                        <div class="form-group">
+                            <label class="form-label" asp-for="Particulars"></label>
+                            <textarea asp-for="Particulars" class="form-control"></textarea>
+                            <span asp-validation-for="Particulars" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" style="padding-left:70px">
+                    <div class="form-group">
+                        <input type="submit" value="Submit" class="btn btn-primary" />
+                    </div>
+                </div>
+            </form>
         </div>
-            <br />
-            <br />
-            <br />
-        <div class="col-lg-5" style="padding-left:70px">
-            <div class="form-group">
-                <label for="acctType">AcountType</label>
-                <input asp-for="AcctType" id="Type" class="form-control" />
-                <span asp-validation-for="AcctType" class="text-danger"></span>
-            </div>
-        </div>
-            <br />
-            <br />
-            <br />
-        <div class="col-lg-5">
-            <div class="form-group">
-                <label for="AccountOriginalStatus">Account Original Status</label>
-                <input asp-for="AcctStatus" id="Status" class="form-control" />
-                <span asp-validation-for="AcctStatus" class="text-danger"></span>
-            </div>
-        </div>
-            <br />
-            <br />
-            <br />
-            <div class="col-lg-5" style="padding-left:70px">
-            <div class="form-group">
-                <label for="DateRequested">Entry Date</label>
-                <input asp-for="DateRequested" class="form-control" />
-                <span asp-validation-for="DateRequested" class="text-danger"></span>
-            </div>
-        </div>
-            <br />
-            <br />
-            <br />
-            <div class="col-lg-5" style="padding-left:8px">
-            <div class="form-group">
-                <label for="IssuingDepartment">Issuing Department</label>
-                <select asp-for="IssuingDeptId" class="form-control">
-                    <option selected>Select Department</option>
-                    <option value="1">Accounts</option>
-                    <option value="2">Administration</option>
-                    <option value="3">Bulk Cash</option>
-                    <option value="4">Card Center</option>
-                    <option value="5">Cash</option>
-                    <option value="6">Cash & Securities</option>
-                    <option value="7">Chief Excutive Officer's Office</option>
-                    <option value="8">Chief Operating Officer</option>
-                    <option value="9">Chief Operating Officer-Marketing</option>
-                    <option value="10">Chief Operating Officer-Processing Operations</option>
-                    <option value="11">Claims</option>
-                    <option value="12">Credit</option>
-                    <option value="13">Customer Service</option>
-                    <option value="14">Electrical Services</option>
-                    <option value="15">Electronic Banking Services</option>
-                    <option value="16">Filling</option>
-                    <option value="17">General Manager's Office</option>
-                    <option value="18">Human Resources</option>
-                    <option value="19">Human Resources Unit</option>
-                    <option value="20">Chief Operating Officer-Processing Operations</option>
-                    <option value="21">Internal Audit & Enforcement Unit</option>
-                    <option value="22">International Business</option>
-                    <option value="23">Legal Unit</option>
-                    <option value="24">Life & Health</option>
-                    <option value="25">Maintenence</option>
-                    <option value="26">Managing Director's Secretaraiat</option>
-                    <option value="27">Marketing & Public Relations</option>
-                    <option value="28">MIS Unit</option>
-                    <option value="29">Nevis</option>
-                    <option value="30">None-Life</option>
-                    <option value="31">None</option>
-                    <option value="32">Operations</option>
-                    <option value="33">Operations Processing</option>
-                    <option value="34">Operations-Bulk Cash</option>
-                    <option value="35">Pelican-Mail</option>
-                    <option value="36">Private Banking Operation</option>
-                    <option value="37">Reinsurance</option>
-                    <option value="38">Risk & Compliance Unit</option>
-                    <option value="39">Sales</option>
-                    <option value="40">Sandy Point</option>
-                    <option value="41">Secretariat</option>
-                    <option value="42">Verifications</option>
-                </select>
-                <span asp-validation-for="IssuingDeptId" class="text-danger"></span>
-            </div>
-        </div>
-        </div>
-        <br />
-        <div class="col-lg-6" style="padding-left:50px">
-            <div class="form-group">
-                <label for="Particulars">Particulars</label>
-                <textarea asp-for="Particulars" class="form-control"></textarea>
-                <span asp-validation-for="Particulars" class="text-danger"></span>
-            </div>
-        </div>
-        <br />
-        <div class="col-md-6" style="padding-left:70px">
-            <div class="form-group">
-                <input type="submit" value="Submit" class="btn btn-primary" />
-            </div>
-        </div>
-    </form>
-</div>
-</div>
+    </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 @section scripts {
-    <script type="text/javascript">
+    @*  <script type="text/javascript">
         $(document).ready(function () {
             $('body').addClass('.anything').on('click', function () {
                 if ($.trim($("#txtName").val()) == "") {
@@ -228,5 +133,6 @@
             });
         });
 
-    </script>
-    }
+    </script> *@
+
+}

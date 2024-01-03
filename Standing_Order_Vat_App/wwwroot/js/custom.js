@@ -265,7 +265,6 @@ $('.mutliSelect-1 input[type="checkbox"]').on('click', function () {
 });
 
 function Save() {
-    debugger;
     FormData = {}
     FormData["FormId"] = $("#formId").val();
     FormData["CategoryId"] = $('#CategoryId').val();
@@ -408,7 +407,6 @@ function Save() {
 }
 
 function setUserId(userId) {
-    debugger
     this.userId = userId;
     // remove checkbox
     $("input[name='UserAssignKeywords']").prop('checked', false);
@@ -446,7 +444,6 @@ function CheckKeywordsBroadcast() {
 }
 
 function AssignKeyword() {
-    debugger;
     var keywordIDs = $("input[name=UserAssignKeywords]:checked").map(function () {
         return $(this).val();
     }).get();
@@ -477,7 +474,6 @@ $(document).on("click", function () {
 })
 
 $(document).ready(function () {
-    debugger;
     $("#CategoryBroadcast").change(function () {
         $("#ProcessBroadcast").empty();
         $.ajax({
@@ -504,3 +500,4 @@ $(document).ready(function () {
 function dataSave() {
     $("#broadcast").submit();
 }
+

@@ -22,9 +22,12 @@ using System.Reflection;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Net.Mail;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Authorization;
+using static Standing_Order_Vat_App.MvcHelper.Enumration;
 
 namespace Standing_Order_Vat_App.Controllers
 {
+    //[Authorize(Roles = "Vat")]
     public class CustomerSummaryController : Controller
     {
         const string Sessionuid = "uid";
@@ -32,6 +35,7 @@ namespace Standing_Order_Vat_App.Controllers
         const string Sessionurole = "urole";
         const string Sessionusercount = "ucount";
         private readonly IUserRole userRoleService;
+        private readonly IAccountRepo accountRepo;
         private readonly IgetSummary summaryrecordservices;
         private readonly IGetDDACReport getDDACReportservice;
         private readonly IGetLoanCharge getLoanChargeservice;
@@ -39,11 +43,12 @@ namespace Standing_Order_Vat_App.Controllers
         private readonly ITansChargeBranch getTansChargeBranchservise;
         private readonly ISafekeepingPayments getSafekeepingPayments;
         private readonly ICustomerdetail customerdetail;
-        public CustomerSummaryController(IUserRole userRoleService, IgetSummary summaryrecordservices, IGetDDACReport getDDACReportservice,
+        public CustomerSummaryController(IUserRole userRoleService, IAccountRepo accountRepo, IgetSummary summaryrecordservices, IGetDDACReport getDDACReportservice,
         IGetLoanCharge getLoanChargeservice, IStopPayCharge getstopPayChargeservice, ITansChargeBranch getTansChargeBranchservise
         , ISafekeepingPayments getSafekeepingPayments, ICustomerdetail customerdetail)
         {
             this.userRoleService = userRoleService;
+            this.accountRepo = accountRepo;
             this.summaryrecordservices = summaryrecordservices;
             this.getDDACReportservice = getDDACReportservice;
             this.getLoanChargeservice = getLoanChargeservice;
@@ -54,6 +59,8 @@ namespace Standing_Order_Vat_App.Controllers
         }
         public IActionResult Index()
         {
+            accountRepo.SetUserinfoInSession();
+            userRoleService.GetUserRole(User.Identity.Name);
             return View();
         }
 
@@ -62,7 +69,12 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult CustomerSummaryReport(CustomerSummary_VM obj, int pn = 1, int recordPerPage = 10, int customer = 0, int report = 0, DateTime Startdate = default, DateTime Enddate = default, string search = "")
         {
-
+            accountRepo.SetUserinfoInSession();
+            var rec = userRoleService.GetUserRole(User.Identity.Name);
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
             printlog("Status: Application Start");
 
             CustomerSummary_VM record = new CustomerSummary_VM();
@@ -88,11 +100,10 @@ namespace Standing_Order_Vat_App.Controllers
             obj.search = search;
             ViewBag.pageno = pn;
 
-            var rec = userRoleService.GetUserRole(User.Identity.Name);
+            
             userRolelist = rec.Select(x => ((UserRole_VM)x)).ToList();
 
             printlog("User List Count: " + userRolelist.Count.ToString());
-
             printlog("User Name: " + User.Identity.Name);
             printlog("App Name: NB_VAT_FEES");
 
@@ -103,15 +114,8 @@ namespace Standing_Order_Vat_App.Controllers
             HttpContext.Session.SetString(Sessionusercount, userRolelist.Count.ToString());
             if (userRolelist.Count() > 0)
             {
-
-
-                HttpContext.Session.SetInt32(Sessionuid, Convert.ToInt32(userRolelist.FirstOrDefault().RoleID));
                 printlog("Role ID: " + userRolelist.FirstOrDefault().RoleID.ToString());
-
-                HttpContext.Session.SetString(Sessionuname, userRolelist.FirstOrDefault().UserName);
                 printlog("User Name: " + userRolelist.FirstOrDefault().UserName.ToString());
-
-                HttpContext.Session.SetString(Sessionurole, userRolelist.FirstOrDefault().RoleName);
                 printlog("User Role Name: " + userRolelist.FirstOrDefault().RoleName.ToString());
 
                 customers = customerdetail.GetCustomerDetail(obj.Report);
@@ -197,7 +201,6 @@ namespace Standing_Order_Vat_App.Controllers
                             }
                             break;
                         }
-
                     case 4:
                         {
                             record.acct = obj.acct;
@@ -292,13 +295,13 @@ namespace Standing_Order_Vat_App.Controllers
             }
             return View(record);
         }
+        
         [HttpPost]
-
         public JsonResult GetCustomer(int reportid)
         {
             List<Customer_VM> customers = new List<Customer_VM>();
 
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString(Sessionurole)?.ToString()) == false)
+            if (accountRepo.Geturole() != null)
             {
                 customers = customerdetail.GetCustomerDetail(reportid);
                 ViewBag.ddlrec = customers;
@@ -310,6 +313,11 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> ExportListUsingEPPlus(int pn = 1, int recordPerPage = 10, int brchno = 0, int report = 0, DateTime fdate = default, DateTime tdate = default, int doctype = 3, string search = "")
         {
+            userRoleService.GetUserRole(User.Identity.Name);
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
             CustomerSummary_VM record = new CustomerSummary_VM();
             ulong TotalRecord = 0;
             record.acct = brchno;
@@ -332,7 +340,7 @@ namespace Standing_Order_Vat_App.Controllers
                 case 1:
                     {
                         //record.acct = ;
-                        if (HttpContext.Session.GetString(Sessionurole)?.ToString() == "Credit")
+                        if (accountRepo.Geturole() != null && accountRepo.Geturole() == "Credit")
                         {
                             ViewBag.Message = String.Format("You are not authorized to view this report");
                         }
@@ -348,7 +356,7 @@ namespace Standing_Order_Vat_App.Controllers
                     {
                         //  record.acct = obj.acct;
 
-                        if (HttpContext.Session.GetString(Sessionurole)?.ToString() == "Credit")
+                        if (accountRepo.Geturole() != null && accountRepo.Geturole() == "Credit")
                         {
                             ViewBag.Message = String.Format("You are not authorized to view this report");
                         }
@@ -364,7 +372,7 @@ namespace Standing_Order_Vat_App.Controllers
                     {
                         //  record.acct = obj.acct;
 
-                        if (HttpContext.Session.GetString(Sessionurole)?.ToString() == "Main Branch")
+                        if (accountRepo.Geturole() != null && accountRepo.Geturole() == "Main Branch")
                         {
                             ViewBag.Message = String.Format("You are not authorized to view this report");
                         }
@@ -385,7 +393,7 @@ namespace Standing_Order_Vat_App.Controllers
                     {
                         // record.acct = obj.acct;
 
-                        if (HttpContext.Session.GetString(Sessionurole)?.ToString() == "Credit")
+                        if (accountRepo.Geturole() != null && accountRepo.Geturole() == "Credit")
                         {
                             ViewBag.Message = String.Format("You are not authorized to view this report");
                         }
@@ -400,7 +408,7 @@ namespace Standing_Order_Vat_App.Controllers
                     {
                         // record.acct = obj.acct;
 
-                        if (HttpContext.Session.GetString(Sessionurole)?.ToString() == "Credit")
+                        if (accountRepo.Geturole() != null && accountRepo.Geturole() == "Credit")
                         {
                             ViewBag.Message = String.Format("You are not authorized to view this report");
                         }
@@ -415,7 +423,7 @@ namespace Standing_Order_Vat_App.Controllers
                     {
                         // record.acct = obj.acct;
 
-                        if (HttpContext.Session.GetString(Sessionurole)?.ToString() == "Credit")
+                        if (accountRepo.Geturole() != null && accountRepo.Geturole() == "Credit")
                         {
                             ViewBag.Message = String.Format("You are not authorized to view this report");
                         }
@@ -449,10 +457,11 @@ namespace Standing_Order_Vat_App.Controllers
             PdfGrid pdfGrid = new PdfGrid();
             if (doctype == 2)
             {
+                //doc.PageSettings.Orientation = PdfPageOrientation.Portrait;
                 pdfGrid.DataSource = result;
                 //Draw grid to the page of PDF document.
 
-                pdfGrid.Draw(page, new Syncfusion.Drawing.PointF(0, 200));
+                pdfGrid.Draw(page, new Syncfusion.Drawing.PointF(0, 180));
 
                 PdfPageBase page1 = doc.Pages[0] as PdfPageBase;
                 PdfGraphics graphics = page.Graphics;
@@ -463,10 +472,39 @@ namespace Standing_Order_Vat_App.Controllers
                 PdfBitmap image = new PdfBitmap(imageStream);
                 //Set layout property to make the element break across the pages
                 PdfLayoutFormat format = new PdfLayoutFormat();
-                format.Break = PdfLayoutBreakType.FitPage;
-                format.Layout = PdfLayoutType.Paginate;
+
+
+
+                float PageWidth = page.Graphics.ClientSize.Width;
+                float PageHeight = page.Graphics.ClientSize.Height;
+                float myWidth = image.Width;
+                float myHeight = image.Height;
+
+                float shrinkFactor;
+
+                if (myWidth > PageWidth)
+                {
+                    shrinkFactor = myWidth / PageWidth;
+                    myWidth = PageWidth;
+                    myHeight = myHeight / shrinkFactor;
+                }
+
+                if (myHeight > PageHeight)
+                {
+                    shrinkFactor = myHeight / PageHeight;
+                    myHeight = PageHeight;
+                    myWidth = myWidth / shrinkFactor;
+                }
+
+                float XPosition = (PageWidth - myWidth) / 2;
+                float YPosition = (PageHeight - myHeight) / 2;
+
+                graphics.DrawImage(image, 0, 0, myWidth, myHeight);
+
+
+
                 //Draw image
-                image.Draw(page, 0, 0, format);
+                //image.Draw(page, 0, 0, format);
                 PdfFont graphicFont = new PdfStandardFont(PdfFontFamily.Helvetica, 10);
 
 
@@ -483,7 +521,32 @@ namespace Standing_Order_Vat_App.Controllers
                     case 1:
                         {
                             IWSection section = document.AddSection();
+                            string dataPath = @"E:\GGGGG\Standing_Order_Vat_App\Word\OleTemplate.docx";
+                            //FileStream fileStream1 = System.IO.File.Open(dataPath, FileMode.Open,
+                            //FileAccess.Read, FileShare.None);
+
+                            //FileStream fileStream = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+
+                            section.AddParagraph().ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+
+                            FileStream imageStream = System.IO.File.Open(@"wwwroot\Image\vatq.jpg", FileMode.Open, FileAccess.Read, FileShare.None);
+                            WPicture picture = (WPicture)section.AddParagraph().AppendPicture(imageStream);
+
+                            picture.AddCaption("Figure", CaptionNumberingFormat.Roman, CaptionPosition.AfterImage);
+                            ApplyFormattingForCaption(document.LastParagraph);
+
+
+
+                            //IWPicture iWPicture = section.AddParagraph().AppendPicture("..Image//vat.jpg");
                             section.AddParagraph().AppendText("Standing Orders Customer Report");
+                            WTextBody body;
+                            section.AddParagraph().AppendText($"CustomerName: {customers.Where(w => w.Acct == record.acct.ToString()).Select(s => s.CustomerName).FirstOrDefault()}");
+                            section.AddParagraph().AppendText($"Branch:Report: {Extensions.GetEnumDisplayName((ReportsName)record.Report)}");
+                            section.AddParagraph().AppendText($"Date From: {record.Startdate.Date.ToString("MM/dd/yyyy")}");
+                            section.AddParagraph().AppendText($"Date To: {record.Enddate.Date.ToString("MM/dd/yyyy")}");
+                            section.AddParagraph();
+
 
                             //Draw grid to the page of PDF document.
                             pdfGrid.Draw(page, new Syncfusion.Drawing.PointF(10, 80));
@@ -762,6 +825,20 @@ namespace Standing_Order_Vat_App.Controllers
                     case 4:
                         {
                             IWSection section = document.AddSection();
+                            string dataPath = @"E:\GGGGG\Standing_Order_Vat_App\Word\OleTemplate.docx";
+                            //FileStream fileStream1 = System.IO.File.Open(dataPath, FileMode.Open,
+                            //FileAccess.Read, FileShare.None);
+
+                            //FileStream fileStream = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+
+                            section.AddParagraph().ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+
+                            FileStream imageStream = System.IO.File.Open(@"wwwroot\Image\vatq.jpg", FileMode.Open, FileAccess.Read, FileShare.None);
+                            WPicture picture = (WPicture)section.AddParagraph().AppendPicture(imageStream);
+
+                            picture.AddCaption("Figure", CaptionNumberingFormat.Roman, CaptionPosition.AfterImage);
+                            ApplyFormattingForCaption(document.LastParagraph);
                             section.AddParagraph().AppendText("Stop Pay Customer report");
 
                             section.AddParagraph().AppendText($"CustomerName: {customers.Where(w => w.Acct == record.acct.ToString()).Select(s => s.CustomerName).FirstOrDefault()}");
@@ -858,6 +935,20 @@ namespace Standing_Order_Vat_App.Controllers
                         {
                             IWSection section = document.AddSection();
                             section.AddParagraph().AppendText("Transfer Charges Summary Report");
+                            string dataPath = @"E:\GGGGG\Standing_Order_Vat_App\Word\OleTemplate.docx";
+                            //FileStream fileStream1 = System.IO.File.Open(dataPath, FileMode.Open,
+                            //FileAccess.Read, FileShare.None);
+
+                            //FileStream fileStream = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+
+                            section.AddParagraph().ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+
+                            FileStream imageStream = System.IO.File.Open(@"wwwroot\Image\vatq.jpg", FileMode.Open, FileAccess.Read, FileShare.None);
+                            WPicture picture = (WPicture)section.AddParagraph().AppendPicture(imageStream);
+
+                            picture.AddCaption("Figure", CaptionNumberingFormat.Roman, CaptionPosition.AfterImage);
+                            ApplyFormattingForCaption(document.LastParagraph);
 
                             section.AddParagraph().AppendText($"CustomerName: {customers.Where(w => w.Acct == record.acct.ToString()).Select(s => s.CustomerName).FirstOrDefault()}");
                             section.AddParagraph().AppendText($"Report: {Extensions.GetEnumDisplayName((ReportsName)record.Report)}");
@@ -1174,6 +1265,7 @@ namespace Standing_Order_Vat_App.Controllers
                 }
             }
         }
+
         public void printlog(string message)
         {
             string status = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["IsPrintLog"];
