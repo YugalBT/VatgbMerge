@@ -27,7 +27,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     CheckNumber = s.CheckNumber,
                     Cif = s.Cif,
                     Dateactive = s.Dateactive,
-                    NationalFees = String.Format("{0:0.00}", Convert.ToDouble(s.NationalFees)),
+                    NationalFees = s.NationalFees,
                     ProofSequence = s.ProofSequence,
                     StopchargeId = s.StopchargeId,
                     TransAmt =Convert.ToString(s.TransAmt),
@@ -43,7 +43,7 @@ namespace Standing_Order_Vat_App.Common.Services
                         // String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Totalfees)))
                         TransAmt = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.TransAmt))),
                         //TransAmt = record.Sum(s => s.TransAmt),
-                        NationalFees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.NationalFees))),
+                        NationalFees = record.Sum(s => s.NationalFees),
                         Vat = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Vat)))
                     });
                     record = record.Skip(pageNum * recordPerPage).Take(recordPerPage).ToList();
@@ -65,7 +65,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     CheckNumber = s.CheckNumber,
                     Cif = s.Cif,
                     Dateactive = s.Dateactive,
-                    NationalFees = String.Format("{0:0.00}", Convert.ToDouble(s.NationalFees)),
+                    NationalFees = s.NationalFees,
                     ProofSequence = s.ProofSequence,
                     StopchargeId = s.StopchargeId,
                     TransAmt =Convert.ToString(s.TransAmt),
@@ -79,7 +79,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     {
                         CheckNumber = "Total:",
                         TransAmt = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.TransAmt))),
-                        NationalFees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.NationalFees))),
+                        NationalFees = record.Sum(s => s.NationalFees),
                         Vat = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Vat))),
                     });
                     record = record.Skip(pageNum * recordPerPage).Take(recordPerPage).ToList();
@@ -167,7 +167,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     Dateactive = s.Dateactive,
                     CheckNumber = s.CheckNumber,
                     Cif = s.Cif,
-                    NationalFees = String.Format("{0:0.00}",Convert.ToDouble(s.NationalFees)),
+                    NationalFees = s.NationalFees,
                     ProofSequence = s.ProofSequence,
                     StopchargeId = s.StopchargeId,
                     TransAmt =String.Format("{0:0.00}",Convert.ToDouble(s.TransAmt)),
@@ -180,7 +180,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     {
                         CheckNumber = "Totals:",
                         TransAmt = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.TransAmt))),
-                        NationalFees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.NationalFees))),
+                        NationalFees = record.Sum(s => s.NationalFees),
                         Vat = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Vat)))
                     });
                     record = record.Skip(pageNum * recordPerPage).Take(recordPerPage).ToList();
@@ -203,7 +203,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     Dateactive = s.Dateactive,
                     CheckNumber = s.CheckNumber,
                     Cif = s.Cif,
-                    NationalFees = String.Format("{0:0.00}", Convert.ToDouble(s.NationalFees)),
+                    NationalFees = s.NationalFees,
                     ProofSequence = s.ProofSequence,
                     StopchargeId = s.StopchargeId,
                     TransAmt = String.Format("{0:0.00}", Convert.ToDouble(s.TransAmt)),
@@ -216,7 +216,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     {
                         CheckNumber = "Totals:",
                         TransAmt = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.TransAmt))),
-                        NationalFees = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.NationalFees))),
+                        NationalFees = record.Sum(s => s.NationalFees),
                         Vat = String.Format("{0:0.00}", record.Sum(s => Convert.ToDouble(s.Vat)))
                     });
                     ulong totalrecord = (ulong)stopPayCharge.StopCharges.Where(w => w.Branch == summery_VM.Branch.ToString() &&
