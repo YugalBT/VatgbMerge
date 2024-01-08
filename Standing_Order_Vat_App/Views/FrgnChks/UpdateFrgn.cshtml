@@ -80,7 +80,7 @@
                                         <th>Date Processed</th>
                                         <th>Total</th>
                                         <th>Entered By</th>
-                                        <th>Settled By</th>
+                                        <th>Check For Settlement</th>
                                         <th scope="col">#</th>
                                     </tr>
                                 </thead>
@@ -102,8 +102,8 @@
                                                 <td>@dormant.DateProcessed.ToShortDateString()</td>
                                                 <td>@dormant.BatchTotal</td>
                                                 <td>@dormant.ProcessName</td>
-                                               
-                                                <td>@dormant.ProcessedBy_ID_Employee</td>
+                                                <td><input type="checkbox"></td>
+                                                
                                                 <td><a href="javascript:void(0)" onclick="DeleteBatch(@dormant.BatchId,this)" class="edit_icon"><i class="fa-solid fa-trash"></i></a></td>
                                                 @*<td><a href=" asp-controller="FrgnChks" asp-action="DeletefrgnCheck" asp-route-batchid="@dormant.BatchId">Delete</a></td>*@
                                             </tr>
@@ -131,6 +131,7 @@
                                                 <td>@dormant.BatchTotal</td>
                                                 <td>@dormant.ProcessName</td>
                                                 <td>@dormant.ProcessName</td>
+                                                <td><input type="checkbox"></td>
                                                 <td><a href="javascript:void(0)" onclick="DeleteBatch(@dormant.BatchId,this)" class="edit_icon"><i class="fa-solid fa-trash"></i></a></td>
                                                 @*<td><a href=" asp-controller="FrgnChks" asp-action="DeletefrgnCheck" asp-route-batchid="@dormant.BatchId">Delete</a></td>*@
                                             </tr>
@@ -158,10 +159,10 @@
                                         <th>Date Payment Requested</th>
                                         <th>Date Processed	</th>
                                         <th>Bank</th>
-                                        @*<th>Date Processed</th>*@
+                                        
                                         <th>Total</th>
                                         <th>Entered By</th>
-                                        <th>Settled By</th>
+                                       <th>Check For Settlement</th>
 
                                     </tr>
                                 </thead>
