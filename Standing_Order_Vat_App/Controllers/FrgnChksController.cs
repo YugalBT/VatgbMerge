@@ -165,7 +165,39 @@ namespace Standing_Order_Vat_App.Controllers
             var res = _frgnchks.GetAllforeign();
             return Json(res);
         }
+
         [HttpGet]
+        public async Task<IActionResult> ViewAsync()
+        {
+            FrgnViewCheckVm res = new FrgnViewCheckVm();
+            accountRepo.SetUserinfoInSession();
+            userRoleService.GetUserRole(User.Identity.Name);
+
+            if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
+            //FrgnViewCheckVm res = new FrgnViewCheckVm();
+            res.entryStatusVM = new List<ForeignCheckStatusVM>();
+            //res.bankList = new List<BankListVm>();
+            res.entryStatusVM = await _frgnchks.GetEntryStatus();
+            res.bankList = await _sKNANBLIVEContext.Banks.Select(s => new BankListVm()
+            {
+                BankId = s.BankId,
+                BankName = s.Name
+            }).ToListAsync();
+            //if (res.Status == 1)
+            //{
+            //    res.FrgncheckListIncompletes = ListIncomplete(res);
+            //}
+            //else
+            //{
+            //    res.FrgnCheckListRecVms = ListComplete(res);
+            //}
+            return View(res);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> ViewAsync(FrgnViewCheckVm res)
         {
             accountRepo.SetUserinfoInSession();
@@ -176,8 +208,8 @@ namespace Standing_Order_Vat_App.Controllers
                 return RedirectToAction("AccessDenied", "Home");
             }
             //FrgnViewCheckVm res = new FrgnViewCheckVm();
-            res.entryStatusVM = new List<ForeignCheckStatusVM>();
-            res.bankList = new List<BankListVm>();
+            //res.entryStatusVM = new List<ForeignCheckStatusVM>();
+            //res.bankList = new List<BankListVm>();
             res.entryStatusVM = await _frgnchks.GetEntryStatus();
             res.bankList = await _sKNANBLIVEContext.Banks.Select(s => new BankListVm()
             {
@@ -297,11 +329,11 @@ namespace Standing_Order_Vat_App.Controllers
             }
             return res;
         }
-        public JsonResult Status()
-        {
-            var status = _context.EntryStatuses.ToList();
-            return Json(status);
-        }
+        //public JsonResult Status()
+        //{
+        //    var status = _context.EntryStatuses.ToList();
+        //    return Json(status);
+        //}
 
         public JsonResult Banks()
         {
