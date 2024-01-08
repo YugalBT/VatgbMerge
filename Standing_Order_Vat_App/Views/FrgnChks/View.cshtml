@@ -13,12 +13,12 @@
         <br />
         <br />
         <div class="middle-content-sec">
-            <form method="get" asp-action="View" asp-controller="FrgnChks">
+            <form method="post" asp-action="View" asp-controller="FrgnChks">
                 <div class="row align-items-end">
                     <div class="col-3">
                         <div class="form-group mb-3">
                             <label for="Options" class="d-block">Options</label>
-                            <select class="form-select" asp-for=Options id="sel" onchange="Banksanddate()">
+                            <select class="form-select" asp-for=Options onchange="Banksanddate()">
                                 <option value="">--- Select ---</option>
                                 <option value="1">Bank & Date</option>
                                 <option value="2">Date</option>
@@ -26,32 +26,23 @@
                         </div>
                     </div>
 
-                    <div class="col-3" id="sele">
+                    <div class="col-3" id="BankDiv">
                         <div class="form-group mb-3">
                             <label class="d-block">Banks</label>
-                            @*<select class="form-control" id="Banks">
-                            <option>----Select Banks-----</option>
-                            </select>*@
-                            <select id="Select1" asp-for=Banks class="form-select" asp-items="@(new SelectList(Model.bankList,"BankId", "BankName"))">
+                            <select asp-for=Banks class="form-select" asp-items="@(new SelectList(Model.bankList,"BankId", "BankName"))">
                                 <option value="">--- Select ---</option>
                             </select>
 
                         </div>
                     </div>
-                    <div class="col-3">
+                    <div class="col-3" id="StatusDiv">
                         <div class="form-group mb-3">
                             <label class="d-block">Status</label>
-                            @*<select class="form-control" id="Status">
-                            <option>----Select Status-----</option>
-                            </select>*@
-
-                            <select id="Select1" asp-for=Status class="form-select" asp-items="@(new SelectList(Model.entryStatusVM,"StatusId", "StatusName"))">
+                            <select asp-for=Status class="form-select" asp-items="@(new SelectList(Model.entryStatusVM,"StatusId", "StatusName"))">
                                 <option value="">--- Select ---</option>
                             </select>
                         </div>
-
                     </div>
-
                     <div class="col-3">
                         <div class="branch mb-3">
                             <label class="date-from d-block" for="inlineFormCustomSelect">Date From:</label>
@@ -114,7 +105,7 @@
                                                         <td>@dormant.BatchTotal</td>
                                                         <td>@dormant.ProcessName</td>
 
-                                                        <td>@dormant.ProcessName</td>
+                                                        <td></td>
                                                         @*<td><a href="javascript:void(0)" onclick="DeleteBatch(@dormant.BatchId,this)" class="edit_icon"><i class="fa-solid fa-trash"></i></a></td>*@
                                                         @*<td><a href=" asp-controller="FrgnChks" asp-action="DeletefrgnCheck" asp-route-batchid="@dormant.BatchId">Delete</a></td>*@
                                                     </tr>
@@ -210,21 +201,19 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
     <script>
-        $('#sel').show();
-        $('#Banks').hide();
         function Banksanddate() {
-            if ($("#sel").val() == "2") {
-                //alert("From second");
-                $('#sele').hide();
+            if ($("#Options").val() == "2") {
+                $('#BankDiv').hide();
             }
             else {
-                $('#sele').show();
+                $('#BankDiv').show();
             }
         }
     </script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('#table').DataTable();
+            Banksanddate();
         });
     </script>
 }
