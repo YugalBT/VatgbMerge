@@ -192,3 +192,15 @@ tr.active td .d_none {
 .custom_tble tbody tr td {
     border-color: transparent;
 }
+
+.innrtbel thead tr {
+    color: #000 !important;
+    background-color: #fcfcfc !important;
+}
+
+.settlebtn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}

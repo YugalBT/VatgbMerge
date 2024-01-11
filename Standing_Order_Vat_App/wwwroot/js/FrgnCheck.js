@@ -1,7 +1,20 @@
-﻿$(document).ready(function () {
-    //saveBatchHeader();
+﻿function UpdateDatePaymentRequest(BatchId, e) {
+    let DatePayment = $(e).parents("tr").find("#dormant_DatePaymentRequested").val()
+    let obj = {
+        BatchId: BatchId,
+        DatePaymentRequest: DatePayment
+    }
 
-});
+    requestAjax("/FrgnChks/UpdateDatePayment", "Post", { vm: obj }, function (res) {
+        if (res.successful) {
+            $(e).parents("tr").removeClass("active");
+            alert(res.message);
+        }
+        else {
+            alert(res.message);
+        }
+    });
+}
 function removeValidation() {
     $("#btnAdd").hide();
     $("#savBatchbtn").removeAttr("disabled");
@@ -178,4 +191,12 @@ function DeleteBatch(batchId, e) {
             }
         });
     }
+}
+
+function SettleBatch() {
+    $("tbody tr td #SettleBatch").each(function () {
+        if ($(this).is(":checked")) {
+            $(this).attr("name")
+        }
+    })
 }

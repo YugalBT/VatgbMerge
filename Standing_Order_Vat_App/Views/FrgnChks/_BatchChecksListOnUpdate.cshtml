@@ -1,0 +1,119 @@
+﻿@model GbRegister.Core.ViewModel.ForeignCheckVm
+
+<table class="innrtbel">
+    <thead>
+        <tr>
+            <th scope="col">Check Amount</th>
+            <th scope="col">Payer Acct#</th>
+            <th scope="col">Payer Name</th>
+            <th scope="col">Deposit Acct#</th>
+            <th scope="col">Deposit Name</th>
+            <th scope="col">Check#</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.checksList != null)
+        {
+            @foreach (var item in Model.checksList)
+            {
+                <tr>
+                    <td>
+                        <input type="hidden" asp-for="@item.RecordId">
+                        <input type="text" value="@item.CheckNumber" class="form-control custom_box" asp-for="@item.CheckNumber" />
+                    </td>
+                    <td>
+                        <input type="text" value="@item.PayerAcctNumber" class="form-control custom_box" asp-for="@item.PayerAcctNumber" />
+                    </td>
+                    <td>
+                        <input type="text" value="@item.PayerAcctName" class="form-control custom_box" asp-for="@item.PayerAcctName" />
+                    </td>
+                    <td>
+                        <input type="text" value="@item.DepositAcctNumber" class="form-control custom_box" asp-for="@item.DepositAcctNumber" />
+                    </td>
+                    <td>
+                        <input type="text" value="@item.DepositAcctName" class="form-control custom_box" asp-for="@item.DepositAcctName" />
+                    </td>
+                    <td>
+                        <input type="text" value="@item.CheckAmount" class="form-control custom_box" asp-for="@item.CheckAmount" />
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6">No record found!</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+<div>
+    <form asp-action="AddFrgnCheck" method="post">
+        <div>
+            <div class="b-demo-content" id="AddfrgnCheck">
+                <div class="row mb-3">
+                    <div class="col-lg-4 mb-lg-3 mb-md-3">
+                        <input asp-for="BatchId" type="hidden"/>
+                        <div class="form-group">
+                            <label class="form-label form-label-cust" asp-for="CheckNumber"></label>
+                            <input asp-for="CheckNumber" class="form-control form-control-cust" />
+                            <span asp-validation-for="CheckNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-lg-3 mb-md-3">
+                        <div class="form-group">
+                            <label class="form-label form-label-cust" asp-for="PayerAcctNumber"></label>
+                            <input asp-for="PayerAcctNumber" class="form-control form-control-cust" />
+                            <span asp-validation-for="PayerAcctNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-lg-3 mb-md-3">
+                        <div class="form-group">
+                            <label class="form-label form-label-cust" asp-for="PayerAcctName"></label>
+
+                            <input asp-for="PayerAcctName" class="form-control form-control-cust" />
+                            <span asp-validation-for="PayerAcctName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-lg-3 mb-md-3">
+                        <div class="form-group">
+                            <label class="form-label form-label-cust" asp-for="DepositAcctNumber"></label>
+
+                            <input asp-for="DepositAcctNumber" class="form-control form-control-cust" />
+                            <span asp-validation-for="DepositAcctNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-lg-3 mb-md-3">
+                        <div class="form-group">
+                            <label class="form-label form-label-cust" asp-for="DepositAcctName"></label>
+
+                            <input asp-for="DepositAcctName" class="form-control form-control-cust" />
+                            <span asp-validation-for="DepositAcctName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-lg-3 mb-md-3">
+                        <div class="form-group">
+                            <label class="form-label form-label-cust" asp-for="CheckAmount"></label>
+
+                            <input asp-for="CheckAmount" class="form-control form-control-cust" />
+                            <span asp-validation-for="CheckAmount" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mt-1">
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="button" onclick="SaveBatchChecks(this) " name="actionbtn" value="saveCheck" class="btn btn-primary main_btn rounded-0">Save Check</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>

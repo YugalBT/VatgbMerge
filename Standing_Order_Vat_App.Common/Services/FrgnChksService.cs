@@ -11,6 +11,7 @@ using Standing_Order_Vat_App.DAL.Directory_DB;
 using Standing_Order_Vat_App.DAL.GB_Register;
 using Standing_Order_Vat_App.DAL.SKNANB_LIVE;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -341,7 +342,49 @@ namespace Standing_Order_Vat_App.Common.Services
                 return result;
             }
         }
+        public IGeneralResult<string> UpdateDatePaymentRequest(UpdateDatePaymentVm vm)
+        {
+            IGeneralResult<string> res = new GeneralResult<string>();
+            if (vm.BatchId > 0 && vm.BatchId != null)
+            {
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.StoredProcedure;
+                try
+                {
+                    using (conn)
+                    {
+                        cmd.CommandText = "UpdFrgnChkBtchHdr";
 
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@batchId", Convert.ToInt32(vm.BatchId));
+                        cmd.Parameters.AddWithValue("@dtSent", Convert.ToDateTime(vm.DatePaymentRequest));
+
+                        if (conn.State != ConnectionState.Open)
+                            conn.Open();
+                        cmd.ExecuteNonQuery();
+                        res.Successful = true;
+                        res.Message = "Data updated successfully.";
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    res.Message = "Error saving settlement details for batch : " + vm.BatchId + ": " + ex.Message;
+                }
+                finally
+                {
+                    cmd.Dispose();
+                    conn.Close();
+                }
+            }
+            else
+            {
+                res.Message = "Invalid data.";
+            }
+            return res;
+        }
         public async Task<List<ForeignCheckStatusVM>> GetEntryStatus()
         {
             List<ForeignCheckStatusVM> rec = new List<ForeignCheckStatusVM>();

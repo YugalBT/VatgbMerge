@@ -90,14 +90,7 @@
                                                         @*//<td>@dormant.DateSettled</td>*@
                                                         <td>@dormant.DateReceived.ToShortDateString()</td>
                                                         <td>
-                                                            @if (dormant.DatePaymentRequested.ToString() == "01-01-0001 12.00.00 AM")
-                                                            {
-                                                                <p class="text-center">_</p>
-                                                            }
-                                                            else
-                                                            {
-                                                                dormant.DatePaymentRequested.ToShortDateString();
-                                                            }
+                                                            <input type="date" asp-for="@dormant.DatePaymentRequested" class="form-control custom_box" value="@Html.Raw(dormant.DatePaymentRequested.ToString() == "01-01-0001 12.00.00 AM" ? "_" :Convert.ToDateTime(dormant.DatePaymentRequested).ToShortDateString() )" />
                                                         </td>
                                                         <td>@dormant.DateProcessed.ToShortDateString()</td>
                                                         <td>@dormant.BankName</td>
@@ -127,14 +120,7 @@
                                                             }
                                                         </td>
                                                         <td>
-                                                            @if (dormant.DatePaymentRequested.ToString() == "01-01-0001 12.00.00 AM")
-                                                            {
-                                                                <p class="text-center">_</p>
-                                                            }
-                                                            else
-                                                            {
-                                                                dormant.DatePaymentRequested.ToShortDateString();
-                                                            }
+                                                            <input type="date" asp-for="@dormant.DatePaymentRequested" class="form-control custom_box" value="@Html.Raw(dormant.DatePaymentRequested.ToString() == "01-01-0001 12.00.00 AM" ? "_" :Convert.ToDateTime(dormant.DatePaymentRequested).ToShortDateString() )" />
                                                         </td>
                                                         <td>@dormant.DateProcessed.ToShortDateString()</td>
                                                         <td>@dormant.BankName</td>

@@ -158,6 +158,44 @@ namespace Standing_Order_Vat_App.Controllers
             return View(foreignChecksDetail);
 
         }
+        //[HttpPost]
+        //public async Task<IGeneralResult<PartialViewResult>> ShowBatchCheckList(int BatchId)
+        //{
+        //    IGeneralResult<PartialViewResult> res = new GeneralResult<PartialViewResult>();
+        //    if(BatchId > 0)
+        //    {
+        //        var list = await _frgnchks.GetFrgnChksByBatchID(BatchId);
+        //        if (list.Successful)
+        //        {
+        //            ForeignCheckVm vm = new ForeignCheckVm();
+        //            List<FrgnCheckListVm> v = DataTableToModelConvert.CreateListFromTable<FrgnCheckListVm>(list.Value);
+        //            vm.checksList = v;
+        //            var viw = PartialView("_BatchChecksListOnUpdate",vm);
+        //            res.Successful = true;
+        //            res.Value = viw;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        res.Message = "Invalid batch";
+        //    }
+        //    return res;
+        //}
+
+        [HttpPost]
+        public async Task<IActionResult> ShowBatchCheckList(int BatchId)
+        {
+            var list = await _frgnchks.GetFrgnChksByBatchID(BatchId);
+            if (list.Successful)
+            {
+                ForeignCheckVm vm = new ForeignCheckVm();
+                List<FrgnCheckListVm> v = DataTableToModelConvert.CreateListFromTable<FrgnCheckListVm>(list.Value);
+                vm.checksList = v;
+                vm.BatchId = BatchId;
+                return PartialView("_BatchChecksListOnUpdate", vm);
+            }
+            return View();
+        }
 
         [HttpGet]
         public JsonResult FrgncheckList()
@@ -282,7 +320,12 @@ namespace Standing_Order_Vat_App.Controllers
             }
             return View(res);
         }
-
+        [HttpPost]
+        public IGeneralResult<string> UpdateDatePayment(UpdateDatePaymentVm vm)
+        {
+           var res = _frgnchks.UpdateDatePaymentRequest(vm);
+            return res;
+        }
         [HttpPost]
         public async Task<IGeneralResult<string>> UpdateFrgnCheck(ForeignCheckvmm foreignCheck)
         {
@@ -329,11 +372,11 @@ namespace Standing_Order_Vat_App.Controllers
             }
             return res;
         }
-        //public JsonResult Status()
-        //{
-        //    var status = _context.EntryStatuses.ToList();
-        //    return Json(status);
-        //}
+        public JsonResult Status()
+        {
+            var status = _context.EntryStatuses.ToList();
+            return Json(status);
+        }
 
         public JsonResult Banks()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,8 @@ namespace Standing_Order_Vat_App.Common.ViewModels
     public class frgncheckListIncomplete
     {
         public long BatchId { get; set; }
-        public DateTime DatePaymentRequested { get; set; }
+        [Required]
+        public DateTime? DatePaymentRequested { get; set; }
         
         public DateTime DateProcessed { get; set; }
         public DateTime DateReceived { get; set; }

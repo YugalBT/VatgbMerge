@@ -17,27 +17,21 @@ namespace Standing_Order_Vat_App.Common.Interfaces
     {
         List<BankListVm> GetBanks();
 
-        public Task<IGeneralResult<string>> AddFrgnCheack(ForeignCheckVm foreignCheckVm);
-        public Task<IGeneralResult<string>> UpdateFrgn(ForeignCheckvmm model);
-        public IEnumerable<string> GetFrgnChksBatchByStatus(int status,string branch);
-
-        public Task<int> SaveFrgnBatch(FrgnCheckVm frgnCheckVm);
-
-        public Task<decimal> GetCheckTotal(int BatchId);
-        public List<ForeignChecksDetail> GetAllforeign();
-
-        public Task<IGeneralResult<string>> DeleteFrgnChksBatch(int batchId);
-
-        public Task<string> GetFrgnChksBatchByDate(int status, string branch, DateTime dateFrom, DateTime dateto);
-        public Task<string> GetFrgnChksBatchByBank(Getfrgncheckvm getfrgncheckvm);
-
-         public Task<IGeneralResult<DataTable>> GetFrgnChksByBatchID(int batchId);
-
-
-         Task<List<ForeignCheckStatusVM>> GetEntryStatus();
-         Task<IGeneralResult<DataTable>> record(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo);  
-         Task<IGeneralResult<DataTable>> record1(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo);  
-         Task<IGeneralResult<DataTable>> record2(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo);  
+        Task<IGeneralResult<string>> AddFrgnCheack(ForeignCheckVm foreignCheckVm);
+        Task<IGeneralResult<string>> UpdateFrgn(ForeignCheckvmm model);
+        IGeneralResult<string> UpdateDatePaymentRequest(UpdateDatePaymentVm vm);
+        IEnumerable<string> GetFrgnChksBatchByStatus(int status, string branch);
+        Task<int> SaveFrgnBatch(FrgnCheckVm frgnCheckVm);
+        Task<decimal> GetCheckTotal(int BatchId);
+        List<ForeignChecksDetail> GetAllforeign();
+        Task<IGeneralResult<string>> DeleteFrgnChksBatch(int batchId);
+        Task<string> GetFrgnChksBatchByDate(int status, string branch, DateTime dateFrom, DateTime dateto);
+        Task<string> GetFrgnChksBatchByBank(Getfrgncheckvm getfrgncheckvm);
+        Task<IGeneralResult<DataTable>> GetFrgnChksByBatchID(int batchId);
+        Task<List<ForeignCheckStatusVM>> GetEntryStatus();
+        Task<IGeneralResult<DataTable>> record(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo);
+        Task<IGeneralResult<DataTable>> record1(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo);
+        Task<IGeneralResult<DataTable>> record2(int status, string branch, int bankId, DateTime dateFrom, DateTime dateTo);
 
     }
 }

@@ -54,3 +54,31 @@ function GetAccountInfo() {
         }
     })
 }
+
+function SaveBatchChecks(e) {
+    debugger
+    let parentTr = $(e).parents("#batchDetails");
+    let formParent = $(e).parents("form");
+    let BatchId = $(formParent).find("#BatchId").val();
+    let CheckNumber = $(formParent).find("#CheckNumber").val();
+    let PayerAcctNumber = $(formParent).find("#PayerAcctNumber").val();
+    let PayerAcctName = $(formParent).find("#PayerAcctName").val();
+    let DepositAcctNumber = $(formParent).find("#DepositAcctNumber").val();
+    let DepositAcctName = $(formParent).find("#DepositAcctName").val();
+    let CheckAmount = $(formParent).find("#CheckAmount").val();
+    let actionBtn = $(e).attr("name");
+
+    let obj = {
+        BatchId: BatchId,
+        CheckNumber: CheckNumber,
+        PayerAcctNumber: PayerAcctNumber,
+        PayerAcctName: PayerAcctName,
+        DepositAcctNumber: DepositAcctNumber,
+        DepositAcctName: DepositAcctName,
+        CheckAmount: CheckAmount
+    }
+    requestAjax("/FrgnChks/AddFrgnCheck", "Post", { actionbtn: actionBtn, foreignChecksDetail: obj }, function (res) {
+        ShowBatchDetails(BatchId, parentTr)
+    })
+
+}
