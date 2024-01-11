@@ -464,8 +464,6 @@ namespace Standing_Order_Vat_App.Common.Services
             return result;
         }
 
-
-
     }
 }
 
