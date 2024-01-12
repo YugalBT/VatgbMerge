@@ -68,9 +68,10 @@
                                 if (Model.BatchId > 0)
                                 {
                                     <button type="button" id="btnAdd" class="buttonRemoveCss" onclick="showdiv()">Add New Check</button>
+                                    <button type="button" class="buttonRemoveCss text-end" onclick="showrefresh(@Model.BatchId)">Refresh</button>
                                 }
                             }
-                            <a href="" class="text-end" onclick="showrefresh(@Model.BatchId)">Refresh</a>
+                           
                         </div>
 
 
@@ -152,56 +153,11 @@
                                             <th scope="col">Check Amount</th>
                                             <th scope="col">#</th>
                                         </tr>
-                                        @* <label class="form-label checkHeader">CheckNumber</label>
-                                    <label class="form-label checkHeader">Payer Account</label>
-                                    <label class="form-label checkHeader">Payer Name</label>
-                                    <label class="form-label checkHeader">Deposit Account</label>
-                                    <label class="form-label checkHeader">Depositor's Name</label>
-                                    <label class="form-label checkHeader">Check Amount</label> *@
-
                                     </thead>
                                     <tbody id="tblcheckslist">
+
                                         @{
-                                            if (Model.checksList != null)
-                                            {
-                                                foreach (var item in Model.checksList)
-                                                {
-                                                    <tr>
-
-
-                                                        <td>
-                                                            <input type="hidden" asp-for="@item.RecordId">
-                                                            <input type="text" value="@item.CheckNumber" class="form-control custom_box" asp-for="@item.CheckNumber" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" value="@item.PayerAcctNumber" class="form-control custom_box" asp-for="@item.PayerAcctNumber" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" value="@item.PayerAcctName" class="form-control custom_box" asp-for="@item.PayerAcctName" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" value="@item.DepositAcctNumber" class="form-control custom_box" asp-for="@item.DepositAcctNumber" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" value="@item.DepositAcctName" class="form-control custom_box" asp-for="@item.DepositAcctName" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" value="@item.CheckAmount" class="form-control custom_box" asp-for="@item.CheckAmount" />
-                                                        </td>
-                                                        <td>
-                                                            <a href="javascript:void(0)" class="edit_icon"><i class="fa-solid fa-pencil"></i></a>
-
-                                                            <div class="d_none">
-                                                                <div class="d-flex align-items-center gap-2">
-                                                                    <a href="javascript:void(0)" class="check_icon" data-request-url="@Url.Action("UpdateFrgnCheck", "FrgnChks")" onclick="UpdateFrgnCheck(this)"><i class="fa-regular fa-circle-check"></i></a>
-                                                                    <a href="javascript:void(0)" class="close_icon"><i class="fa-solid fa-xmark"></i></a>
-                                                                </div>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            }
+                                            await Html.RenderPartialAsync("_FrgnCheckList", Model.checksList);
                                         }
 
                                     </tbody>
@@ -214,19 +170,13 @@
         </div>
     </div>
 </div>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
-@section Scripts{
-    <script asp-append-version="true" src="~/js/FrgnCheck.js"></script>
+@section scripts {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
-    <script>
-        $(document).ready(function () {
-            $(".edit_icon").click(function () {
-                $(this).parent().parent().addClass("active");
-            });
-            $(".check_icon, .close_icon").click(function () {
-                $("tr").removeClass("active");
-            });
-        });
+    <script asp-append-version="true" src="~/js/FrgnCheck.js"></script>
+
+    <script type="text/javascript">
+        
     </script>
 }
 

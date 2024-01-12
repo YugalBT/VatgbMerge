@@ -183,7 +183,7 @@ namespace Standing_Order_Vat_App.Controllers
         //}
 
         [HttpPost]
-        public async Task<IActionResult> ShowBatchCheckList(int BatchId)
+        public async Task<IActionResult> ShowBatchCheckList(int BatchId,string type)
         {
             var list = await _frgnchks.GetFrgnChksByBatchID(BatchId);
             if (list.Successful)
@@ -192,7 +192,14 @@ namespace Standing_Order_Vat_App.Controllers
                 List<FrgnCheckListVm> v = DataTableToModelConvert.CreateListFromTable<FrgnCheckListVm>(list.Value);
                 vm.checksList = v;
                 vm.BatchId = BatchId;
-                return PartialView("_BatchChecksListOnUpdate", vm);
+                if(type == "AddFrgn")
+                {
+                    return PartialView("_FrgnCheckList", v);
+                }
+                else
+                {
+                    return PartialView("_BatchChecksListOnUpdate", vm);
+                }
             }
             return View();
         }

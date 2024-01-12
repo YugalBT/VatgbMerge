@@ -1,0 +1,42 @@
+﻿@model List<Standing_Order_Vat_App.Common.ViewModels.FrgnCheckListVm>
+@{
+    if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <input type="hidden" asp-for="@item.RecordId">
+                    <input type="text" value="@item.CheckNumber" class="form-control custom_box" asp-for="@item.CheckNumber" />
+                </td>
+                <td>
+                    <input type="text" value="@item.PayerAcctNumber" class="form-control custom_box" asp-for="@item.PayerAcctNumber" />
+                </td>
+                <td>
+                    <input type="text" value="@item.PayerAcctName" class="form-control custom_box" asp-for="@item.PayerAcctName" />
+                </td>
+                <td>
+                    <input type="text" value="@item.DepositAcctNumber" class="form-control custom_box" asp-for="@item.DepositAcctNumber" />
+                </td>
+                <td>
+                    <input type="text" value="@item.DepositAcctName" class="form-control custom_box" asp-for="@item.DepositAcctName" />
+                </td>
+                <td>
+                    <input type="text" value="@item.CheckAmount" class="form-control custom_box" asp-for="@item.CheckAmount" />
+                </td>
+                <td>
+                    <a href="javascript:void(0)" class="edit_icon"><i class="fa-solid fa-pencil"></i></a>
+
+                    <div class="d_none">
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="javascript:void(0)" class="check_icon" data-request-url="@Url.Action("UpdateFrgnCheck", "FrgnChks")" onclick="UpdateFrgnCheck(this)"><i class="fa-regular fa-circle-check"></i></a>
+                            <a href="javascript:void(0)" class="close_icon"><i class="fa-solid fa-xmark"></i></a>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+        }
+    }
+    <script asp-append-version="true" src="~/js/FrgnCheck.js"></script>
+}

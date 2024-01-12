@@ -106,7 +106,7 @@
                                             <td><input type="checkbox" id="settleBatch" class="form-check" name="@dormant.BatchId"></td>
                                             <td>
                                                 <div class="d-flex">
-                                                    <a href="javascript:void(0)" class="edit_icon">
+                                                    <a href="javascript:void(0)" class="edit_icon" >
                                                         <i class=" fa-regular fa-pen-to-square"></i>
                                                     </a>
                                                     <a href="javascript:void(0)" onclick="DeleteBatch(@dormant.BatchId,this)" class="edit_icon"><i class="fa-solid fa-trash"></i></a>
@@ -210,7 +210,6 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $(".edit_icon").click(function () {
-                
                 $(this).parents("tr").addClass("active");
             });
             $(".check_icon, .close_icon").click(function () {

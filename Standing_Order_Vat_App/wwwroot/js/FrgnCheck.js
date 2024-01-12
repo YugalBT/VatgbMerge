@@ -1,4 +1,13 @@
-﻿function UpdateDatePaymentRequest(BatchId, e) {
+﻿$(document).ready(function () {
+    $(".edit_icon").click(function () {
+        $(this).parent().parent().addClass("active");
+    });
+    $(".check_icon, .close_icon").click(function () {
+        $("tr").removeClass("active");
+    });
+});
+
+function UpdateDatePaymentRequest(BatchId, e) {
     debugger;
     let DatePayment = $(e).parents("tr").find("#dormant_DatePaymentRequested").val()
     let obj = {
@@ -16,6 +25,7 @@
         }
     });
 }
+
 function removeValidation() {
     $("#btnAdd").hide();
     $("#savBatchbtn").removeAttr("disabled");
@@ -79,9 +89,7 @@ function saveBatchHeader() {
         });
     }
 }
-function showdiv() {
-    $("#AddfrgnCheck").show();
-};
+
 function Addfrgncheck() {
     debugger
     var empObj = {
@@ -203,7 +211,7 @@ function SettleBatch() {
 }
 function ShowBatchDetails(batchId,type, e) {
     if ($(e).attr("class").includes("fa-arrow-right") || type =="saveCheck" ) {
-        requestAjax("/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId }, function (res) {
+        requestAjax("/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId, type:"UpdateChecks" }, function (res) {
             $(e).parents("table").find("[id='ShowBAtchCheckList']").remove();
             $(e).parents("table").find(".fa-arrow-down").removeClass("fa-arrow-down").addClass("fa-arrow-right");
             $(e).parents("tr").after("<tr id='ShowBAtchCheckList'  class='collapse'><td colspan='9'></td></tr>");
@@ -247,15 +255,11 @@ function SaveBatchChecks(e) {
 function showaddfrgncheck(e) {
     $(e).parent("div").next("form").show()
 }
-
+function showdiv() {
+    $("#AddfrgnCheck").show();
+};
 function showrefresh(batchId) {
-    requestAjax("/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId }, function (res) {
-        $(e).parents("table").find("[id='ShowBAtchCheckList']").remove();
-        $(e).parents("table").find(".fa-arrow-down").removeClass("fa-arrow-down").addClass("fa-arrow-right");
-        $(e).parents("tr").after("<tr id='ShowBAtchCheckList'  class='collapse'><td colspan='9'></td></tr>");
-        $(e).parents("tr").next("#ShowBAtchCheckList").find("td").html(res);
-        $("#ShowBAtchCheckList").show();
-        $(e).removeClass("fa-arrow-right").addClass("fa-arrow-down");
+    requestAjax("/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId, type:"AddFrgn" }, function (res) {
+        $("#tblcheckslist").html(res)
     })
-}
 }
