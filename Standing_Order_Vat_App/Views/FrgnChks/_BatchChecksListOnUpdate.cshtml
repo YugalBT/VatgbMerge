@@ -1,6 +1,6 @@
 ﻿@model GbRegister.Core.ViewModel.ForeignCheckVm
 
-<table class="innrtbel">
+<table class="innrtbel w-100">
     <thead>
         <tr>
             <th scope="col">Check Amount</th>
@@ -12,7 +12,7 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.checksList != null)
+        @if (Model.checksList != null && Model.checksList.Count> 0)
         {
             @foreach (var item in Model.checksList)
             {

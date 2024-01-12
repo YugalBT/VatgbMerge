@@ -328,12 +328,11 @@ namespace Standing_Order_Vat_App.Common.Services
                     DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
                     var dataTable = new DataTable();
                     adp.Fill(dataTable);
-                    if (dataTable.Rows.Count > 0)
-                    {
+                    
                         result.Successful = true;
                         result.Message = "Data Saved Successfully.";
                         result.Value = dataTable;
-                    }
+                   
                 }
                 catch (Exception ex)
                 {

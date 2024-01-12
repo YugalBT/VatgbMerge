@@ -92,7 +92,7 @@
                                     @foreach (var dormant in Model.FrgncheckListIncompletes)
                                     {
                                         <tr id="batchDetails">
-                                            <td><i class="fa-solid fa-arrow-right fa-2xl" onclick="ShowBatchDetails(@dormant.BatchId,this)" data-bs-toggle="collapse" href="#ShowBAtchCheckList" role="button" aria-expanded="false" aria-controls="ShowBAtchCheckList"></i></td>
+                                            <td><i class="fa-solid fa-arrow-right fa-2xl" onclick="ShowBatchDetails(@dormant.BatchId,'checklist',this)" data-bs-toggle="collapse" href="#ShowBAtchCheckList" role="button" aria-expanded="false" aria-controls="ShowBAtchCheckList"></i></td>
                                             <td>
                                                 @Html.Raw(dormant.DateReceived.ToString() == "01-01-0001 12.00.00 AM" ? "<p class='text-center'>_</p>" : dormant.DateReceived.ToShortDateString())
                                             </td>
@@ -128,7 +128,7 @@
                                     @foreach (var dormant in Model.FrgnCheckListRecVms)
                                     {
                                         <tr id="batchDetails">
-                                            <td><i class="fa-solid fa-arrow-right fa-2xl" onclick="ShowBatchDetails(@dormant.BatchId,this)" data-bs-toggle="collapse" href="#ShowBAtchCheckList" role="button" aria-expanded="false" aria-controls="ShowBAtchCheckList"></i></td>
+                                            <td><i class="fa-solid fa-arrow-right fa-2xl" onclick="ShowBatchDetails(@dormant.BatchId,'checklist',this)" data-bs-toggle="collapse" href="#ShowBAtchCheckList" role="button" aria-expanded="false" aria-controls="ShowBAtchCheckList"></i></td>
                                             <td>
                                                 @Html.Raw(dormant.DateReceived.ToString() == "01-01-0001 12.00.00 AM" ? "<p class='text-center'>_</p>" : dormant.DateReceived.ToShortDateString())
                                             </td>
@@ -210,7 +210,8 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $(".edit_icon").click(function () {
-                $(this).parent().parent().addClass("active");
+                
+                $(this).parents("tr").addClass("active");
             });
             $(".check_icon, .close_icon").click(function () {
                 $("tr").removeClass("active");
@@ -225,25 +226,6 @@
             $("#table_length").addClass("m-2");
             let settleButton = '<div class="me-3"><input type="button" class="btn btn-primary main_btn  h-auto w-100" onclick="SettleBatch()" value="Settle Batch"/></div>'
             $("#table_length").append(settleButton);
-        });
-
-        function ShowBatchDetails(batchId, e) {
-            if ($(e).attr("class").includes("fa-arrow-right")) {
-                requestAjax("/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId }, function (res) {
-                    $(e).parents("table").find("[id='ShowBAtchCheckList']").remove();
-                    $(e).parents("table").find(".fa-arrow-down").removeClass("fa-arrow-down").addClass("fa-arrow-right");
-                    $(e).parents("tr").after("<tr id='ShowBAtchCheckList'  class='collapse'><td colspan='9'></td></tr>");
-                    $(e).parents("tr").next("#ShowBAtchCheckList").find("td").html(res);
-                    $("#ShowBAtchCheckList").show();
-                    $(e).removeClass("fa-arrow-right").addClass("fa-arrow-down");
-                })
-            }
-            else {
-                $(e).removeClass("fa-arrow-down").addClass("fa-arrow-right");
-                $(e).parents("table").find("[id='ShowBAtchCheckList']").remove();
-            }
-        }
-
-        
+        });  
     </script>
 }

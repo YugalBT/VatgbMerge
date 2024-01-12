@@ -1,4 +1,5 @@
 ﻿function UpdateDatePaymentRequest(BatchId, e) {
+    debugger;
     let DatePayment = $(e).parents("tr").find("#dormant_DatePaymentRequested").val()
     let obj = {
         BatchId: BatchId,
@@ -199,4 +200,47 @@ function SettleBatch() {
             $(this).attr("name")
         }
     })
+}
+function ShowBatchDetails(batchId,type, e) {
+    if ($(e).attr("class").includes("fa-arrow-right") || type =="saveCheck" ) {
+        requestAjax("/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId }, function (res) {
+            $(e).parents("table").find("[id='ShowBAtchCheckList']").remove();
+            $(e).parents("table").find(".fa-arrow-down").removeClass("fa-arrow-down").addClass("fa-arrow-right");
+            $(e).parents("tr").after("<tr id='ShowBAtchCheckList'  class='collapse'><td colspan='9'></td></tr>");
+            $(e).parents("tr").next("#ShowBAtchCheckList").find("td").html(res);
+            $("#ShowBAtchCheckList").show();
+            $(e).removeClass("fa-arrow-right").addClass("fa-arrow-down");
+        })
+    }
+    else {
+        $(e).removeClass("fa-arrow-down").addClass("fa-arrow-right");
+        $(e).parents("table").find("[id='ShowBAtchCheckList']").remove();
+    }
+}
+function SaveBatchChecks(e) {
+    debugger
+    let parentTr = $(e).parents("#ShowBAtchCheckList").prev("#batchDetails").find(".fa-arrow-down");
+    let formParent = $(e).parents("form");
+    let BatchId = $(formParent).find("#BatchId").val();
+    let CheckNumber = $(formParent).find("#CheckNumber").val();
+    let PayerAcctNumber = $(formParent).find("#PayerAcctNumber").val();
+    let PayerAcctName = $(formParent).find("#PayerAcctName").val();
+    let DepositAcctNumber = $(formParent).find("#DepositAcctNumber").val();
+    let DepositAcctName = $(formParent).find("#DepositAcctName").val();
+    let CheckAmount = $(formParent).find("#CheckAmount").val();
+    let actionBtn = $(e).attr("value");
+
+    let obj = {
+        BatchId: BatchId,
+        CheckNumber: CheckNumber,
+        PayerAcctNumber: PayerAcctNumber,
+        PayerAcctName: PayerAcctName,
+        DepositAcctNumber: DepositAcctNumber,
+        DepositAcctName: DepositAcctName,
+        CheckAmount: CheckAmount
+    }
+    requestAjax("/FrgnChks/AddFrgnCheck", "Post", { actionbtn: actionBtn, foreignChecksDetail: obj }, function (res) {
+        ShowBatchDetails(BatchId, actionBtn, parentTr)
+    })
+
 }
