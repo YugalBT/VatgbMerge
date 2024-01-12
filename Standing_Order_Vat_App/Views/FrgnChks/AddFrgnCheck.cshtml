@@ -70,7 +70,7 @@
                                     <button type="button" id="btnAdd" class="buttonRemoveCss" onclick="showdiv()">Add New Check</button>
                                 }
                             }
-                           @* <a href="" class="text-end">Refresh</a>*@
+                            <a href="" class="text-end" onclick="showrefresh(@Model.BatchId)">Refresh</a>
                         </div>
 
 
@@ -160,7 +160,7 @@
                                     <label class="form-label checkHeader">Check Amount</label> *@
 
                                     </thead>
-                                    <tbody>
+                                    <tbody id="tblcheckslist">
                                         @{
                                             if (Model.checksList != null)
                                             {

@@ -244,3 +244,18 @@ function SaveBatchChecks(e) {
     })
 
 }
+function showaddfrgncheck(e) {
+    $(e).parent("div").next("form").show()
+}
+
+function showrefresh(batchId) {
+    requestAjax("/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId }, function (res) {
+        $(e).parents("table").find("[id='ShowBAtchCheckList']").remove();
+        $(e).parents("table").find(".fa-arrow-down").removeClass("fa-arrow-down").addClass("fa-arrow-right");
+        $(e).parents("tr").after("<tr id='ShowBAtchCheckList'  class='collapse'><td colspan='9'></td></tr>");
+        $(e).parents("tr").next("#ShowBAtchCheckList").find("td").html(res);
+        $("#ShowBAtchCheckList").show();
+        $(e).removeClass("fa-arrow-right").addClass("fa-arrow-down");
+    })
+}
+}
