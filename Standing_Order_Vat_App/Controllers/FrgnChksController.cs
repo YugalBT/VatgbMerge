@@ -19,6 +19,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using static Standing_Order_Vat_App.MvcHelper.Enumration;
 using Standing_Order_Vat_App.Common.Services;
+using DocumentFormat.OpenXml.ExtendedProperties;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
+using OfficeOpenXml.Packaging.Ionic.Zlib;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -183,7 +188,7 @@ namespace Standing_Order_Vat_App.Controllers
         //}
 
         [HttpPost]
-        public async Task<IActionResult> ShowBatchCheckList(int BatchId,string type)
+        public async Task<IActionResult> ShowBatchCheckList(int BatchId, string type)
         {
             var list = await _frgnchks.GetFrgnChksByBatchID(BatchId);
             if (list.Successful)
@@ -192,7 +197,25 @@ namespace Standing_Order_Vat_App.Controllers
                 List<FrgnCheckListVm> v = DataTableToModelConvert.CreateListFromTable<FrgnCheckListVm>(list.Value);
                 vm.checksList = v;
                 vm.BatchId = BatchId;
-                if(type == "AddFrgn")
+                var checksettlement = _frgnchks.GetBatchSettlementDetails(BatchId);
+                
+                vm.BanksList = await _sKNANBLIVEContext.Banks.Select(s => new BankListVm()
+                {
+                    BankId = s.BankId,
+                    BankName = s.Name
+                }).ToListAsync();
+                if (checksettlement.Value != null)
+                {
+                    List<CheckSettlementBatchVm> d = DataTableToModelConvert.CreateListFromTable<CheckSettlementBatchVm>(checksettlement.Value);
+                    
+                    vm.checkSettlementBatchlist = d;
+
+                }
+                else
+                {
+                    vm.checkSettlementBatchlist = new List<CheckSettlementBatchVm>();
+                }
+                if (type == "AddFrgn")
                 {
                     return PartialView("_FrgnCheckList", v);
                 }
@@ -203,6 +226,7 @@ namespace Standing_Order_Vat_App.Controllers
             }
             return View();
         }
+
 
         [HttpGet]
         public JsonResult FrgncheckList()
@@ -330,7 +354,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public IGeneralResult<string> UpdateDatePayment(UpdateDatePaymentVm vm)
         {
-           var res = _frgnchks.UpdateDatePaymentRequest(vm);
+            var res = _frgnchks.UpdateDatePaymentRequest(vm);
             return res;
         }
         [HttpPost]
@@ -472,7 +496,57 @@ namespace Standing_Order_Vat_App.Controllers
             return result;
 
         }
-    }
 
+        [HttpPost]
+        public async Task<IGeneralResult<string>>AddCheckSettlement(AddCheckSettlementDetailVm checksettlement)
+        {
+            IGeneralResult<string> res = new GeneralResult<string>();
+            if (ModelState.IsValid)
+            {
+                var result = await _frgnchks.AddBatchSettlementDetails(checksettlement);
+                if (result.Successful)
+                {
+                    result.Message="Add Sattlement Successfully";
+                }
+                else
+                {
+                    result.Message = "Something Went Wrong";
+                }
+                return result;
+            }
+            else
+            {
+                res.Message = "Validation Error";
+            }
+            return res;
+            }
+
+
+        [HttpPost]
+        public async Task<IGeneralResult<string>>CompleteSettlement(List<string> batches)
+        {
+            IGeneralResult<string> res = new GeneralResult<string>();
+            if (ModelState.IsValid) {
+
+                var result = await _frgnchks.CompleteSettleBatch(batches);
+                if (result.Successful)
+                {
+                    result.Message = "Batch Settlement Complete.";
+                }
+                else
+                {
+                    result.Message = "Something Went Wrong";
+                }
+                return result;
+            }
+            else
+            {
+                res.Message = "Validation Error";
+            }
+            return res;
+    }
+       
+    }
 }
+
 

@@ -29,11 +29,13 @@ namespace Standing_Order_Vat_App.Common.Services
 
         private readonly SKNANBLIVEContext _sknanbLiveContext;
         private readonly General_Banking_RegistersContext _generalBankingRegistersContext;
+        private readonly IAccountRepo accountRepo;
 
-        public FrgnChksService(SKNANBLIVEContext sknanbLiveContext, General_Banking_RegistersContext generalBankingRegistersContext)
+        public FrgnChksService(SKNANBLIVEContext sknanbLiveContext, General_Banking_RegistersContext generalBankingRegistersContext,IAccountRepo accountRepo)
         {
             _sknanbLiveContext = sknanbLiveContext;
             _generalBankingRegistersContext = generalBankingRegistersContext;
+            this.accountRepo = accountRepo;
         }
 
         public List<BankListVm> GetBanks()
@@ -506,8 +508,110 @@ namespace Standing_Order_Vat_App.Common.Services
             return result;
         }
 
+        public IGeneralResult<DataTable> GetBatchSettlementDetails(int batchid)
+        {
+            IGeneralResult<DataTable> result = new GeneralResult<DataTable>();
+            var connString = _generalBankingRegistersContext.Database.GetDbConnection();
+
+            using (var cmd = _generalBankingRegistersContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+
+                    cmd.CommandText = "GetBatchSettlementDetails";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter("@batchId", batchid));
+      
+                    cmd.CommandTimeout = 6000;
+                    DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);
+                    var dataTable = new DataTable();
+                    adp.Fill(dataTable);
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        result.Successful = true;
+                        result.Message = "Data Saved Successfully.";
+                        result.Value = dataTable;
+                    }
 
 
+                }
+                catch (Exception ex)
+                {
+                    result.Message = "Error retreiving checks for batch: " + batchid + ": " + ex.Message;
+                }
+            }
+            return result;
+        }
+
+        public async Task<IGeneralResult<string>> AddBatchSettlementDetails(AddCheckSettlementDetailVm addCheckSettlementDetailVm)
+        {
+            IGeneralResult<string> result = new GeneralResult<string>();
+            try
+            {
+                CheckSettlementBatchVm check = new CheckSettlementBatchVm();
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "AddBatchSettlementDetails";
+                cmd.Parameters.AddWithValue("@batchId", addCheckSettlementDetailVm.batchId);
+                cmd.Parameters.AddWithValue("@dateSettled", addCheckSettlementDetailVm.dateSettled);
+                cmd.Parameters.AddWithValue("@amt", addCheckSettlementDetailVm.amt);
+                cmd.Parameters.AddWithValue("@chkNumber", addCheckSettlementDetailVm.chkNumber);
+                cmd.Parameters.AddWithValue("@wire", addCheckSettlementDetailVm.wire);
+                cmd.Parameters.AddWithValue("@bankId", addCheckSettlementDetailVm.bankId);
+                conn.Open();
+                int i = cmd.ExecuteNonQuery();
+           
+                result.Successful = true;
+                result.Message = "Data Saved Successfully.";
+                
+                conn.Close();
+            }
+            catch(Exception ex)
+            {
+                result.Message = "Error saving checks for batch: " + addCheckSettlementDetailVm.batchId + ": " + ex.Message;
+            }
+            return result;
+        }
+
+        public async Task<IGeneralResult<string>> CompleteSettleBatch(List<string> batches)
+        {
+            IGeneralResult<string> result = new GeneralResult<string>();
+            try
+            {
+                ForeignCheckBatchVm vm = new ForeignCheckBatchVm();
+                SqlConnection conn = new SqlConnection();
+                SqlCommand cmd = new SqlCommand();
+                conn.ConnectionString = _generalBankingRegistersContext.Database.GetDbConnection().ConnectionString;
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "SettleFrgnChksBatch";
+                var empId = accountRepo.GetEmpId();
+                List<int> cntSettled = new List<int>();
+                conn.Open();
+                foreach(var batchId in batches)
+                {
+                    cmd.Parameters.AddWithValue("@batchId", batchId);
+                    cmd.Parameters.AddWithValue("@date", System.DateTime.Now);
+                    cmd.Parameters.AddWithValue("@empId", empId);
+                   
+                    cntSettled.Add(Convert.ToInt32(cmd.ExecuteScalar()));
+                    cmd.Parameters.Clear();
+                   
+                }
+                conn.Close();
+                result.Successful = true;
+                result.Message = " Saved Successfully.";
+               
+            }
+            catch (Exception ex)
+            {
+                result.Message = "Server Error";
+            }
+            return result;
+        }
     }
 }
 

@@ -125,12 +125,8 @@ namespace Standing_Order_Vat_App.Controllers
             else
             {
                 res.DormantCheckListRecVms = ListComplete(res);
-
             }
             return View(res);
-
-
-
         }
 
         public IGeneralResult<string> UpdateDormantEntry(UpdateDormantEntryVm vm)

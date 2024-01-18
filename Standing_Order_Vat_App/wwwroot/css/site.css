@@ -236,4 +236,23 @@ body {
 .tblfnt{
     font-size:12px;
 }
+.padd-20 {
+    padding: 20px 20px
+}
+.sand .form-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 0;
+    flex-direction: row;
+}
+    .sand .form-check input {
+        width: 18px;
+        height: 18px;
+        margin-left: 0;
+        margin-top: 0;
+    }
 
+.sand .form-check label{
+    font-size: 14px;
+}

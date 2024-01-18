@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GbRegister.Core.ViewModel
 {
-    public class ForeignCheckVm
+    public class ForeignCheckVm 
     {
 
         public long RecordId { get; set; }
@@ -39,6 +39,7 @@ namespace GbRegister.Core.ViewModel
         public int BankId { get; set; }
         public List<BankListVm> BanksList { get; set; }
         public List<FrgnCheckListVm> checksList { get; set; }
-
+        public CheckSettlementBatchVm checkdetails { get; set; } = new CheckSettlementBatchVm();
+        public List<CheckSettlementBatchVm> checkSettlementBatchlist { get; set; }
     }
 }

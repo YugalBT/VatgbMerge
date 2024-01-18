@@ -209,9 +209,10 @@ function SettleBatch() {
         }
     })
 }
-function ShowBatchDetails(batchId,type, e) {
-    if ($(e).attr("class").includes("fa-arrow-right") || type =="saveCheck" ) {
-        requestAjax("/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId, type:"UpdateChecks" }, function (res) {
+function ShowBatchDetails(batchId, type, e) {
+    debugger
+    if ($(e).attr("class").includes("fa-arrow-right") || type == "saveCheck" || type == "saveSettlement") {
+        requestAjax("/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId, type: "UpdateChecks" }, function (res) {
             $(e).parents("table").find("[id='ShowBAtchCheckList']").remove();
             $(e).parents("table").find(".fa-arrow-down").removeClass("fa-arrow-down").addClass("fa-arrow-right");
             $(e).parents("tr").after("<tr id='ShowBAtchCheckList'  class='collapse'><td colspan='9'></td></tr>");
@@ -255,11 +256,56 @@ function SaveBatchChecks(e) {
 function showaddfrgncheck(e) {
     $(e).parent("div").next("form").show()
 }
-function showdiv() {
+function showchecks() {
     $("#AddfrgnCheck").show();
 };
 function showrefresh(batchId) {
     requestAjax("/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId, type:"AddFrgn" }, function (res) {
         $("#tblcheckslist").html(res)
+    })
+}
+
+function ShowchecksettlementBatch(e) {
+    $(e).parent("div").next("form").show()
+}
+function AddSettlementDetails(e) {
+    debugger
+    let parentTr = $(e).parents("#ShowBAtchCheckList").prev("#batchDetails").find(".fa-arrow-down");
+    var empObj = {
+        batchId: $('#BatchId').val(),
+        dateSettled: $('#checkdetails_DateSettled').val(),
+        amt: $('#checkdetails_SettlementAmount').val(),
+        wire: $('#checkdetails_SettledByWire').val(),
+        bankId: $('#BankId').val(),
+        chkNumber: $('#checkdetails_CheckNumber').val()
+    };
+    requestAjax("/FrgnChks/AddCheckSettlement", "Post", { checksettlement: empObj }, function (res) {
+        if (res.successful) {
+            ShowBatchDetails(empObj.batchId, "saveSettlement", parentTr);
+        } else {
+            alert(res.message);
+        }
+    })
+}
+function hidecancel(e) {
+    $("#Settlementform").hide()
+}
+function hidechecklist(e) {
+    $("#showfrgn").hide()
+}
+function CompleteSettlement() {
+    let checkedArr = []
+    $("table tbody tr").find("#settleBatch").each(function () {
+        if ($(this).is(":checked")) {
+            let checkBatchId = $(this).attr("name");
+            if (checkBatchId) checkedArr.push(checkBatchId)
+        }
+    })
+    
+
+    requestAjax("/FrgnChks/CompleteSettlement", "Post", { batches: checkedArr }, function (res) {
+        alert(res.message)
+        window.location.reload();
+       /* ShowBatchDetails(BatchId, actionBtn, parentTr)*/
     })
 }

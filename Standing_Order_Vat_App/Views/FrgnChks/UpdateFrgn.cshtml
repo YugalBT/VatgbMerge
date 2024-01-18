@@ -69,12 +69,15 @@
         </form>
         @if ((Model.FrgnCheckListRecVms != null && Model.FrgnCheckListRecVms.Count > 0) || (Model.FrgncheckListIncompletes != null && Model.FrgncheckListIncompletes.Count > 0))
         {
+            
             <div class="spl">
                 <div style="height: 420px;overflow-y: auto;">
                     <div class="table-responsive">
                         <table class="table custom_tble" id="table">
+                            
                             <thead>
                                 <tr class="table-active">
+                                    
                                     <th></th>
                                     <th>Date Received</th>
                                     <th>Date Payment Requested</th>
@@ -103,7 +106,7 @@
                                             <td>@dormant.DateProcessed.ToShortDateString()</td>
                                             <td>@dormant.BatchTotal</td>
                                             <td>@dormant.ProcessName</td>
-                                            <td><input type="checkbox" id="settleBatch" class="form-check" name="@dormant.BatchId"></td>
+                                            <td><input type="checkbox"  id="settleBatch" class="form-check" name="@dormant.BatchId"></td>
                                             <td>
                                                 <div class="d-flex">
                                                     <a href="javascript:void(0)" class="edit_icon" >
@@ -156,12 +159,8 @@
                                             </td>
                                             @*<td><a href=" asp-controller="FrgnChks" asp-action="DeletefrgnCheck" asp-route-batchid="@dormant.BatchId">Delete</a></td>*@
                                         </tr>
-
                                     }
                                 }
-
-
-
                             </tbody>
                         </table>
                     </div>
@@ -223,7 +222,7 @@
             $("#table_info").remove();
             $(".dataTables_length").addClass("settlebtn");
             $("#table_length").addClass("m-2");
-            let settleButton = '<div class="me-3"><input type="button" class="btn btn-primary main_btn  h-auto w-100" onclick="SettleBatch()" value="Settle Batch"/></div>'
+            let settleButton = '<div class="me-3"><input type="button" class="btn btn-primary main_btn  h-auto w-100" onclick="CompleteSettlement()" value="Settle Batch"/></div>'
             $("#table_length").append(settleButton);
         });  
     </script>

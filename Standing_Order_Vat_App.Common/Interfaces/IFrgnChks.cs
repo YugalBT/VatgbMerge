@@ -18,9 +18,14 @@ namespace Standing_Order_Vat_App.Common.Interfaces
         List<BankListVm> GetBanks();
 
         Task<IGeneralResult<string>> AddFrgnCheack(ForeignCheckVm foreignCheckVm);
+        Task<IGeneralResult<string>> AddBatchSettlementDetails(AddCheckSettlementDetailVm addCheckSettlementDetailVm);
+
+        
         Task<IGeneralResult<string>> UpdateFrgn(ForeignCheckvmm model);
         IGeneralResult<string> UpdateDatePaymentRequest(UpdateDatePaymentVm vm);
         IEnumerable<string> GetFrgnChksBatchByStatus(int status, string branch);
+        IGeneralResult<DataTable> GetBatchSettlementDetails(int batchid);
+        Task<IGeneralResult<string>> CompleteSettleBatch(List<string> batches);
         Task<int> SaveFrgnBatch(FrgnCheckVm frgnCheckVm);
         Task<decimal> GetCheckTotal(int BatchId);
         List<ForeignChecksDetail> GetAllforeign();
