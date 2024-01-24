@@ -40,7 +40,7 @@
                                 <input type="text" value="@item.DepositAcctName" class="form-control custom_box" asp-for="@item.DepositAcctName" />
                             </td>
                             <td>
-                                <input type="text" value="@item.CheckAmount" class="form-control custom_box" asp-for="@item.CheckAmount" />
+                                <input type="text" value="@item.CheckAmount.ToString("0.00")" class="form-control custom_box" asp-for="@item.CheckAmount" />
                             </td>
                         </tr>
                     }

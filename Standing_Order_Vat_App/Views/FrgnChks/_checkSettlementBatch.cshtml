@@ -8,7 +8,7 @@
             <th scope="col">Date Settled</th>
             <th scope="col">Wire </th>
             <th scope="col">Bank</th>
-            
+
         </tr>
     </thead>
     <tbody>
@@ -22,20 +22,19 @@
                     </td>
                     <td>
                         <input type="hidden" asp-for="@item.BatchId">
-
-                        <input type="text" value="@item.SettlementAmount" class="form-control custom_box" asp-for="@item.SettlementAmount" />
+                        <input type="text" value="@item.SettlementAmount.Value.ToString("0.00")" class="form-control custom_box" asp-for="@item.SettlementAmount" />
                     </td>
                     <td>
-                        <input type="text" value="@item.DateSettled" class="form-control custom_box" asp-for="@item.DateSettled" />
+                        <input type="text" value="@item.DateSettled.Value.ToShortDateString()" class="form-control custom_box" asp-for="@item.DateSettled" />
                     </td>
                     <td>
-                      @(item.SettledByWire=="1" ? "Y" : "N")
-                       @* <input type="text" value="@item.SettledByWire" class="form-control custom_box" asp-for="@item.SettledByWire" />*@
+                        @(item.SettledByWire == "1" ? "Y" : "N")
+                        @* <input type="text" value="@item.SettledByWire" class="form-control custom_box" asp-for="@item.SettledByWire" />*@
                     </td>
                     <td>
                         <input type="text" value="@item.BankName" class="form-control custom_box" asp-for="@item.BankName" />
                     </td>
-                    
+
                 </tr>
             }
         }
@@ -53,47 +52,45 @@
         <button type="button" value="Add Settlement" class="btn btn-primary main_btn" onclick="ShowchecksettlementBatch(this)" id="addsettlement">Add Settlement Batch</button>
     </div>
     <form asp-action="AddCheckSettlement" method="post" id="Settlementform" style="display:none;">
-       
-            <div class="b-demo-content" id="AddfrgnCheck">
-                <div class="row mb-3" style="align-items:self-end">
-                    <div class="col-lg-4 mb-lg-3 mb-md-3">
-                        <input asp-for="BatchId" type="hidden" />
+
+        <div class="b-demo-content" id="AddfrgnCheck">
+            <div class="row mb-3" style="align-items:self-end">
+                <div class="col-lg-4 mb-lg-3 mb-md-3">
+                    <input asp-for="BatchId" type="hidden" />
                     <div class="form-group">
                         <label class="form-label form-label-cust" asp-for="checkdetails.CheckNumber"></label>
                         <input asp-for="checkdetails.CheckNumber" class="form-control form-control-cust" />
                         <span asp-validation-for="checkdetails.CheckNumber" class="text-danger"></span>
                     </div>
-                    </div>
+                </div>
 
                 <div class="col-lg-4 mb-lg-3 mb-md-3">
-                <div class="form-group">
-                    <label class="form-label form-label-cust" asp-for="checkdetails.SettlementAmount"></label>
-                    <input asp-for="checkdetails.SettlementAmount" class="form-control form-control-cust" />
-                    <span asp-validation-for="checkdetails.SettlementAmount" class="text-danger"></span>
+                    <div class="form-group">
+                        <label class="form-label form-label-cust" asp-for="checkdetails.SettlementAmount"></label>
+                        <input asp-for="checkdetails.SettlementAmount" class="form-control form-control-cust" />
+                        <span asp-validation-for="checkdetails.SettlementAmount" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
 
-                    <div class="col-lg-4 mb-lg-3 mb-md-3">
-                        <div class="form-group">
+                <div class="col-lg-4 mb-lg-3 mb-md-3">
+                    <div class="form-group">
                         <label class="form-label form-label-cust" asp-for="checkdetails.DateSettled"></label>
                         <input type="date" asp-for="checkdetails.DateSettled" class="form-control form-control-cust" />
                         <span asp-validation-for="checkdetails.DateSettled" class="text-danger"></span>
-                        </div>
                     </div>
+                </div>
 
-                   
 
-                    <div class="col-lg-4 mb-lg-3 mb-md-3">
-                        <div class="form-group">
-                       
 
-                        <label class="form-label">Banks</label>
+                <div class="col-lg-4 mb-lg-3 mb-md-3">
+                    <div class="form-group">
+                        <label class="form-label form-label-cust">Banks</label>
                         <select class="form-select" asp-for="BankId"
                                 asp-items="@(new SelectList(Model.BanksList,"BankId","BankName"))">
                             <option value="">----Select Banks-----</option>
                         </select>
-                        </div>
                     </div>
+                </div>
                 <div class="col-lg-4 mb-lg-3 mb-md-3">
                     @*<div class="form-group">
                     <label class="form-label form-label-cust" asp-for="checkdetails.SettledByWire"></label>
@@ -102,26 +99,25 @@
                     <span asp-validation-for="checkdetails.SettledByWire" class="text-danger"></span>
                     </div>*@
                     <div class="sand">
-                    <div class="form-check">
-                        <input asp-for="checkdetails.SettledByWire" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Settled Wire
-                        </label>
-                    </div>
-                </div>
-                </div>
-                    </div>
-                    <div class="col-md-12 mt-1">
-                        <div class="d-flex justify-content-center gap-2">
-                    <button type="button" onclick="AddSettlementDetails(this)" name="actionbtn" value="saveSettlement" class="btn btn-primary main_btn rounded-0">Save Settlement</button>
-                    <button type="button" onclick="hidecancel(this)"  class="btn btn-secondary main_btn rounded-0">Cancel</button>
+                        <div class="form-check">
+                            <input asp-for="checkdetails.SettledByWire" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Settled Wire
+                            </label>
                         </div>
                     </div>
-
                 </div>
-                
-        
+            </div>
+            <div class="col-md-12 mt-1">
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="button" onclick="AddSettlementDetails(this)" name="actionbtn" value="saveSettlement" class="btn btn-primary main_btn rounded-0">Save Settlement</button>
+                    <button type="button" onclick="hidecancel(this)" class="btn btn-secondary main_btn rounded-0">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+
+
     </form>
 </div>
 
