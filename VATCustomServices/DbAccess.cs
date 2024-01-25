@@ -52,7 +52,7 @@ namespace VATCustomServices
                 conn.Open();
         }
 
-        public string AddDayTrnRec(string[] data,string connectionstring)
+        public string AddDayTrnRec(string[] data, string connectionstring)
         {
             //SqlConnection con = new SqlConnection(connectionstring);
             string result = "DayTrn records saved to DayTrnHistoryTemp Table";
@@ -66,49 +66,49 @@ namespace VATCustomServices
                     sb.Append("Inserting the Data from addDayTrnRec procedure");
                     File.AppendAllText(logfilepath, sb.ToString());
                 }
-                    cmd = new SqlCommand("addDayTrnRec", conn);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Type", data[0].Trim());
-                    cmd.Parameters.AddWithValue("@AcctNum", data[1].Trim());
-                    cmd.Parameters.AddWithValue("@TranCode", data[2].Trim());
-                    cmd.Parameters.AddWithValue("@TranDate", data[3].Trim());
-                    cmd.Parameters.AddWithValue("@ErrorCode", data[4].Trim());
-                    cmd.Parameters.AddWithValue("@TranAmount", data[5].Trim());
-                    cmd.Parameters.AddWithValue("@CheckNum", data[6].Trim());
-                    cmd.Parameters.AddWithValue("@CstUtil1", data[7].Trim());
-                    cmd.Parameters.AddWithValue("@TranFlag", data[8].Trim());
-                    cmd.Parameters.AddWithValue("@SeqNum", data[9].Trim());
-                    cmd.Parameters.AddWithValue("@BrchNum", data[10].Trim());
-                    cmd.Parameters.AddWithValue("@GlCode", data[11].Trim());
-                    cmd.Parameters.AddWithValue("@SrcSeqNum", data[12].Trim());
-                    cmd.Parameters.AddWithValue("@TranSource", data[13].Trim());
-                    cmd.Parameters.AddWithValue("@FloatField1", data[14].Trim());
-                    cmd.Parameters.AddWithValue("@UtlCompCode", data[15].Trim());
-                    cmd.Parameters.AddWithValue("@CstUtil2", data[16].Trim());
-                    cmd.Parameters.AddWithValue("@FloatField2", data[17].Trim());
-                    cmd.Parameters.AddWithValue("@DtkUtl", data[18].Trim());
-                    cmd.Parameters.AddWithValue("@FloatField3", data[19].Trim());
-                    cmd.Parameters.AddWithValue("@FloatDays1", data[20].Trim());
-                    cmd.Parameters.AddWithValue("@FloatDays2", data[21].Trim());
-                    cmd.Parameters.AddWithValue("@FloatDays3", data[22].Trim());
-                    cmd.Parameters.AddWithValue("@DepItmCnt", data[23].Trim());
-                    cmd.Parameters.AddWithValue("@UsDepItmCnt", data[24].Trim());
-                    cmd.Parameters.AddWithValue("@clrItmCnt", data[25].Trim());
-                    cmd.Parameters.AddWithValue("@ErrorCode2", data[26].Trim());
-                    cmd.Parameters.AddWithValue("@Pstng", data[27].Trim());
-                    cmd.Parameters.AddWithValue("@Description", data[28].Trim());
-                    cmd.Parameters.AddWithValue("@DsiSeqNum", data[29].Trim());
-                    cmd.Parameters.AddWithValue("@TranTime", data[30].Trim());
-                    cmd.Parameters.AddWithValue("@FcAmount", data[31].Trim());
-                    cmd.Parameters.AddWithValue("@FcCode", data[32].Trim());
-                    cmd.Parameters.AddWithValue("@EccbType", data[33].Trim());
-                    cmd.Parameters.AddWithValue("@EccbCode", data[34].Trim());
-                    cmd.Parameters.AddWithValue("@Teller", data[35].Trim());
-                    cmd.Parameters.AddWithValue("@Date", data[36].Trim());
-                    cmd.Parameters.AddWithValue("@Time", data[37].Trim());
+                cmd = new SqlCommand("addDayTrnRec", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Type", data[0].Trim());
+                cmd.Parameters.AddWithValue("@AcctNum", data[1].Trim());
+                cmd.Parameters.AddWithValue("@TranCode", data[2].Trim());
+                cmd.Parameters.AddWithValue("@TranDate", data[3].Trim());
+                cmd.Parameters.AddWithValue("@ErrorCode", data[4].Trim());
+                cmd.Parameters.AddWithValue("@TranAmount", data[5].Trim());
+                cmd.Parameters.AddWithValue("@CheckNum", data[6].Trim());
+                cmd.Parameters.AddWithValue("@CstUtil1", data[7].Trim());
+                cmd.Parameters.AddWithValue("@TranFlag", data[8].Trim());
+                cmd.Parameters.AddWithValue("@SeqNum", data[9].Trim());
+                cmd.Parameters.AddWithValue("@BrchNum", data[10].Trim());
+                cmd.Parameters.AddWithValue("@GlCode", data[11].Trim());
+                cmd.Parameters.AddWithValue("@SrcSeqNum", data[12].Trim());
+                cmd.Parameters.AddWithValue("@TranSource", data[13].Trim());
+                cmd.Parameters.AddWithValue("@FloatField1", data[14].Trim());
+                cmd.Parameters.AddWithValue("@UtlCompCode", data[15].Trim());
+                cmd.Parameters.AddWithValue("@CstUtil2", data[16].Trim());
+                cmd.Parameters.AddWithValue("@FloatField2", data[17].Trim());
+                cmd.Parameters.AddWithValue("@DtkUtl", data[18].Trim());
+                cmd.Parameters.AddWithValue("@FloatField3", data[19].Trim());
+                cmd.Parameters.AddWithValue("@FloatDays1", data[20].Trim());
+                cmd.Parameters.AddWithValue("@FloatDays2", data[21].Trim());
+                cmd.Parameters.AddWithValue("@FloatDays3", data[22].Trim());
+                cmd.Parameters.AddWithValue("@DepItmCnt", data[23].Trim());
+                cmd.Parameters.AddWithValue("@UsDepItmCnt", data[24].Trim());
+                cmd.Parameters.AddWithValue("@clrItmCnt", data[25].Trim());
+                cmd.Parameters.AddWithValue("@ErrorCode2", data[26].Trim());
+                cmd.Parameters.AddWithValue("@Pstng", data[27].Trim());
+                cmd.Parameters.AddWithValue("@Description", data[28].Trim());
+                cmd.Parameters.AddWithValue("@DsiSeqNum", data[29].Trim());
+                cmd.Parameters.AddWithValue("@TranTime", data[30].Trim());
+                cmd.Parameters.AddWithValue("@FcAmount", data[31].Trim());
+                cmd.Parameters.AddWithValue("@FcCode", data[32].Trim());
+                cmd.Parameters.AddWithValue("@EccbType", data[33].Trim());
+                cmd.Parameters.AddWithValue("@EccbCode", data[34].Trim());
+                cmd.Parameters.AddWithValue("@Teller", data[35].Trim());
+                cmd.Parameters.AddWithValue("@Date", data[36].Trim());
+                cmd.Parameters.AddWithValue("@Time", data[37].Trim());
 
 
-                    cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
                 if (printlog > 0)
                 {
                     sb.Clear();
@@ -125,7 +125,7 @@ namespace VATCustomServices
                 {
                     sb.Clear();
                     sb.Append("------------" + System.DateTime.Now + "-----------\n");
-                    sb.Append(result +s.ToString);
+                    sb.Append(result + s.ToString);
                     File.AppendAllText(logfilepath, sb.ToString());
                 }
             }
@@ -143,7 +143,7 @@ namespace VATCustomServices
             return result;
         }
 
-        public string AddDayTrnRecErrors(object[] data,string connectionstring)
+        public string AddDayTrnRecErrors(object[] data, string connectionstring)
         {
             string result = "DayTrn records saved to DayTrnHistoryTemp Table";
 
@@ -231,7 +231,7 @@ namespace VATCustomServices
             return result;
         }
 
-        public string GetTranDescr(string code,string connectionstring)
+        public string GetTranDescr(string code, string connectionstring)
         {
             string result = "";
 
@@ -275,7 +275,7 @@ namespace VATCustomServices
         }
 
 
-        public string GetTranDbCr(string code,string connectionstring)
+        public string GetTranDbCr(string code, string connectionstring)
         {
             string result = "";
 
@@ -325,7 +325,7 @@ namespace VATCustomServices
             }
         }
 
-        public string GetCurrencyCode(string code,string connectionstring)
+        public string GetCurrencyCode(string code, string connectionstring)
         {
             string result = "";
 
@@ -413,15 +413,15 @@ namespace VATCustomServices
             }
             //finally
             //{
-                //conn.Close();
-               
-                //if (printlog > 0)
-                //{
-                //    sb.Clear();
-                //    sb.Append("------------" + System.DateTime.Now + "-----------\n");
-                //    sb.Append("CheckDayTrnFormat Database connection close \n" + connectionstring);
-                //    File.AppendAllText(logfilepath, sb.ToString());
-                //}
+            //conn.Close();
+
+            //if (printlog > 0)
+            //{
+            //    sb.Clear();
+            //    sb.Append("------------" + System.DateTime.Now + "-----------\n");
+            //    sb.Append("CheckDayTrnFormat Database connection close \n" + connectionstring);
+            //    File.AppendAllText(logfilepath, sb.ToString());
+            //}
             //}
             return DayTrnFormateList;
         }
@@ -437,7 +437,7 @@ namespace VATCustomServices
             {
 
                 //if (conn.State != ConnectionState.Open)
-                  conn.Open();
+                conn.Open();
                 //SqlConnection connection = new SqlConnection(connectionstring);
                 SqlCommand command = new SqlCommand();
                 command = new SqlCommand("getDayTrnHistoryTemp", conn);
@@ -461,8 +461,8 @@ namespace VATCustomServices
                     //lst.Description = reader["Description"].ToString();
                     //lst.FieldStartPosition = (int)reader["FieldStartPosition"];
 
-                    lst.RecId= Convert.ToInt64(reader["RecId"].ToString());
-                    lst.Type= reader["Type"].ToString();
+                    lst.RecId = Convert.ToInt64(reader["RecId"].ToString());
+                    lst.Type = reader["Type"].ToString();
                     lst.AcctNum = reader["AcctNum"].ToString();
                     lst.TranCode = reader["TranCode"].ToString();
                     lst.TranDate = reader["TranDate"].ToString();
@@ -523,7 +523,7 @@ namespace VATCustomServices
             {
                 conn.Close();
             }
-            
+
             return DayTrnFormateList;
         }
 
@@ -566,7 +566,7 @@ namespace VATCustomServices
                     lst.FieldLength = Convert.ToInt32(reader["FieldLength"].ToString());
                     lst.Description = reader["Description"].ToString();
                     lst.FieldStartPosition = Convert.ToInt32(reader["FieldStartPosition"].ToString());
-                   
+
                     DayTrnFormateList.Add(lst);
                 }
                 reader.Close();
@@ -630,9 +630,9 @@ namespace VATCustomServices
                 {
                     sb.Clear();
                     sb.Append("------------" + System.DateTime.Now + "-----------\n");
-                    sb.Append(result +s.ToString);
+                    sb.Append(result + s.ToString);
                     File.AppendAllText(logfilepath, sb.ToString());
-                } 
+                }
                 cmd.ExecuteScalar();
 
             }
@@ -664,7 +664,7 @@ namespace VATCustomServices
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 conn.Open();
-                
+
                 if (printlog > 0)
                 {
                     sb.Clear();
@@ -702,7 +702,7 @@ namespace VATCustomServices
             return result;
         }
 
-        public string DeleteDayTrnTemp(int printLog, string logpath,string connectionstring)
+        public string DeleteDayTrnTemp(int printLog, string logpath, string connectionstring)
         {
             string result = "";
             logfilepath = logpath;
@@ -726,12 +726,12 @@ namespace VATCustomServices
             }
             catch (SqlException s)
             {
-                result = "Error deleting data from DayTrnHistoryTemp "+connectionstring+""  + s.ToString();
+                result = "Error deleting data from DayTrnHistoryTemp " + connectionstring + "" + s.ToString();
                 if (printlog > 0)
                 {
                     sb.Clear();
                     sb.Append("------------" + System.DateTime.Now + "-----------\n");
-                    sb.Append(" "+result+"\n");
+                    sb.Append(" " + result + "\n");
                     File.AppendAllText(logfilepath, sb.ToString());
                 }
             }
@@ -777,7 +777,7 @@ namespace VATCustomServices
             }
         }
 
-        public int CheckForDayTrnRecords(string date, ref int recs, int printLog, string logpath,string connectionstring)
+        public int CheckForDayTrnRecords(string date, ref int recs, int printLog, string logpath, string connectionstring)
         {
             string result = "";
             int recordCount;
@@ -787,12 +787,12 @@ namespace VATCustomServices
             {
                 conn.Open();
                 SqlCommand command = new SqlCommand();
-                command = new SqlCommand("CheckForDayTrnRecords" , conn);
-                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                command = new SqlCommand("CheckForDayTrnRecords", conn);
+                command.CommandType = System.Data.CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("@date", date);
-                var  count = command.ExecuteScalar();
+                var count = command.ExecuteScalar();
                 recordCount = Convert.ToInt32(count);
-                
+
                 return recordCount;
             }
             catch (SqlException s)
@@ -820,7 +820,7 @@ namespace VATCustomServices
             return Convert.ToInt32(result);
         }
 
-        public string DeleteDayTrnRecs(string date,string connectionstring)
+        public string DeleteDayTrnRecs(string date, string connectionstring)
         {
             string result = "";
             try
@@ -833,7 +833,7 @@ namespace VATCustomServices
 
                 conn.Open();
                 cmd.ExecuteScalar();
-              
+
                 result = "Records successfully deleted from DayTrnHistory";
 
             }
