@@ -137,8 +137,8 @@ namespace Standing_Order_Vat_App.Common.Services
             // get all ids needed to access the relevant pages
             //result = "success";
             int empID = 0;
-            //string uname = Environment.UserName;
-            string uname = "LISAME";
+            string uname = Environment.UserName;
+            //string uname = "LISAME";
             try
             {
                 SqlConnection conn = new SqlConnection();
@@ -146,7 +146,7 @@ namespace Standing_Order_Vat_App.Common.Services
                 conn.ConnectionString = _directorycontext.Database.GetDbConnection().ConnectionString;
                 cmd.Connection = conn;
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "getEmpID";
+                cmd.CommandText = "getEmpID_New";
                 // retrieves both empId and userId for Application Directory
                 cmd.CommandType = CommandType.StoredProcedure;
                 //cmd.Parameters.AddWithValue("@userName", "Test");

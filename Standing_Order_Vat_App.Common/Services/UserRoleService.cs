@@ -97,7 +97,7 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.Connection = conn;
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.CommandText = "GetAplicationGetUserRole";
+                cmd.CommandText = "GetAplicationGetUserRole_New";
                 cmd.Parameters.AddWithValue("@username", user);
                 conn.Open();
                 DbDataAdapter adp = Helper.DataAdapterUD.CreateDataAdapter(connString, cmd);

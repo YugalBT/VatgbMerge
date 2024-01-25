@@ -17,7 +17,7 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult Index()
         {
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {

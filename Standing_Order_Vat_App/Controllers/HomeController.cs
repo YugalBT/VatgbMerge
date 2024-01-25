@@ -37,7 +37,7 @@ namespace Standing_Order_Vat_App.Controllers
         {
             accountRepo.RemoveSessionData();
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
             return View("AccessDenied");
         }
     }

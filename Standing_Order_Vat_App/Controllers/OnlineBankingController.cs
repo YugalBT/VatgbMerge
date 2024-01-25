@@ -26,7 +26,7 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult Index()
         {
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (accountRepo.Geturole() != null && accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {
@@ -37,7 +37,7 @@ namespace Standing_Order_Vat_App.Controllers
         //public IActionResult onlineBanking()
         //{
         //    accountRepo.SetUserinfoInSession();
-        //    userRoleService.GetUserRole(User.Identity.Name);
+        //    userRoleService.GetUserRole(Environment.UserName);
 
         //    if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
         //    {
@@ -48,7 +48,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(onlineBankingVm customService)
         {
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {

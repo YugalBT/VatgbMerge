@@ -51,14 +51,14 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult Index()
         {
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
             }
             var rec = _frgnchks.GetBanks();
-            ViewBag.BankName = rec;
+            //ViewBag.BankName = rec;
             return View();
         }
 
@@ -66,7 +66,7 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult AddFrgnCheckAsync()
         {
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
@@ -80,7 +80,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IActionResult> AddFrgnCheckAsync(string actionbtn, ForeignCheckVm foreignChecksDetail)
         {
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
@@ -242,7 +242,7 @@ namespace Standing_Order_Vat_App.Controllers
         {
             FrgnViewCheckVm res = new FrgnViewCheckVm();
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
@@ -272,7 +272,7 @@ namespace Standing_Order_Vat_App.Controllers
         public async Task<IActionResult> ViewAsync(FrgnViewCheckVm res)
         {
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
@@ -302,7 +302,7 @@ namespace Standing_Order_Vat_App.Controllers
         public async Task<IActionResult> UpdateFrgn()
         {
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
@@ -326,7 +326,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateFrgn(FrgnViewCheckVm res)
         {
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
@@ -385,7 +385,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IGeneralResult<string>> DeletefrgnCheck(int batchid)
         {
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             IGeneralResult<string> res = new GeneralResult<string>();
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))

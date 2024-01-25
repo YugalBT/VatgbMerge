@@ -53,5 +53,8 @@
     <ProjectReference Include="..\Standing_Order_Vat_App.DAL\Standing_Order_Vat_App.DAL.csproj" />
     <ProjectReference Include="..\VATCustomServices\VATCustomServices.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
 
 </Project>

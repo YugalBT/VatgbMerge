@@ -52,7 +52,7 @@ namespace Standing_Order_Vat_App.Controllers
 
             VATServices tes = new VATServices();
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
             {
@@ -78,7 +78,7 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult AddUser(int? userid)
         {
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {
@@ -117,7 +117,7 @@ namespace Standing_Order_Vat_App.Controllers
         {
             try
             {
-                userRoleService.GetUserRole(User.Identity.Name);
+                userRoleService.GetUserRole(Environment.UserName);
 
                 if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
                 {
@@ -187,7 +187,7 @@ namespace Standing_Order_Vat_App.Controllers
 
         public IActionResult DeleteUser(int userid)
         {
-            userRoleService.GetUserRole(User.Identity.Name);
+            userRoleService.GetUserRole(Environment.UserName);
 
             if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {
