@@ -1,6 +1,6 @@
 ﻿@model Standing_Order_Vat_App.Common.ViewModels.FrgnViewCheckVm
 @{
-    ViewData["Title"] = "View";
+    ViewData["Title"] = "View Batch";
     await Html.RenderPartialAsync("GBRegistersMenu");
 }
 <div class="d-flex">
@@ -46,13 +46,13 @@
                     <div class="col-3">
                         <div class="branch mb-3">
                             <label class="date-from d-block" for="inlineFormCustomSelect">Date From:</label>
-                            <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="From" />
+                            <input type="date" style="width:100%;height: 38px;" class="form-control" asp-for="From" />
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="branch mb-3">
-                            <label class="ms-auto d-block" for="inlineFormCustomSelect">Date To:</label>
-                            <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="To" />
+                            <label class="d-block" for="inlineFormCustomSelect">Date To:</label>
+                            <input type="date" style="width:100%;height: 38px;" class="form-control" asp-for="To" />
                         </div>
                     </div>
 
@@ -74,9 +74,9 @@
                                                 <th>Date Payment Requested</th>
                                                 <th>Date Processed	</th>
                                                 <th>Bank</th>
-                                                @*<th>Date Processed</th>*@
                                                 <th>Total</th>
                                                 <th>Entered By</th>
+                                                <th>Date Settled</th>
                                                 <th>Settled By</th>
 
                                             </tr>
@@ -87,20 +87,22 @@
                                                 @foreach (var dormant in Model.FrgncheckListIncompletes)
                                                 {
                                                     <tr>
-                                                        @*//<td>@dormant.DateSettled</td>*@
-                                                        <td>@dormant.DateReceived.ToShortDateString()</td>
                                                         <td>
-                                                            <input type="date" asp-for="@dormant.DatePaymentRequested" class="form-control custom_box" value="@Html.Raw(dormant.DatePaymentRequested.ToString() == "01-01-0001 12.00.00 AM" ? "_" :Convert.ToDateTime(dormant.DatePaymentRequested).ToShortDateString() )" />
+                                                            <p class='text-center'>@Html.Raw(dormant.DateReceived == new DateTime() ? "_" : dormant.DateReceived.ToShortDateString())</p>
                                                         </td>
-                                                        <td>@dormant.DateProcessed.ToShortDateString()</td>
+                                                        <td>
+                                                            <p class='text-center'>@Html.Raw((dormant.DatePaymentRequested == new DateTime() || dormant.DatePaymentRequested == null) ? "_" : dormant.DatePaymentRequested?.ToShortDateString())</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class='text-center'>@Html.Raw(dormant.DateProcessed == new DateTime() ? "_" : dormant.DateProcessed.ToShortDateString())</p>
+                                                        </td>
                                                         <td>@dormant.BankName</td>
-
-                                                        <td>@dormant.BatchTotal</td>
+                                                        <td>@dormant.BatchTotal.ToString("0.00")</td>
                                                         <td>@dormant.ProcessName</td>
-
-                                                        <td></td>
-                                                        @*<td><a href="javascript:void(0)" onclick="DeleteBatch(@dormant.BatchId,this)" class="edit_icon"><i class="fa-solid fa-trash"></i></a></td>*@
-                                                        @*<td><a href=" asp-controller="FrgnChks" asp-action="DeletefrgnCheck" asp-route-batchid="@dormant.BatchId">Delete</a></td>*@
+                                                        <td>
+                                                            <p class='text-center'>_</p>
+                                                        </td>
+                                                        <td><p class='text-center'>_</p></td>
                                                     </tr>
                                                 }
                                             }
@@ -110,26 +112,21 @@
                                                 {
                                                     <tr>
                                                         <td>
-                                                            @if (dormant.DateReceived.ToString() == "01-01-0001 12.00.00 AM")
-                                                            {
-                                                                <p class="text-center">_</p>
-                                                            }
-                                                            else
-                                                            {
-                                                                dormant.DateReceived.ToShortDateString();
-                                                            }
+                                                            <p class='text-center'>@Html.Raw(dormant.DateReceived == new DateTime() ? "_" : dormant.DateReceived.ToShortDateString())</p>
                                                         </td>
                                                         <td>
-                                                            <input type="date" asp-for="@dormant.DatePaymentRequested" class="form-control custom_box" value="@Html.Raw(dormant.DatePaymentRequested.ToString() == "01-01-0001 12.00.00 AM" ? "_" :Convert.ToDateTime(dormant.DatePaymentRequested).ToShortDateString() )" />
+                                                            <p class='text-center'>@Html.Raw(dormant.DatePaymentRequested == new DateTime() ? "_" : dormant.DatePaymentRequested.ToShortDateString())</p>
                                                         </td>
-                                                        <td>@dormant.DateProcessed.ToShortDateString()</td>
+                                                        <td>
+                                                            <p class='text-center'>@Html.Raw(dormant.DateProcessed == new DateTime() ? "_" : dormant.DateProcessed.ToShortDateString())</p>
+                                                        </td>
                                                         <td>@dormant.BankName</td>
-                                                        <td>@dormant.BatchTotal</td>
-
+                                                        <td>@dormant.BatchTotal.ToString("0.00")</td>
                                                         <td>@dormant.ProcessName</td>
-                                                        <td>@dormant.ProcessName</td>
-                                                        @*<td><a href="javascript:void(0)" onclick="DeleteBatch(@dormant.BatchId,this)" class="edit_icon"><i class="fa-solid fa-trash"></i></a></td>*@
-                                                        @*<td><a href=" asp-controller="FrgnChks" asp-action="DeletefrgnCheck" asp-route-batchid="@dormant.BatchId">Delete</a></td>*@
+                                                        <td>
+                                                            <p class='text-center'>@Html.Raw(dormant.DateSettled == new DateTime() ? "_" : dormant.DateSettled.ToShortDateString())</p>
+                                                        </td>
+                                                        <td>@dormant.CompName</td>
                                                     </tr>
                                                 }
                                             }
@@ -152,16 +149,15 @@
                                                 <th>Date Payment Requested</th>
                                                 <th>Date Processed	</th>
                                                 <th>Bank</th>
-                                                @*<th>Date Processed</th>*@
                                                 <th>Total</th>
                                                 <th>Entered By</th>
+                                                <th>Date Settled</th>
                                                 <th>Settled By</th>
-
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td colspan="7" class="text-center">
+                                                <td colspan="8" class="text-center">
                                                     No Record Found
                                                 </td>
                                             </tr>

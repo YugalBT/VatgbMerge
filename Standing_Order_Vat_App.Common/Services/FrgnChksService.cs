@@ -458,7 +458,7 @@ namespace Standing_Order_Vat_App.Common.Services
                     if (dataTable.Rows.Count > 0)
                     {
                         result.Successful = true;
-                        result.Message = "Data Saved Successfully.";
+                        result.Message = "Data Fetched Successfully.";
                         result.Value = dataTable;
                     }
 

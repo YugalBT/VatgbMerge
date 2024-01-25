@@ -34,19 +34,19 @@ namespace Standing_Order_Vat_App.Controllers
             }
             return View();
         }
-        public IActionResult onlineBanking()
-        {
-            accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(User.Identity.Name);
+        //public IActionResult onlineBanking()
+        //{
+        //    accountRepo.SetUserinfoInSession();
+        //    userRoleService.GetUserRole(User.Identity.Name);
 
-            if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
-            {
-                return RedirectToAction("AccessDenied", "Home");
-            }
-            return View();
-        }
+        //    if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
+        //    {
+        //        return RedirectToAction("AccessDenied", "Home");
+        //    }
+        //    return View();
+        //}
         [HttpPost]
-        public async Task<IActionResult> onlineBanking(onlineBankingVm customService)
+        public async Task<IActionResult> Index(onlineBankingVm customService)
         {
             userRoleService.GetUserRole(User.Identity.Name);
 

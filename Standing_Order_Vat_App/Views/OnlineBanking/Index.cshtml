@@ -43,37 +43,33 @@
 
 </style>
 <section>
-    <form class="formcontainer" asp-controller="OnlineBanking" asp-action="onlineBanking" method="post">
+    <form class="formcontainer" asp-controller="OnlineBanking" asp-action="Index" method="post">
         <div class="loadingDiv"></div>
-            <div class="row mb-3">
-                <div class="col-lg-6">
-                    <div class="d-flex branch">
-                        <label class="date-from" for="inlineFormCustomSelect"> Date:</label>
-                        <input type="date" asp-for="Date" />
-                    </div>
-               @* <div class="form-group">
-                    <input type="checkbox" asp-for="IsChecked" for="inlineFormCustomSelect" />
-                    <label>Upload FTP</label>
-                </div>*@
-            </div>
+        <div class="row mb-3">
             <div class="col-lg-6">
-                <div class="formcontainers">
-                    <label>Upload FTP</label>
-                    <input type="checkbox" asp-for="IsChecked" />
+                <div class="d-flex branch">
+                    <label class="date-from" for="inlineFormCustomSelect"> Date:</label>
+                    <input type="date" asp-for="Date" />
+                </div>
+                <div class="col-lg-6">
+                    <div class="formcontainers">
+                        <label>Upload FTP</label>
+                        <input type="checkbox" asp-for="IsChecked" />
+                    </div>
                 </div>
             </div>
-            </div>
-            <div class="buttons d-flex justify-content-between">
-                <div class="col-auto my-1">
+        </div>
+        <div class="buttons d-flex justify-content-between">
+            <div class="col-auto my-1">
                 <button type="submit" id="setmodel" class="btn btn-primary" style="margin-left: 133px;">Submit</button>
-                </div>
             </div>
+        </div>
         <div id="divLoader" style="text-align: center; display:none;vertical-align: middle;"> <img src="~/Image/Spinner-3.gif" alt="Loader" /> </div>
 
     </form>
 </section>
 <script>
-    $("#setmodel").click(function() {
+    $("#setmodel").click(function () {
         $("#divLoader").css("display", "block")
     });
 </script>

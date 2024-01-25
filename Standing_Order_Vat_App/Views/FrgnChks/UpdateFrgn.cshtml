@@ -1,6 +1,6 @@
 ﻿@model Standing_Order_Vat_App.Common.ViewModels.FrgnViewCheckVm
 @{
-    ViewData["Title"] = "Update";
+    ViewData["Title"] = "Update Batch";
     await Html.RenderPartialAsync("GBRegistersMenu");
 }
 <div class="d-flex">
@@ -40,8 +40,7 @@
                 <div class="col-3" id="selec">
                     <div class="form-group mb-3">
                         <label class="d-block">Status</label>
-
-                        <select id="Select2" asp-for=Status class="form-select" asp-items="@(new SelectList(Model.entryStatusVM,"StatusId", "StatusName"))">
+                        <select id="Select2" asp-for=Status class="form-control form-select" asp-items="@(new SelectList(Model.entryStatusVM,"StatusId", "StatusName"))">
                             <option value="">--- Select ---</option>
                         </select>
                     </div>
@@ -50,13 +49,13 @@
                 <div class="col-3" id="datef">
                     <div class="branch mb-3">
                         <label class="date-from d-block" for="inlineFormCustomSelect">Date From:</label>
-                        <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="From" />
+                        <input type="date" style="width:100%;height: 38px;" class="form-control" asp-for="From" />
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="branch mb-3" id="datet">
-                        <label class="ms-auto d-block" for="inlineFormCustomSelect">Date To:</label>
-                        <input type="date" style="width:100%;height: 38px;" class="form-select" asp-for="To" />
+                        <label class="d-block" for="inlineFormCustomSelect">Date To:</label>
+                        <input type="date" style="width:100%;height: 38px;" class="form-control" asp-for="To" />
                     </div>
                 </div>
 
@@ -69,47 +68,48 @@
         </form>
         @if ((Model.FrgnCheckListRecVms != null && Model.FrgnCheckListRecVms.Count > 0) || (Model.FrgncheckListIncompletes != null && Model.FrgncheckListIncompletes.Count > 0))
         {
-            
+
             <div class="spl">
                 <div style="height: 420px;overflow-y: auto;">
                     <div class="table-responsive">
                         <table class="table custom_tble" id="table">
-                            
-                            <thead>
-                                <tr class="table-active">
-                                    
-                                    <th></th>
-                                    <th>Date Received</th>
-                                    <th>Date Payment Requested</th>
-                                    <th>Bank</th>
-                                    <th>Date Processed</th>
-                                    <th>Total</th>
-                                    <th>Entered By</th>
-                                    <th>Check For Settlement</th>
-                                    <th scope="col">#</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model.Status == 1)
-                                {
+
+                            @if (Model.Status == 1)
+                            {
+                                <thead>
+                                    <tr class="table-active">
+                                        <th></th>
+                                        <th>Date Received</th>
+                                        <th>Date Payment Requested</th>
+                                        <th>Bank</th>
+                                        <th>Date Processed</th>
+                                        <th>Total</th>
+                                        <th>Entered By</th>
+                                        <th>Check For Settlement</th>
+                                        <th scope="col">#</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     @foreach (var dormant in Model.FrgncheckListIncompletes)
                                     {
                                         <tr id="batchDetails">
                                             <td><i class="fa-solid fa-arrow-right fa-2xl" onclick="ShowBatchDetails(@dormant.BatchId,'checklist',this)" data-bs-toggle="collapse" href="#ShowBAtchCheckList" role="button" aria-expanded="false" aria-controls="ShowBAtchCheckList"></i></td>
                                             <td>
-                                                @Html.Raw(dormant.DateReceived.ToString() == "01-01-0001 12.00.00 AM" ? "<p class='text-center'>_</p>" : dormant.DateReceived.ToShortDateString())
+                                                <p class='text-center'>@Html.Raw(dormant.DateReceived == new DateTime() ? "_" : dormant.DateReceived.ToShortDateString())</p>
                                             </td>
                                             <td>
-                                                <input type="date" asp-for="@dormant.DatePaymentRequested" class="form-control custom_box" value="@Html.Raw(dormant.DatePaymentRequested.ToString() == "01-01-0001 12.00.00 AM" ? "_" : Convert.ToDateTime(dormant.DatePaymentRequested).ToShortDateString() )" />
+                                                <input type='date' asp-for='@dormant.DatePaymentRequested' class='form-control custom_box' value="@Html.Raw(dormant.DatePaymentRequested == new DateTime() ? "_" : Convert.ToDateTime(dormant.DatePaymentRequested).ToShortDateString() )" />
                                             </td>
                                             <td>@dormant.BankName</td>
-                                            <td>@dormant.DateProcessed.ToShortDateString()</td>
-                                            <td>@dormant.BatchTotal</td>
+                                            <td>
+                                                <p class='text-center'>@Html.Raw(dormant.DateProcessed == new DateTime() ? "_" : dormant.DateProcessed.ToShortDateString())</p>
+                                            </td>
+                                            <td>@dormant.BatchTotal.ToString("0.00")</td>
                                             <td>@dormant.ProcessName</td>
-                                            <td><input type="checkbox"  id="settleBatch" class="form-check" name="@dormant.BatchId"></td>
+                                            <td><input type="checkbox" id="settleBatch" class="form-check" name="@dormant.BatchId"></td>
                                             <td>
                                                 <div class="d-flex">
-                                                    <a href="javascript:void(0)" class="edit_icon" >
+                                                    <a href="javascript:void(0)" class="edit_icon">
                                                         <i class=" fa-regular fa-pen-to-square"></i>
                                                     </a>
                                                     <a href="javascript:void(0)" onclick="DeleteBatch(@dormant.BatchId,this)" class="edit_icon"><i class="fa-solid fa-trash"></i></a>
@@ -125,43 +125,43 @@
                                         </tr>
 
                                     }
-                                }
-                                else
-                                {
+                                </tbody>
+                            }
+                            else
+                            {
+                                <thead>
+                                    <tr class="table-active">
+                                        <th>Date Received</th>
+                                        <th>Date Payment Requested</th>
+                                        <th>Bank</th>
+                                        <th>Date Processed</th>
+                                        <th>Total</th>
+                                        <th>Entered By</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     @foreach (var dormant in Model.FrgnCheckListRecVms)
                                     {
-                                        <tr id="batchDetails">
-                                            <td><i class="fa-solid fa-arrow-right fa-2xl" onclick="ShowBatchDetails(@dormant.BatchId,'checklist',this)" data-bs-toggle="collapse" href="#ShowBAtchCheckList" role="button" aria-expanded="false" aria-controls="ShowBAtchCheckList"></i></td>
+
+                                        <tr>
                                             <td>
-                                                @Html.Raw(dormant.DateReceived.ToString() == "01-01-0001 12.00.00 AM" ? "<p class='text-center'>_</p>" : dormant.DateReceived.ToShortDateString())
+                                                <p class='text-center'>@Html.Raw(dormant.DateReceived == new DateTime() ? "_" : dormant.DateReceived.ToShortDateString())</p>
                                             </td>
                                             <td>
-                                                <input type="date" asp-for="@dormant.DatePaymentRequested" class="form-control custom_box" value="@Html.Raw(dormant.DatePaymentRequested.ToString() == "01-01-0001 12.00.00 AM" ? "_" : dormant.DatePaymentRequested.ToShortDateString() )" />
+                                                <p class='text-center'>@Html.Raw(dormant.DatePaymentRequested == new DateTime() ? "_" : dormant.DatePaymentRequested.ToShortDateString())</p>
                                             </td>
                                             <td>@dormant.BankName</td>
-                                            <td>@dormant.DateProcessed.ToShortDateString()</td>
-                                            <td>@dormant.BatchTotal</td>
-                                            <td>@dormant.ProcessName</td>
-                                            <td><input type="checkbox" id="settleBatch" class="form-check" name="@dormant.BatchId"></td>
                                             <td>
-                                                <div class="d-flex">
-                                                    <a href="javascript:void(0)" class="edit_icon">
-                                                        <i class="fa-regular fa-pen-to-square"></i>
-                                                    </a>
-                                                    <a href="javascript:void(0)" onclick="DeleteBatch(@dormant.BatchId,this)" class="edit_icon"><i class="fa-solid fa-trash"></i></a>
-                                                </div>
-                                                <div class="d_none">
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <a href="javascript:void(0)" onclick="UpdateDatePaymentRequest(@dormant.BatchId,this)" class="check_icon"><i class="fa-regular fa-circle-check"></i></a>
-                                                        <a href="javascript:void(0)" class="close_icon"><i class="fa-solid fa-xmark"></i></a>
-                                                    </div>
-                                                </div>
+                                                <p class='text-center'>@Html.Raw(dormant.DateProcessed == new DateTime() ? "_" : dormant.DateProcessed.ToShortDateString())</p>
                                             </td>
-                                            @*<td><a href=" asp-controller="FrgnChks" asp-action="DeletefrgnCheck" asp-route-batchid="@dormant.BatchId">Delete</a></td>*@
+                                            <td>@dormant.BatchTotal.ToString("0.00")</td>
+                                            <td>@dormant.ProcessName</td>
                                         </tr>
                                     }
-                                }
-                            </tbody>
+                                </tbody>
+
+                            }
+
                         </table>
                     </div>
                 </div>
@@ -214,6 +214,8 @@
             $(".check_icon, .close_icon").click(function () {
                 $("tr").removeClass("active");
             });
+            $("#Select2").val(1)
+            $("#Select2").css("pointer-events", "none").removeClass("form-select")
             Banksanddate()
             $('#sel').show();
             $('#Banks').hide();
@@ -224,6 +226,6 @@
             $("#table_length").addClass("m-2");
             let settleButton = '<div class="me-3"><input type="button" class="btn btn-primary main_btn  h-auto w-100" onclick="CompleteSettlement()" value="Settle Batch"/></div>'
             $("#table_length").append(settleButton);
-        });  
+        });
     </script>
 }

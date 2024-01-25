@@ -125,13 +125,14 @@ namespace Standing_Order_Vat_App.Controllers
                         var response = await _frgnchks.AddFrgnCheack(foreignChecksDetail);
                         if (response.Successful)
                         {
-                            foreignChecksDetail.CheckNumber = 0;
-                            foreignChecksDetail.PayerAcctNumber = 0;
-                            foreignChecksDetail.PayerAcctName = "";
-                            foreignChecksDetail.DepositAcctName = "";
-                            foreignChecksDetail.DepositAcctNumber = 0;
-                            foreignChecksDetail.CheckAmount = 0;
+                            foreignChecksDetail.CheckNumber = string.Empty;
+                            foreignChecksDetail.PayerAcctNumber = null;
+                            foreignChecksDetail.PayerAcctName = string.Empty;
+                            foreignChecksDetail.DepositAcctName = string.Empty;
+                            foreignChecksDetail.DepositAcctNumber = null;
+                            foreignChecksDetail.CheckAmount = null;
                             ModelState.Clear();
+
                             _notyf.Success("Check Saved successfully.");
                             foreignChecksDetail.TotalAmount = Convert.ToDecimal(response.Value);
                             foreignChecksDetail.TotalAmount = Math.Round((decimal)foreignChecksDetail.TotalAmount, 2);
@@ -149,11 +150,12 @@ namespace Standing_Order_Vat_App.Controllers
                 }
 
                 foreignChecksDetail.BatchId = 0;
-                foreignChecksDetail.CheckNumber = 0;
-                foreignChecksDetail.PayerAcctNumber = 0;
-                foreignChecksDetail.PayerAcctName = "";
-                foreignChecksDetail.DepositAcctName = "";
-                foreignChecksDetail.DepositAcctNumber = 0;
+                foreignChecksDetail.CheckNumber = string.Empty;
+                foreignChecksDetail.PayerAcctNumber = null;
+                foreignChecksDetail.PayerAcctName = string.Empty;
+                foreignChecksDetail.DepositAcctName = string.Empty;
+                foreignChecksDetail.DepositAcctNumber = null;
+                foreignChecksDetail.CheckAmount = null;
             }
             catch (Exception ex)
             {
@@ -198,7 +200,7 @@ namespace Standing_Order_Vat_App.Controllers
                 vm.checksList = v;
                 vm.BatchId = BatchId;
                 var checksettlement = _frgnchks.GetBatchSettlementDetails(BatchId);
-                
+
                 vm.BanksList = await _sKNANBLIVEContext.Banks.Select(s => new BankListVm()
                 {
                     BankId = s.BankId,
@@ -207,7 +209,7 @@ namespace Standing_Order_Vat_App.Controllers
                 if (checksettlement.Value != null)
                 {
                     List<CheckSettlementBatchVm> d = DataTableToModelConvert.CreateListFromTable<CheckSettlementBatchVm>(checksettlement.Value);
-                    
+
                     vm.checkSettlementBatchlist = d;
 
                 }
@@ -476,10 +478,8 @@ namespace Standing_Order_Vat_App.Controllers
                     var b = _frgnchks.record1(res.Status, branch, res.Banks, res.From, res.To);
                     if (b.Result.Value != null)
                     {
-                        if (res.Status == 1)
-                        {
-                            result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(b.Result.Value);
-                        }
+
+                        result = DataTableToModelConvert.ConvertToList<FrgnCheckListRecVm>(b.Result.Value);
 
                     }
                     break;
@@ -498,7 +498,7 @@ namespace Standing_Order_Vat_App.Controllers
         }
 
         [HttpPost]
-        public async Task<IGeneralResult<string>>AddCheckSettlement(AddCheckSettlementDetailVm checksettlement)
+        public async Task<IGeneralResult<string>> AddCheckSettlement(AddCheckSettlementDetailVm checksettlement)
         {
             IGeneralResult<string> res = new GeneralResult<string>();
             if (ModelState.IsValid)
@@ -506,7 +506,7 @@ namespace Standing_Order_Vat_App.Controllers
                 var result = await _frgnchks.AddBatchSettlementDetails(checksettlement);
                 if (result.Successful)
                 {
-                    result.Message="Add Sattlement Successfully";
+                    result.Message = "Add Sattlement Successfully";
                 }
                 else
                 {
@@ -519,14 +519,15 @@ namespace Standing_Order_Vat_App.Controllers
                 res.Message = "Validation Error";
             }
             return res;
-            }
+        }
 
 
         [HttpPost]
-        public async Task<IGeneralResult<string>>CompleteSettlement(List<string> batches)
+        public async Task<IGeneralResult<string>> CompleteSettlement(List<string> batches)
         {
             IGeneralResult<string> res = new GeneralResult<string>();
-            if (ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
 
                 var result = await _frgnchks.CompleteSettleBatch(batches);
                 if (result.Successful)
@@ -544,8 +545,8 @@ namespace Standing_Order_Vat_App.Controllers
                 res.Message = "Validation Error";
             }
             return res;
-    }
-       
+        }
+
     }
 }
 

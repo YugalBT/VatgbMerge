@@ -1,5 +1,6 @@
 ﻿@model GbRegister.Core.ViewModel.ForeignCheckVm
 @{
+    ViewData["Title"] = "New Batch";
     await Html.RenderPartialAsync("GBRegistersMenu");
 }
 
@@ -7,7 +8,7 @@
     @{
         await Html.RenderPartialAsync("_FrgnChecksLeftMenu");
     }
-    
+
     <div class="right_side_content bg-lightorangecolor">
         <br />
         <h2 style="text-align:center;color:#b46000">New Foreign Checks Batch</h2>
@@ -48,7 +49,7 @@
 
 
                             <div class="d-flex align-items-center flex-column gap-2">
-                                <button type="submit"  id="savBatchbtn" name="actionbtn" value="batchHeader" class="btn btn-primary main_btn w-100">Save Batch Header</button>
+                                <button type="submit" id="savBatchbtn" name="actionbtn" value="batchHeader" class="btn btn-primary main_btn w-100">Save Batch Header</button>
                                 @*  <button type="submit" name="actionbtn" value="saveCheck" class="btn btn-primary main_btn w-100">Close Batch</button>*@
                             </div>
 
@@ -71,7 +72,7 @@
                                     <button type="button" class="buttonRemoveCss text-end" onclick="showrefresh(@Model.BatchId)">Refresh</button>
                                 }
                             }
-                           
+
                         </div>
 
 
@@ -176,7 +177,7 @@
     <script asp-append-version="true" src="~/js/FrgnCheck.js"></script>
 
     <script type="text/javascript">
-        
+
     </script>
 }
 
