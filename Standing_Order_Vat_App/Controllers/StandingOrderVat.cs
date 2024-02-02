@@ -88,6 +88,11 @@ namespace Standing_Order_Vat_App.Controllers
             int empid = accountRepo.GetUserinfo(ref result, ref userInfo);
             var rec = userRoleService.GetUserRole(Environment.UserName);
 
+
+            printlog("empid:" + empid);
+            printlog("rec:" + rec.Count());
+            printlog("Role:" + accountRepo.GetAppAccessRoles());
+
             printlog("Status: Application Start");
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
             {
