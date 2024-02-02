@@ -53,6 +53,7 @@ namespace Standing_Order_Vat_App.Controllers
             VATServices tes = new VATServices();
             accountRepo.SetUserinfoInSession();
             userRoleService.GetUserRole(Environment.UserName);
+           
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
             {
@@ -175,7 +176,7 @@ namespace Standing_Order_Vat_App.Controllers
                     model.UserRoles = vm;
                     return View(model);
                 }
-                //}
+                
             }
             catch (Exception ex)
             {

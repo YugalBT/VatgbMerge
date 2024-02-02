@@ -69,8 +69,14 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult CustomerSummaryReport(CustomerSummary_VM obj, int pn = 1, int recordPerPage = 10, int customer = 0, int report = 0, DateTime Startdate = default, DateTime Enddate = default, string search = "")
         {
-            accountRepo.SetUserinfoInSession();
+            printlog("Username:"+Environment.UserName);
+
             var rec = userRoleService.GetUserRole(Environment.UserName);
+
+            printlog("Record" + rec.Count());
+            accountRepo.SetUserinfoInSession();
+            
+           
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
             {
                 return RedirectToAction("AccessDenied", "Home");
@@ -117,6 +123,10 @@ namespace Standing_Order_Vat_App.Controllers
                 printlog("Role ID: " + userRolelist.FirstOrDefault().RoleID.ToString());
                 printlog("User Name: " + userRolelist.FirstOrDefault().UserName.ToString());
                 printlog("User Role Name: " + userRolelist.FirstOrDefault().RoleName.ToString());
+                printlog("Username" + Environment.UserName);
+                printlog("FirstName" + accountRepo.GetFirstName());
+                printlog("LastName" + accountRepo.GetLastName());
+             
 
                 customers = customerdetail.GetCustomerDetail(obj.Report);
                 ViewBag.ddlrec = customers;

@@ -84,15 +84,15 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> TotalSummaryReport(Summery_VM obj, int pn = 1, int recordPerPage = 10, int branche = 0, int report = 0, DateTime fdate = default, DateTime tdate = default)
         {
+            printlog("Username" + Environment.UserName);
             //setUserPermissions.SetPermissionsInSession();
             int empid = accountRepo.GetUserinfo(ref result, ref userInfo);
             var rec = userRoleService.GetUserRole(Environment.UserName);
-
-
             printlog("empid:" + empid);
             printlog("rec:" + rec.Count());
             printlog("Role:" + accountRepo.GetAppAccessRoles());
-
+            printlog("FirstName" + accountRepo.GetFirstName());
+            printlog("LastName" + accountRepo.GetLastName());
             printlog("Status: Application Start");
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
             {
