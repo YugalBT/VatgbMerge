@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols;
@@ -137,8 +138,7 @@ namespace Standing_Order_Vat_App.Common.Services
             // get all ids needed to access the relevant pages
             //result = "success";
             int empID = 0;
-            string uname = User.Identity.Name;
-            //string uname = "LISAME";
+            string uname = httpContext.HttpContext.User.Identity.Name;       //string uname = "LISAME";
             try
             {
                 SqlConnection conn = new SqlConnection();
