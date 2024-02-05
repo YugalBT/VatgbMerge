@@ -60,7 +60,7 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult Index()
         {
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
             return View();
         }
 
@@ -69,9 +69,9 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult CustomerSummaryReport(CustomerSummary_VM obj, int pn = 1, int recordPerPage = 10, int customer = 0, int report = 0, DateTime Startdate = default, DateTime Enddate = default, string search = "")
         {
-            printlog("Username:"+Environment.UserName);
+            printlog("Username:"+User.Identity.Name);
 
-            var rec = userRoleService.GetUserRole(Environment.UserName);
+            var rec = userRoleService.GetUserRole(User.Identity.Name);
 
             printlog("Record" + rec.Count());
             accountRepo.SetUserinfoInSession();
@@ -110,7 +110,7 @@ namespace Standing_Order_Vat_App.Controllers
             userRolelist = rec.Select(x => ((UserRole_VM)x)).ToList();
 
             printlog("User List Count: " + userRolelist.Count.ToString());
-            printlog("User Name: " + Environment.UserName);
+            printlog("User Name: " + User.Identity.Name);
             printlog("App Name: NB_VAT_FEES");
 
             record.UserRole_VMs = userRolelist;
@@ -123,7 +123,7 @@ namespace Standing_Order_Vat_App.Controllers
                 printlog("Role ID: " + userRolelist.FirstOrDefault().RoleID.ToString());
                 printlog("User Name: " + userRolelist.FirstOrDefault().UserName.ToString());
                 printlog("User Role Name: " + userRolelist.FirstOrDefault().RoleName.ToString());
-                printlog("Username" + Environment.UserName);
+                printlog("Username" + User.Identity.Name);
                 printlog("FirstName" + accountRepo.GetFirstName());
                 printlog("LastName" + accountRepo.GetLastName());
              
@@ -301,7 +301,7 @@ namespace Standing_Order_Vat_App.Controllers
             }
             else
             {
-                ViewBag.Message = String.Format(Environment.UserName.ToString() + " is not registered. please contact to the Admin");
+                ViewBag.Message = String.Format(User.Identity.Name.ToString() + " is not registered. please contact to the Admin");
             }
             return View(record);
         }
@@ -323,7 +323,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> ExportListUsingEPPlus(int pn = 1, int recordPerPage = 10, int brchno = 0, int report = 0, DateTime fdate = default, DateTime tdate = default, int doctype = 3, string search = "")
         {
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
             {
                 return RedirectToAction("AccessDenied", "Home");

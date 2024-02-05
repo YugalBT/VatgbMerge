@@ -84,10 +84,10 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> TotalSummaryReport(Summery_VM obj, int pn = 1, int recordPerPage = 10, int branche = 0, int report = 0, DateTime fdate = default, DateTime tdate = default)
         {
-            printlog("Username" + Environment.UserName);
+            printlog("Username: " + User.Identity.Name);
             //setUserPermissions.SetPermissionsInSession();
             int empid = accountRepo.GetUserinfo(ref result, ref userInfo);
-            var rec = userRoleService.GetUserRole(Environment.UserName);
+            var rec = userRoleService.GetUserRole(User.Identity.Name);
             printlog("empid:" + empid);
             printlog("rec:" + rec.Count());
             printlog("Role:" + accountRepo.GetAppAccessRoles());
@@ -119,14 +119,14 @@ namespace Standing_Order_Vat_App.Controllers
             }
 
             customers = customerdetail.GetCustomerDetail(obj.Report);
-            printlog("User Name: " + Environment.UserName);
+            printlog("User Name: " + User.Identity.Name);
             List<UserRole_VM> userRolelist = new List<UserRole_VM>();
             userRolelist = rec.Select(x => ((UserRole_VM)x)).ToList();
 
             ViewBag.pageno = pn;
 
             printlog("User List Count: " + userRolelist.Count.ToString());
-            printlog("User Name: " + Environment.UserName);
+            printlog("User Name: " + User.Identity.Name);
             printlog("App Name: NB_VAT_FEES");
 
             record.UserRole_VMs = userRolelist;
@@ -401,7 +401,7 @@ namespace Standing_Order_Vat_App.Controllers
             }
             else
             {
-                ViewBag.Message = String.Format(Environment.UserName.ToString() + " is not registered. please contact to the Admin");
+                ViewBag.Message = String.Format(User.Identity.Name.ToString() + " is not registered. please contact to the Admin");
             }
             return View(record);
 
@@ -410,7 +410,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult> ExportListUsingEPPlus(int pn = 1, int recordPerPage = 10, int brchno = 0, int report = 0, DateTime fdate = default, DateTime tdate = default, int doctype = 0, string search = "")
         {
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))
             {
                 return RedirectToAction("AccessDenied", "Home");

@@ -30,7 +30,7 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult Index()
         {
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
 
             if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {
@@ -42,7 +42,7 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult InsertRecord()
         {
             accountRepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
 
             if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {
@@ -53,7 +53,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IActionResult> InsertRecord(CustomService customService)
         {
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
 
             if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {

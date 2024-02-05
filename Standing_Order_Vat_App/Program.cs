@@ -15,6 +15,8 @@ using Standing_Order_Vat_App.DAL.SKNANB_LIVE;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMvc();
+
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -22,9 +24,15 @@ builder.Services.AddAuthentication(options =>
 //Set Session Timeout. Default is 20 minutes.
 builder.Services.AddSession(options =>
 {
-    
     options.IdleTimeout = TimeSpan.FromDays(2);
 });
+builder.Services.AddAuthorization(options =>
+{
+    // By default, all incoming requests will be authorized according to the default policy.
+    options.FallbackPolicy = options.DefaultPolicy;
+});
+
+
 //builder.Services.AddControllers(config =>
 //{
 //    config.Filters.Add(new GlobalFilterExample());
@@ -34,16 +42,10 @@ builder.Services.AddScoped<filter>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddMemoryCache();
-builder.Services.AddSession();
-
 //builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
 //   .AddNegotiate();
 
-builder.Services.AddAuthorization(options =>
-{
-    // By default, all incoming requests will be authorized according to the default policy.
-    options.FallbackPolicy = options.DefaultPolicy;
-});
+
 
 
 builder.Services.AddDbContext<DirectoryContext>
@@ -97,12 +99,7 @@ builder.Services.AddTransient<IApplicationRolesRepo, ApplicationRolesRepo>();
 builder.Services.AddTransient<IApplicationUserRolesRepo, ApplicationUserRolesRepo>();
 builder.Services.AddScoped<IAccountRepo, AccountServiceRepo>();
 builder.Services.AddNotyf(config => { config.DurationInSeconds = 5; config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
-builder.Services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(3600000); });
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromDays(2);
-    /*options.IdleTimeout = TimeSpan.FromMinutes(5);*///You can set Time   
-});
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 var app = builder.Build();
 
@@ -119,8 +116,6 @@ app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseSession();
-app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=StandingOrderVat}/{action=TotalSummaryReport}/{id?}");

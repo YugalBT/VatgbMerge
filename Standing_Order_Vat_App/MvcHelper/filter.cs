@@ -29,7 +29,7 @@ namespace Standing_Order_Vat_App.MvcHelper
         //    //Summery_VM record = new Summery_VM();
         //    //List<UserRole_VM> userRolelist = new List<UserRole_VM>();
 
-        //    //var rec = userRoleService.GetUserRole(httpContext.Environment.UserName);
+        //    //var rec = userRoleService.GetUserRole(httpContext.User.Identity.Name);
 
         //    //userRolelist = rec.Select(x => ((UserRole_VM)x)).ToList();
         //    //var claims = new List<Claim>
@@ -69,7 +69,7 @@ namespace Standing_Order_Vat_App.MvcHelper
             Summery_VM record = new Summery_VM();
             List<UserRole_VM> userRolelist = new List<UserRole_VM>();
 
-            var rec = userRoleService.GetUserRole(Environment.UserName);
+            var rec = userRoleService.GetUserRole(User.Identity.Name);
 
             userRolelist = rec.Select(x => ((UserRole_VM)x)).ToList();
             var claims = new List<Claim>

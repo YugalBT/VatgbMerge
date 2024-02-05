@@ -42,7 +42,7 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult Index()
         {
             _accountrepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
             if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
@@ -54,7 +54,7 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult AddDormantRegister()
         {
             _accountrepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
             if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
@@ -70,7 +70,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public IActionResult AddDormantRegister(VmDormantRegister dormantRegister)
         {
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
             if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
@@ -98,7 +98,7 @@ namespace Standing_Order_Vat_App.Controllers
         public async Task<IActionResult>UpdateDormant()
         {
             _accountrepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
             if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
@@ -111,7 +111,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateDormant(DormantUpdateVmm res)
         {
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
             if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
@@ -157,7 +157,7 @@ namespace Standing_Order_Vat_App.Controllers
         public async Task<IActionResult>ViewDormant()
         {
             _accountrepo.SetUserinfoInSession();
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
             if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
@@ -170,7 +170,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IActionResult> ViewDormant(DormantUpdateVmm res,string actbtn)
         {
-            userRoleService.GetUserRole(Environment.UserName);
+            userRoleService.GetUserRole(User.Identity.Name);
             if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
