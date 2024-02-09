@@ -10,8 +10,8 @@ namespace Standing_Order_Vat_App.Common.Interfaces
 {
    public  interface IAccountRepo
     {
-        int GetUserinfo(ref string result, ref GetCurrentUserInfoVm userinfo);
-        void SetUserinfoInSession();
+        int GetUserinfo(string UserName, ref string result, ref GetCurrentUserInfoVm userinfo);
+        void SetUserinfoInSession(string UserName);
         string GetCurrentUserPersonalInfo(ref GetCurrentUserInfoVm userInfo);
         string GetSocSecNum(int empId);
         string GetUserId();

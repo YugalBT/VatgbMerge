@@ -103,11 +103,11 @@ namespace Standing_Order_Vat_App.Common.Services
         }
 
         
-        public int GetUserinfo(ref string result, ref GetCurrentUserInfoVm userinfo)
+        public int GetUserinfo(string UserName, ref string result, ref GetCurrentUserInfoVm userinfo)
         {
             try
             {
-                SetUserinfoInSession();
+                SetUserinfoInSession(UserName);
                 GetCurrentUserInfoVm vm = new GetCurrentUserInfoVm();
                 vm.FirstName = GetFirstName();
                 vm.BranchName = GetBranchName();
@@ -131,14 +131,15 @@ namespace Standing_Order_Vat_App.Common.Services
 
             return Convert.ToInt32(userinfo.EmpID);
         }
-        public void SetUserinfoInSession()
+        public void SetUserinfoInSession(string UserName)
         {
             GetCurrentUserInfoVm userinfo = new GetCurrentUserInfoVm();
             var connString = _directorycontext.Database.GetDbConnection();
             // get all ids needed to access the relevant pages
             //result = "success";
             int empID = 0;
-            string uname = httpContext.HttpContext.User.Identity.Name;       //string uname = "LISAME";
+            //string uname = httpContext.HttpContext.User.Identity.Name;       //string uname = "LISAME";
+            string uname = UserName;       //string uname = "LISAME";
             try
             {
                 SqlConnection conn = new SqlConnection();

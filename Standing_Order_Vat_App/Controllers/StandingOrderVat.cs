@@ -86,9 +86,9 @@ namespace Standing_Order_Vat_App.Controllers
         {
             printlog("Username: " + User.Identity.Name);
             //setUserPermissions.SetPermissionsInSession();
-            int empid = accountRepo.GetUserinfo(ref result, ref userInfo);
+            int empid = accountRepo.GetUserinfo(User.Identity.Name, ref result, ref userInfo);
             var rec = userRoleService.GetUserRole(User.Identity.Name);
-            printlog("empid:" + empid);
+            printlog("empid:" + userInfo.EmpID);
             printlog("rec:" + rec.Count());
             printlog("Role:" + accountRepo.GetAppAccessRoles());
             printlog("FirstName" + accountRepo.GetFirstName());

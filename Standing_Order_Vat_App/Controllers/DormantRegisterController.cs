@@ -41,7 +41,7 @@ namespace Standing_Order_Vat_App.Controllers
         }
         public IActionResult Index()
         {
-            _accountrepo.SetUserinfoInSession();
+            _accountrepo.SetUserinfoInSession(User.Identity.Name);
             userRoleService.GetUserRole(User.Identity.Name);
             if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
@@ -53,7 +53,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult AddDormantRegister()
         {
-            _accountrepo.SetUserinfoInSession();
+            _accountrepo.SetUserinfoInSession(User.Identity.Name);
             userRoleService.GetUserRole(User.Identity.Name);
             if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
@@ -97,7 +97,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult>UpdateDormant()
         {
-            _accountrepo.SetUserinfoInSession();
+            _accountrepo.SetUserinfoInSession(User.Identity.Name);
             userRoleService.GetUserRole(User.Identity.Name);
             if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
@@ -156,7 +156,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public async Task<IActionResult>ViewDormant()
         {
-            _accountrepo.SetUserinfoInSession();
+            _accountrepo.SetUserinfoInSession(User.Identity.Name);
             userRoleService.GetUserRole(User.Identity.Name);
             if (!_accountrepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {

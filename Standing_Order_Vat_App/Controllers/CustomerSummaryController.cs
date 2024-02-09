@@ -59,7 +59,7 @@ namespace Standing_Order_Vat_App.Controllers
         }
         public IActionResult Index()
         {
-            accountRepo.SetUserinfoInSession();
+            accountRepo.SetUserinfoInSession(User.Identity.Name);
             userRoleService.GetUserRole(User.Identity.Name);
             return View();
         }
@@ -74,7 +74,7 @@ namespace Standing_Order_Vat_App.Controllers
             var rec = userRoleService.GetUserRole(User.Identity.Name);
 
             printlog("Record" + rec.Count());
-            accountRepo.SetUserinfoInSession();
+            accountRepo.SetUserinfoInSession(User.Identity.Name);
             
            
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()) || string.IsNullOrEmpty(accountRepo.Geturole()))

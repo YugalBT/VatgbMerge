@@ -36,7 +36,7 @@ namespace Standing_Order_Vat_App.Controllers
         public IActionResult AccessDenied()
         {
             accountRepo.RemoveSessionData();
-            accountRepo.SetUserinfoInSession();
+            accountRepo.SetUserinfoInSession(User.Identity.Name);
             userRoleService.GetUserRole(User.Identity.Name);
             return View("AccessDenied");
         }
