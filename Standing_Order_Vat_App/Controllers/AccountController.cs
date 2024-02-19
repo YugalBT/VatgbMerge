@@ -8,6 +8,7 @@ using Standing_Order_Vat_App.Common.Services;
 using Standing_Order_Vat_App.Common.ViewModels;
 using Standing_Order_Vat_App.DAL.Directory_DB;
 using Standing_Order_Vat_App.Models;
+using System.Diagnostics;
 using VATCustomServices;
 using X.PagedList;
 using static Standing_Order_Vat_App.MvcHelper.Enumration;
@@ -78,36 +79,49 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult AddUser(int? userid)
         {
+            printlog("Add User Start");
+            printlog("User id: " + userid);
             accountRepo.SetUserinfoInSession(User.Identity.Name);
             userRoleService.GetUserRole(User.Identity.Name);
-
+            printlog("session set");
             if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
             {
                 return RedirectToAction("AccessDenied", "Home");
             }
 
             List<Role_VM> vm = new List<Role_VM>();
+            printlog("Role Fetch");
             vm = userRoleRepo.GetAllUserRole().Select(s => new Role_VM
             {
                 RoleID = s.RoleId,
                 RoleName = s.RoleName
             }).ToList();
+            printlog("Role Count: " + vm.Count());
             var applicationAccessRoles = applicationRoleRepo.GetAll().Result.Where(x => x.IsActive == true).Select(y => new ApplicationAccessRoles
             {
                 Id = y.RoleId,
                 Name = y.RoleName
             }).ToList();
-
+            printlog("Role Access For uSer: " + applicationAccessRoles.Count());
             AddUserVm model = new AddUserVm();
             model.ProcessDropDown = applicationAccessRoles;
             if (userid > 0)
             {
+                printlog("edit mode start ");
                 var user = userRepo.GetUserById(userid ?? 0);
+                printlog("userID = "+ user.userId);
+
                 var userApplicationAccessRoles = applicationUserAccessRoles.GetAll().Result.Where(x => x.UserId == user.userId).Select(x => x.RoleId);
+
+                printlog("userApplicationRole Count = "+ userApplicationAccessRoles.Count());
+
+
                 model.UserName = user.UserName.Remove(0, 7);
                 model.DisplayName = user.DisplayName;
                 model.RoleId = user.RoleId;
                 model.UserPermissionIds = userApplicationAccessRoles;
+
+                printlog("userApplicationRole Data set ");
             }
             model.UserRoles = vm;
             return View(model);
@@ -118,6 +132,7 @@ namespace Standing_Order_Vat_App.Controllers
         {
             try
             {
+                printlog("Add User Data Add ");
                 userRoleService.GetUserRole(User.Identity.Name);
 
                 if (string.IsNullOrEmpty(accountRepo.Geturole()) || accountRepo.Geturole() != "Admin" || !accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Vat.GetEnumDisplayName()))
@@ -210,6 +225,13 @@ namespace Standing_Order_Vat_App.Controllers
                 return RedirectToAction("ManageUser");
             }
         }
-
+        public void printlog(string message)
+        {
+            string status = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["IsPrintLog"];
+            if (status == "1")
+            {
+                EventLog.WriteEntry(".NET Runtime", message, EventLogEntryType.Warning, 1000);
+            }
+        }
     }
 }

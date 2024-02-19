@@ -149,7 +149,6 @@ namespace Standing_Order_Vat_App.Common.Services
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "getEmpID_New";
                 // retrieves both empId and userId for Application Directory
-                cmd.CommandType = CommandType.StoredProcedure;
                 //cmd.Parameters.AddWithValue("@userName", "Test");
                 cmd.Parameters.AddWithValue("@userName", uname);
 
