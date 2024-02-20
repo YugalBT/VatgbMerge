@@ -24,6 +24,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using OfficeOpenXml.Packaging.Ionic.Zlib;
+using System.Diagnostics;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -65,8 +66,10 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpGet]
         public IActionResult AddFrgnCheckAsync()
         {
+            printlog("Addfrgncheckstart");
             accountRepo.SetUserinfoInSession(User.Identity.Name);
             userRoleService.GetUserRole(User.Identity.Name);
+            printlog("Foreign Check");
 
             if (!accountRepo.GetAppAccessRoles().Contains(ApplicationAccess.Foreign_Check.GetEnumDisplayName()))
             {
@@ -74,6 +77,7 @@ namespace Standing_Order_Vat_App.Controllers
             }
             ForeignCheckVm vm = new ForeignCheckVm();
             vm.BanksList = _frgnchks.GetBanks();
+            printlog("Bind Banks Details");
             return View(vm);
         }
 
@@ -271,6 +275,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IActionResult> ViewAsync(FrgnViewCheckVm res)
         {
+            printlog("View Application start");
             accountRepo.SetUserinfoInSession(User.Identity.Name);
             userRoleService.GetUserRole(User.Identity.Name);
 
@@ -287,6 +292,7 @@ namespace Standing_Order_Vat_App.Controllers
                 BankId = s.BankId,
                 BankName = s.Name
             }).ToListAsync();
+            printlog("Bind a bank data");
             if (res.Status == 1)
             {
                 res.FrgncheckListIncompletes = ListIncomplete(res);
@@ -385,6 +391,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IGeneralResult<string>> DeletefrgnCheck(int batchid)
         {
+            printlog("Application delete");
             userRoleService.GetUserRole(User.Identity.Name);
 
             IGeneralResult<string> res = new GeneralResult<string>();
@@ -500,6 +507,7 @@ namespace Standing_Order_Vat_App.Controllers
         [HttpPost]
         public async Task<IGeneralResult<string>> AddCheckSettlement(AddCheckSettlementDetailVm checksettlement)
         {
+            printlog("Add Check settlement");
             IGeneralResult<string> res = new GeneralResult<string>();
             if (ModelState.IsValid)
             {
@@ -545,6 +553,14 @@ namespace Standing_Order_Vat_App.Controllers
                 res.Message = "Validation Error";
             }
             return res;
+        }
+        public void printlog(string message)
+        {
+            string status = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["IsPrintLog"];
+            if (status == "1")
+            {
+                EventLog.WriteEntry(".NET Runtime", message, EventLogEntryType.Warning, 1000);
+            }
         }
 
     }
