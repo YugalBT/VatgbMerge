@@ -11,20 +11,20 @@ namespace Standing_Order_Vat_App.Common.Services
 {
     public class ApplicationUserRolesRepo :  BaseRepository<DirectoryContext, ApplicationUserRolesNew>, IApplicationUserRolesRepo
     {
-        //private readonly DirectoryContext dirdbcontext;
-        //private readonly IHttpContextAccessor httpContext;
+        private readonly DirectoryContext dirdbcontext;
+        private readonly IHttpContextAccessor httpContext;
 
-        //public ApplicationUserRolesRepo(DirectoryContext dirdbcontext, IHttpContextAccessor httpContext)
-        //{
-        //    this.dirdbcontext = dirdbcontext;
-        //    this.httpContext = httpContext;
-        //}
+        public ApplicationUserRolesRepo(DirectoryContext dirdbcontext, IHttpContextAccessor httpContext)
+        {
+            this.dirdbcontext = dirdbcontext;
+            this.httpContext = httpContext;
+        }
 
-        //public List<ApplicationUserRolesNew> GetUserApplicationRoles(int UserId)
-        //{
-        //    var data = dirdbcontext.ApplicationUserRolesNews.Where(x=>x.UserId == UserId).ToList();
-        //    return data;
-        //}
+        public List<ApplicationUserRolesNew> GetUserApplicationRoles(int UserId)
+        {
+            var data = dirdbcontext.ApplicationUserRolesNews.Where(x => x.UserId == UserId).ToList();
+            return data;
+        }
 
     }
 }

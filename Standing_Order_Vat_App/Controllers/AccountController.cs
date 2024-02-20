@@ -111,7 +111,7 @@ namespace Standing_Order_Vat_App.Controllers
                 var user = userRepo.GetUserById(userid ?? 0);
                 printlog("userID = "+ user.userId);
 
-                var userApplicationAccessRoles = applicationUserAccessRoles.GetAll().Result.Where(x => x.UserId == user.userId).Select(x => x.RoleId);
+                var userApplicationAccessRoles = applicationUserAccessRoles.GetUserApplicationRoles(user.userId).Select(x => x.RoleId);
 
                 printlog("userApplicationRole Count = "+ userApplicationAccessRoles.Count());
 

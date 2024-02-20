@@ -9,6 +9,6 @@ namespace Standing_Order_Vat_App.Common.Interfaces
 {
     public interface IApplicationUserRolesRepo : IGenericRepository<ApplicationUserRolesNew>
     {
-       // public List<ApplicationUserRolesNew> GetUserApplicationRoles(int UserId);
+        public List<ApplicationUserRolesNew> GetUserApplicationRoles(int UserId);
     }
 }
