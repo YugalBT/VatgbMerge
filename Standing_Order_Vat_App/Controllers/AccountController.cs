@@ -97,7 +97,7 @@ namespace Standing_Order_Vat_App.Controllers
                 RoleName = s.RoleName
             }).ToList();
             printlog("Role Count: " + vm.Count());
-            var applicationAccessRoles = applicationRoleRepo.GetAll().Result.Where(x => x.IsActive == true).Select(y => new ApplicationAccessRoles
+            var applicationAccessRoles = applicationRoleRepo.GetApplicationRoles().Select(y => new ApplicationAccessRoles
             {
                 Id = y.RoleId,
                 Name = y.RoleName
@@ -146,7 +146,7 @@ namespace Standing_Order_Vat_App.Controllers
                     RoleID = s.RoleId,
                     RoleName = s.RoleName
                 }).ToList();
-                var applicationAccessRoles = applicationRoleRepo.GetAll().Result.Where(x => x.IsActive == true).Select(y => new ApplicationAccessRoles
+                var applicationAccessRoles = applicationRoleRepo.GetApplicationRoles().Select(y => new ApplicationAccessRoles
                 {
                     Id = y.RoleId,
                     Name = y.RoleName

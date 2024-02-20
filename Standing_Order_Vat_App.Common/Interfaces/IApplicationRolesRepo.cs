@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Standing_Order_Vat_App.Common.Interfaces
 {
-    public interface IApplicationRolesRepo : IGenericRepository<ApplicationRolesNew>
+    public interface IApplicationRolesRepo :IGenericRepository<ApplicationRolesNew>
     {
+        public List<ApplicationRolesNew> GetApplicationRoles();
     }
 }
