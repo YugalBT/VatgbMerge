@@ -212,11 +212,12 @@ namespace Standing_Order_Vat_App.Controllers
             else
             {
                 IGeneralResult<int> result = new GeneralResult<int>();
-
+                printlog("Start Delete User");
                 result = userRepo.DeleteUserData(userid);
                 if (result.Successful == true)
                 {
                     notyf.Success("User deleted successfully");
+                    printlog("Delete Successfully");
                 }
                 else
                 {

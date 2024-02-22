@@ -104,7 +104,9 @@ namespace Standing_Order_Vat_App.Controllers
                     vm.batchStat = 1;
                     vm.branch = accountRepo.GetBranchID();
                     vm.bankId = foreignChecksDetail.BankId.ToString();
+                    printlog("Start Batch Header");
                     var response = await _frgnchks.SaveFrgnBatch(vm);
+                    
                     if (response > 0)
                     {
                         foreignChecksDetail.BatchId = response;
@@ -117,6 +119,7 @@ namespace Standing_Order_Vat_App.Controllers
                         //}
                         ModelState.Clear();
                         _notyf.Success("Header Saved successfully. Add Checked.");
+                        printlog("Header Saved Successfully");
                         return View(foreignChecksDetail);
                     }
                     _notyf.Warning("Something went wrong!");
