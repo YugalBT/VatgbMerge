@@ -16,7 +16,7 @@ function UpdateDatePaymentRequest(BatchId, e) {
         DatePaymentRequest: DatePayment
     }
 
-    requestAjax("/FrgnChks/UpdateDatePayment", "Post", { vm: obj }, function (res) {
+    requestAjax(sitepath + "/FrgnChks/UpdateDatePayment", "Post", { vm: obj }, function (res) {
         if (res.successful) {
             $(e).parents("tr").removeClass("active");
             alert(res.message);
@@ -183,7 +183,7 @@ function UpdateFrgnCheck(e) {
 function DeleteBatch(batchId, e) {
     if (confirm('Are you sure you want to delete this Batch?')) {
         $.ajax({
-            url: ("/FrgnChks/DeletefrgnCheck"),
+            url: (sitepath + "/FrgnChks/DeletefrgnCheck"),
             data: { batchid: batchId },
             type: "POST",
             success: function (result) {
