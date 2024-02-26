@@ -1,8 +1,9 @@
-﻿$(document).ready(function () {
+﻿var sitepath = "";
+$(document).ready(function () {
     $(".edit_icon").click(function () {
         $(this).parent().parent().addClass("active");
     });
-    var sitepath = window.location.host + "/vat/";
+    sitepath = "http://" + window.location.host + "/vat";
     $(".check_icon, .close_icon").click(function () {
         $("tr").removeClass("active");
     });
