@@ -2,6 +2,7 @@
     $(".edit_icon").click(function () {
         $(this).parent().parent().addClass("active");
     });
+    var sitepath = window.location.host + "/vat/";
     $(".check_icon, .close_icon").click(function () {
         $("tr").removeClass("active");
     });
@@ -66,7 +67,7 @@ function saveBatchHeader() {
             bankId: bankId
         };
         $.ajax({
-            url: "/FrgnChks/SaveFrgnBatchHeader",
+            url: sitepath +"/FrgnChks/SaveFrgnBatchHeader",
             data: { frgnCheckVm: empObj },
             type: "POST",
             success: function (result) {
@@ -101,7 +102,7 @@ function Addfrgncheck() {
         bankId: $('#Banks').val()
     };
     $.ajax({
-        url: "/FrgnChks/SaveFrgnBatchHeader",
+        url: sitepath +"/FrgnChks/SaveFrgnBatchHeader",
         data: { frgnCheckVm: empObj },
         type: "POST",
         success: function (result) {
@@ -212,7 +213,7 @@ function SettleBatch() {
 function ShowBatchDetails(batchId, type, e) {
     debugger
     if ($(e).attr("class").includes("fa-arrow-right") || type == "saveCheck" || type == "saveSettlement") {
-        requestAjax("/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId, type: "UpdateChecks" }, function (res) {
+        requestAjax(sitepath +"/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId, type: "UpdateChecks" }, function (res) {
             $(e).parents("table").find("[id='ShowBAtchCheckList']").remove();
             $(e).parents("table").find(".fa-arrow-down").removeClass("fa-arrow-down").addClass("fa-arrow-right");
             $(e).parents("tr").after("<tr id='ShowBAtchCheckList'  class='collapse'><td colspan='9'></td></tr>");
@@ -248,7 +249,7 @@ function SaveBatchChecks(e) {
         DepositAcctName: DepositAcctName,
         CheckAmount: CheckAmount
     }
-    requestAjax("/FrgnChks/AddFrgnCheck", "Post", { actionbtn: actionBtn, foreignChecksDetail: obj }, function (res) {
+    requestAjax(sitepath +"/FrgnChks/AddFrgnCheck", "Post", { actionbtn: actionBtn, foreignChecksDetail: obj }, function (res) {
         ShowBatchDetails(BatchId, actionBtn, parentTr)
     })
 
@@ -260,7 +261,7 @@ function showchecks() {
     $("#AddfrgnCheck").show();
 };
 function showrefresh(batchId) {
-    requestAjax("/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId, type:"AddFrgn" }, function (res) {
+    requestAjax(sitepath +"/FrgnChks/ShowBatchCheckList", "Post", { BatchId: batchId, type:"AddFrgn" }, function (res) {
         $("#tblcheckslist").html(res)
     })
 }
@@ -279,7 +280,7 @@ function AddSettlementDetails(e) {
         bankId: $('#BankId').val(),
         chkNumber: $('#checkdetails_CheckNumber').val()
     };
-    requestAjax("/FrgnChks/AddCheckSettlement", "Post", { checksettlement: empObj }, function (res) {
+    requestAjax(sitepath +"/FrgnChks/AddCheckSettlement", "Post", { checksettlement: empObj }, function (res) {
         if (res.successful) {
             ShowBatchDetails(empObj.batchId, "saveSettlement", parentTr);
         } else {
@@ -303,7 +304,7 @@ function CompleteSettlement() {
     })
     
 
-    requestAjax("/FrgnChks/CompleteSettlement", "Post", { batches: checkedArr }, function (res) {
+    requestAjax(sitepath + "/FrgnChks/CompleteSettlement", "Post", { batches: checkedArr }, function (res) {
         alert(res.message)
         window.location.reload();
        /* ShowBatchDetails(BatchId, actionBtn, parentTr)*/
