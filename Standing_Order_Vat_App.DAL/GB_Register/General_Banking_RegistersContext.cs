@@ -41,6 +41,7 @@ namespace Standing_Order_Vat_App.DAL.GB_Register
         public virtual DbSet<LoanKey> LoanKeys { get; set; } = null!;
         public virtual DbSet<Sav> Savs { get; set; } = null!;
         public virtual DbSet<SavKey> SavKeys { get; set; } = null!;
+        public virtual DbSet<TblVatApply> TblVatApplys { get; set; } = null!;
         public virtual DbSet<TestTable> TestTables { get; set; } = null!;
         public virtual DbSet<VwEmp> VwEmps { get; set; } = null!;
 
@@ -49,7 +50,7 @@ namespace Standing_Order_Vat_App.DAL.GB_Register
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=SYS82\\SYS82G,1433;Database=General_Banking_Registers;user id=sa;password=bt123;TrustServerCertificate=true;Integrated Security=false;");
+                optionsBuilder.UseSqlServer("Server=DESKTOP-9TAG556\\SQLEXPRESS;Database=General_Banking_Registers;user id=sa;password=bt123;TrustServerCertificate=true;Integrated Security=false;");
             }
         }
 
@@ -10782,6 +10783,29 @@ namespace Standing_Order_Vat_App.DAL.GB_Register
                     .HasColumnName("USR ");
 
                 entity.Property(e => e._1stMastLoc).HasColumnName(" 1st Mast Loc ");
+            });
+
+            // Configure properties for 'VatApply' table
+            modelBuilder.Entity<TblVatApply>(entity =>
+            {
+                entity.HasKey(e => e.Id); // Primary key
+                entity.Property(e => e.Id).ValueGeneratedOnAdd(); // Auto-increment
+
+                entity.Property(e => e.VatApplyValue)
+                    .HasColumnType("decimal(10,2)") // Column type
+                    .IsRequired(); // This field is required
+
+                entity.Property(e => e.StartDate)
+                    .HasColumnType("datetime")
+                    .IsRequired();
+
+                entity.Property(e => e.EndDate)
+                    .HasColumnType("datetime")
+                    .IsRequired();
+
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true) // Default value for IsActive is 1
+                    .IsRequired();
             });
 
             modelBuilder.Entity<TestTable>(entity =>
