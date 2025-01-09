@@ -1,4 +1,6 @@
-﻿using Standing_Order_Vat_App.Common.GeneralResult;
+﻿using Microsoft.EntityFrameworkCore;
+using Standing_Order_Vat_App.Common.GeneralResult;
+using Standing_Order_Vat_App.Common.Helper;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -6,6 +8,9 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VATCustomServices.Helper;
+
+
 
 namespace VATCustomServices
 {
@@ -25,10 +30,12 @@ namespace VATCustomServices
         StringBuilder sb = new StringBuilder();
         string extension;
         string logfilepath = "";
+        double VatValue = 0;
 
 
         public async Task<IGeneralResult<string>> ProcessNewFiles(int mnth, string connectionstring, string filePath, int printLog, string logpath, int foldername)
         {
+            VatValue = Common.GetVatApplyValue(connectionstring);
             logfilepath = logpath;
             printlog = printLog;
             if (printlog > 0)
@@ -336,7 +343,7 @@ namespace VATCustomServices
                                     else
                                     {
                                         transAmt = Math.Round((Convert.ToDouble(ConvertNegativeBalance(reportFields[2]))), 2);
-                                        natFees = Math.Round((transAmt / 1.17), 2);
+                                        natFees = Math.Round((transAmt / VatValue), 2);
                                         vat = Math.Round((transAmt - natFees), 2);
 
                                         cmd.Parameters.AddWithValue("@Sequence_Number", seqNum);
@@ -1015,7 +1022,7 @@ namespace VATCustomServices
                                             }
 
                                             transAmt = Math.Round((Convert.ToDouble(ConvertNegativeBalance(reportFields[(reportFields.Length - 4)]))), 2);
-                                            natFees = Math.Round((transAmt / 1.17), 2);
+                                            natFees = Math.Round((transAmt / VatValue), 2);
                                             vat = Math.Round((transAmt - natFees), 2);
 
                                             cmd.Parameters.AddWithValue("@Branch", branch);
@@ -1090,7 +1097,7 @@ namespace VATCustomServices
                                 if (reportFields[2] == "*226")
                                 {
                                     transAmt = Math.Round((Convert.ToDouble(ConvertNegativeBalance(reportFields[3]))), 2);
-                                    natFees = Math.Round((transAmt / 1.17), 2);
+                                    natFees = Math.Round((transAmt / VatValue), 2);
                                     vat = Math.Round((transAmt - natFees), 2);
                                     acct = reportFields[0];
 
@@ -1187,7 +1194,7 @@ namespace VATCustomServices
                                     try
                                     {
                                         charged = Math.Round((Convert.ToDouble((validDataFields[(validDataFields.Length - 12)]))), 2);
-                                        natFees = Math.Round((charged / 1.17), 2);
+                                        natFees = Math.Round((charged / VatValue), 2);
                                         vat = Math.Round((charged - natFees), 2);
                                         acct = validDataFields[0];
 
@@ -1274,7 +1281,7 @@ namespace VATCustomServices
                                                 cmd.CommandType = CommandType.StoredProcedure;
 
                                                 transAmt = Math.Round((Convert.ToDouble(reportFields[5])), 2);
-                                                natFees = Math.Round((transAmt / 1.17), 2);
+                                                natFees = Math.Round((transAmt / VatValue), 2);
                                                 vat = Math.Round((transAmt - natFees), 2);
                                                 acct = reportFields[1];
                                                 try
@@ -1323,7 +1330,7 @@ namespace VATCustomServices
                                                     cmd.CommandType = CommandType.StoredProcedure;
 
                                                     transAmt = Math.Round((Convert.ToDouble(reportFields[5])), 2);
-                                                    natFees = Math.Round((transAmt / 1.17), 2);
+                                                    natFees = Math.Round((transAmt / VatValue), 2);
                                                     vat = Math.Round((transAmt - natFees), 2);
                                                     acct = reportFields[1];
 
@@ -1371,7 +1378,7 @@ namespace VATCustomServices
                                                     cmd.CommandType = CommandType.StoredProcedure;
 
                                                     transAmt = Math.Round((Convert.ToDouble(reportFields[5])), 2);
-                                                    natFees = Math.Round((transAmt / 1.17), 2);
+                                                    natFees = Math.Round((transAmt / VatValue), 2);
                                                     vat = Math.Round((transAmt - natFees), 2);
                                                     acct = reportFields[1];
 
