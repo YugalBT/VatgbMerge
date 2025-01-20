@@ -59,7 +59,8 @@ namespace Standing_Order_Vat_App.Controllers
             {
                 return RedirectToAction("AccessDenied", "Home");
             }
-            string connectioString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["ServiceDbConnection"];
+            string connectioString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("ConnectionStrings")["DefaultConnectionStanding"];
+            string vatValueConnectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["ServiceDbConnection"];
             string ServiceFilePathdda = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["ServiceFilePath"]+"DDA\\";
             string ServiceFilePathlon = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["ServiceFilePath"] + "LON\\";
             string ServiceFilePathsav = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["ServiceFilePath"] + "SAV\\";
@@ -69,10 +70,10 @@ namespace Standing_Order_Vat_App.Controllers
 
             VATServices vat = new VATServices();
             IGeneralResult<string> result = new GeneralResult<string>();
-            result =await vat.ProcessNewFiles(customService.month, connectioString,ServiceFilePathdda,Convert.ToInt32(printLog), ErrorLogPath,(int)Enumes.dda);
-            result =await vat.ProcessNewFiles(customService.month, connectioString,ServiceFilePathlon,Convert.ToInt32(printLog), ErrorLogPath,(int)Enumes.lon);
-            result =await vat.ProcessNewFiles(customService.month, connectioString,ServiceFilePathsav,Convert.ToInt32(printLog), ErrorLogPath, (int)Enumes.sav);
-            result =await vat.ProcessNewFiles(customService.month, connectioString,ServiceFilePathmisc,Convert.ToInt32(printLog), ErrorLogPath, (int)Enumes.misc);
+            result =await vat.ProcessNewFiles(customService.month,vatValueConnectionString,connectioString,ServiceFilePathdda,Convert.ToInt32(printLog), ErrorLogPath,(int)Enumes.dda);
+            result =await vat.ProcessNewFiles(customService.month,vatValueConnectionString,connectioString,ServiceFilePathlon,Convert.ToInt32(printLog), ErrorLogPath,(int)Enumes.lon);
+            result =await vat.ProcessNewFiles(customService.month,vatValueConnectionString,connectioString,ServiceFilePathsav,Convert.ToInt32(printLog), ErrorLogPath, (int)Enumes.sav);
+            result =await vat.ProcessNewFiles(customService.month, vatValueConnectionString, connectioString,ServiceFilePathmisc,Convert.ToInt32(printLog), ErrorLogPath, (int)Enumes.misc);
 
             if (result.Successful == true)
             {

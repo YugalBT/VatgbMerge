@@ -33,9 +33,9 @@ namespace VATCustomServices
         double VatValue = 0;
 
 
-        public async Task<IGeneralResult<string>> ProcessNewFiles(int mnth, string connectionstring, string filePath, int printLog, string logpath, int foldername)
+        public async Task<IGeneralResult<string>> ProcessNewFiles(int mnth,string vatConnectionString, string connectionstring, string filePath, int printLog, string logpath, int foldername)
         {
-            VatValue = Common.GetVatApplyValue(connectionstring);
+            VatValue = Common.GetVatApplyValue(vatConnectionString);
             logfilepath = logpath;
             printlog = printLog;
             if (printlog > 0)
