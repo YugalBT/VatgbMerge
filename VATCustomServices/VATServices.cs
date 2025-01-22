@@ -106,11 +106,11 @@ namespace VATCustomServices
 
                                 if (foldername == 1)
                                 {
-                                    if (f.ToLower().ToLower().Contains("dda132"))
+                                    if (f.ToLower().Contains("dda132"))
                                     {
                                         result = WriteDDA132RecsToDb(f, rptDate, branch, conn);
                                     }
-                                    else if (f.Contains("ddascj"))
+                                    else if (f.ToLower().Contains("ddascj"))
 
                                     {
                                         result = WriteDDASCJRecsToDb(f, rptDate, branch, conn);
