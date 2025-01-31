@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using Standing_Order_Vat_App.Common.GeneralResult;
 using Standing_Order_Vat_App.Common.Helper;
 using System;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VATCustomServices.Helper;
+using static Standing_Order_Vat_App.Common.Helper.Enumeration;
 
 
 
@@ -33,9 +35,9 @@ namespace VATCustomServices
         double VatValue = 0;
 
 
-        public async Task<IGeneralResult<string>> ProcessNewFiles(int mnth,string vatConnectionString, string connectionstring, string filePath, int printLog, string logpath, int foldername)
+        public async Task<IGeneralResult<string>> ProcessNewFiles(int mnth, string vatConnectionString, string connectionstring, string filePath, int printLog, string logpath, FolderEnum foldername)
         {
-            VatValue = Common.GetVatApplyValue(vatConnectionString);
+
             logfilepath = logpath;
             printlog = printLog;
             if (printlog > 0)
@@ -75,13 +77,13 @@ namespace VATCustomServices
                 // get the report date
                 try
                 {
-                    foreach (string f in allFiles)
+                    foreach (string file in allFiles)
                     {
-                        if (!f.Contains("_08"))
+                        if (!file.Contains("_08"))
                         {
                             //get report date
 
-                            FileInfo fi = new FileInfo(f);
+                            FileInfo fi = new FileInfo(file);
                             string extensionName = fi.Extension.Remove(0, 1);
 
                             string year = extensionName.Substring(0, 4);
@@ -96,53 +98,49 @@ namespace VATCustomServices
 
                             if (Convert.ToInt32(year) >= 2019)
                             {
-                                rptDate = Convert.ToDateTime(((File.GetLastWriteTime(f)).ToShortDateString()));
+                                rptDate = Convert.ToDateTime(((File.GetLastWriteTime(file)).ToShortDateString()));
 
                                 rptDate = Convert.ToDateTime(month + "/" + day + "/" + year);
 
+                                branch = GetBranch(file);
 
-                                branch = GetBranch(f);
+                                VatValue = Common.GetVatApplyValue(vatConnectionString, rptDate);
 
-
-                                if (foldername == 1)
+                                switch (foldername)
                                 {
-                                    if (f.ToLower().ToLower().Contains("dda132"))
-                                    {
-                                        result = WriteDDA132RecsToDb(f, rptDate, branch, conn);
-                                    }
-                                    else if (f.Contains("ddascj"))
+                                    case FolderEnum.dda:
+                                        if (file.ToLower().ToLower().Contains("dda132"))
+                                        {
+                                            result = WriteDDA132RecsToDb(file, rptDate, branch, conn);
+                                        }
+                                        else if (file.ToLower().Contains("ddascj"))
 
-                                    {
-                                        result = WriteDDASCJRecsToDb(f, rptDate, branch, conn);
-                                    }
-                                    else if (f.ToLower().Contains("ddacur_00"))
-                                    {
-                                        result = WriteDDACURRecsToDb(f, rptDate, branch, conn);
-                                    }
-                                }
-
-                                if (foldername == 2)
-                                {
-                                    if (f.ToLower().Contains("lon132"))
-                                    {
-                                        result = WriteLON132RecsToDb(f, rptDate, branch, conn);
-                                    }
-                                }
-
-                                if (foldername == 3)
-                                {
-                                    if (f.ToLower().Contains("sav132"))
-                                    {
-                                        result = WriteSAV132RecsToDb(f, rptDate, branch, conn);
-                                    }
-                                }
-                                if (foldername == 4)
-                                {
-
-                                    if (f.ToLower().Contains("sus702"))
-                                    {
-                                        result = WriteSUS702RecsToDb(f, rptDate, branch, conn);
-                                    }
+                                        {
+                                            result = WriteDDASCJRecsToDb(file, rptDate, branch, conn);
+                                        }
+                                        else if (file.ToLower().Contains("ddacur_00"))
+                                        {
+                                            result = WriteDDACURRecsToDb(file, rptDate, branch, conn);
+                                        }
+                                        break;
+                                    case FolderEnum.lon:
+                                        if (file.ToLower().Contains("lon132"))
+                                        {
+                                            result = WriteLON132RecsToDb(file, rptDate, branch, conn);
+                                        }
+                                        break;
+                                    case FolderEnum.misc:
+                                        if (file.ToLower().Contains("sus702"))
+                                        {
+                                            result = WriteSUS702RecsToDb(file, rptDate, branch, conn);
+                                        }
+                                        break;
+                                    case FolderEnum.sav:
+                                        if (file.ToLower().Contains("sav132"))
+                                        {
+                                            result = WriteSAV132RecsToDb(file, rptDate, branch, conn);
+                                        }
+                                        break;
                                 }
 
                                 if (result == "success")
@@ -320,9 +318,9 @@ namespace VATCustomServices
                                             if (printlog > 0)
                                             {
                                                 sb.Clear();
-                                                sb.Append("Error in file " +file+ "\n");
-                                                sb.Append("======================================================== " +file+ "\n");
-                                                sb.Append("Sequence Number is" +seqNum+ "\n");
+                                                sb.Append("Error in file " + file + "\n");
+                                                sb.Append("======================================================== " + file + "\n");
+                                                sb.Append("Sequence Number is" + seqNum + "\n");
                                                 sb.Append("acct is" + acct + "\n");
                                                 sb.Append("Tr/CD is" + reportFields[2] + "\n");
                                                 sb.Append("Name is" + custName + "\n");
@@ -997,8 +995,6 @@ namespace VATCustomServices
                                         if ((reportFields[indx + 1] != "416") && (reportFields[indx + 1] != "421"))
                                         {
                                             // for the current record if customer name is blank keep the custName obtained above if the account numbers are equal
-                                            cmd = new SqlCommand("addLoanCharges_bt", conn);
-                                            cmd.CommandType = CommandType.StoredProcedure;
 
                                             cmd.Parameters.Clear();
                                             if ((reportFields[1] == "S") | (reportFields[1] == "EH") | (reportFields[1] == "LR") | (reportFields[1] == "CP") | (reportFields[1] == "JEF") | (reportFields[1] == "D") | (reportFields[1].Contains("/")))
@@ -1212,9 +1208,9 @@ namespace VATCustomServices
 
                                         cmd.Parameters.Clear();
                                     }
-                                    catch(Exception ex)
+                                    catch (Exception ex)
                                     {
-                                        
+
                                     }
                                 }
                             }
@@ -1272,152 +1268,99 @@ namespace VATCustomServices
                             {
                                 if (reportFields.Length > 1)
                                 {
-                                    switch (reportFields[2])
+                                    var proofSequence = 0;
+                                    var source = reportFields[3] + " " + (int.TryParse(reportFields[4], out proofSequence) ? "" : reportFields[4]);
+                                    var checkNumber = reportFields[Array.FindIndex(reportFields, row => row.Contains(".")) - 1];
+                                    var transactionAmount = reportFields[6].Contains(".") ? reportFields[6] : reportFields[7].Contains(".") ? reportFields[7] : reportFields[8];
+                                    var transCode = reportFields[2];
+                                    var CIF = reportFields[0];
+                                    var accountNumber = reportFields[1];
+                                    transAmt = Math.Round((Convert.ToDouble(transactionAmount)), 2);
+                                    natFees = Math.Round((transAmt / VatValue), 2);
+                                    vat = Math.Round((transAmt - natFees), 2);
+                                    switch (transCode)
                                     {
                                         case "*145":
-                                            {
+                                            cmd = new SqlCommand("addStopCharge_bt", conn);
+                                            cmd.CommandType = CommandType.StoredProcedure;
 
-                                                cmd = new SqlCommand("addStopCharge_bt", conn);
-                                                cmd.CommandType = CommandType.StoredProcedure;
-
-                                                transAmt = Math.Round((Convert.ToDouble(reportFields[5])), 2);
-                                                natFees = Math.Round((transAmt / VatValue), 2);
-                                                vat = Math.Round((transAmt - natFees), 2);
-                                                acct = reportFields[1];
-                                                try
-                                                {
-                                                    cmd.Parameters.AddWithValue("@CIF", reportFields[0]);
-                                                    cmd.Parameters.AddWithValue("@Acct", acct);
-                                                    cmd.Parameters.AddWithValue("@dateactive", rptDate);
-                                                    cmd.Parameters.AddWithValue("@Branch", branch);
-                                                    cmd.Parameters.AddWithValue("@transcode", reportFields[2]);
-                                                    cmd.Parameters.AddWithValue("@ProofSequence", reportFields[3]);
-                                                    cmd.Parameters.AddWithValue("@CheckNumber", reportFields[4]);
-                                                    cmd.Parameters.AddWithValue("@transAmt", reportFields[5]);
-                                                    cmd.Parameters.AddWithValue("@NationalFees", natFees);
-                                                    cmd.Parameters.AddWithValue("@VAT", vat);
-
-                                                    conn.Open();
-                                                    cmd.ExecuteNonQuery();
-                                                    conn.Close();
-                                                    cmd.Parameters.Clear();
-                                                }
-                                                catch(Exception ex)
-                                                {
-                                                    if (printlog > 0)
-                                                    {
-                                                        sb.Clear();
-                                                        sb.Append("Error in file " + file + "\n");
-                                                        sb.Append("============================================");
-                                                        sb.Append("CIF = "+ reportFields[0] + "\n");
-                                                        sb.Append("Acct = " + acct + "\n");
-                                                        sb.Append("transcode = " + reportFields[2] + "\n");
-                                                        sb.Append("ProofSequence = " + reportFields[3] + "\n");
-                                                        sb.Append("CheckNumber = " + reportFields[4] + "\n");
-                                                        sb.Append("transAmt = " + reportFields[5] + "\n");
-                                                        sb.Append("================================================");
-                                                        sb.Append("\n");
-                                                        File.AppendAllText(logfilepath, sb.ToString());
-                                                    }
-                                                }
-                                                break;
-                                            }
+                                            cmd.Parameters.AddWithValue("@CIF", CIF);
+                                            cmd.Parameters.AddWithValue("@Acct", accountNumber);
+                                            cmd.Parameters.AddWithValue("@dateactive", rptDate);
+                                            cmd.Parameters.AddWithValue("@Branch", branch);
+                                            cmd.Parameters.AddWithValue("@transcode", transCode);
+                                            cmd.Parameters.AddWithValue("@ProofSequence", source);
+                                            cmd.Parameters.AddWithValue("@CheckNumber", checkNumber);
+                                            cmd.Parameters.AddWithValue("@transAmt", transactionAmount);
+                                            cmd.Parameters.AddWithValue("@NationalFees", natFees);
+                                            cmd.Parameters.AddWithValue("@VAT", vat);
+                                            
+                                            break;
                                         case "*127":
-                                            {
-                                                try
-                                                {
-                                                    cmd = new SqlCommand("addSafeKeeping_bt", conn);
-                                                    cmd.CommandType = CommandType.StoredProcedure;
+                                            cmd = new SqlCommand("addSafeKeeping_bt", conn);
+                                            cmd.CommandType = CommandType.StoredProcedure;
 
-                                                    transAmt = Math.Round((Convert.ToDouble(reportFields[5])), 2);
-                                                    natFees = Math.Round((transAmt / VatValue), 2);
-                                                    vat = Math.Round((transAmt - natFees), 2);
-                                                    acct = reportFields[1];
-
-                                                    cmd.Parameters.AddWithValue("@CIF", reportFields[0]);
-                                                    cmd.Parameters.AddWithValue("@Acct", acct);
-                                                    cmd.Parameters.AddWithValue("@dateactive", rptDate);
-                                                    cmd.Parameters.AddWithValue("@Branch", branch);
-                                                    cmd.Parameters.AddWithValue("@transcode", reportFields[2]);
-                                                    cmd.Parameters.AddWithValue("@ProofSequence", reportFields[3]);
-                                                    cmd.Parameters.AddWithValue("@CheckNumber", reportFields[4]);
-                                                    cmd.Parameters.AddWithValue("@transAmt", reportFields[5]);
-                                                    cmd.Parameters.AddWithValue("@NationalFees", natFees);
-                                                    cmd.Parameters.AddWithValue("@VAT", vat);
-
-                                                    conn.Open();
-                                                    cmd.ExecuteNonQuery();
-                                                    conn.Close();
-                                                    cmd.Parameters.Clear();
-                                                }
-                                                catch(Exception ex)
-                                                {
-                                                    if (printlog > 0)
-                                                    {
-                                                        sb.Clear();
-                                                        sb.Append("Error in file " + file + "\n");
-                                                        sb.Append("============================================");
-                                                        sb.Append("CIF = " + reportFields[0] + "\n");
-                                                        sb.Append("Acct = " + acct + "\n");
-                                                        sb.Append("transcode = " + reportFields[2] + "\n");
-                                                        sb.Append("ProofSequence = " + reportFields[3] + "\n");
-                                                        sb.Append("CheckNumber = " + reportFields[4] + "\n");
-                                                        sb.Append("transAmt = " + reportFields[5] + "\n");
-                                                        sb.Append("================================================");
-                                                        sb.Append("\n");
-                                                        File.AppendAllText(logfilepath, sb.ToString());
-                                                    }
-                                                }
-                                                break;
-                                            }
+                                            cmd.Parameters.AddWithValue("@CIF", CIF);
+                                            cmd.Parameters.AddWithValue("@Acct", accountNumber);
+                                            cmd.Parameters.AddWithValue("@dateactive", rptDate);
+                                            cmd.Parameters.AddWithValue("@Branch", branch);
+                                            cmd.Parameters.AddWithValue("@transcode", transCode);
+                                            cmd.Parameters.AddWithValue("@ProofSequence", source);
+                                            cmd.Parameters.AddWithValue("@CheckNumber", checkNumber);
+                                            cmd.Parameters.AddWithValue("@transAmt", transactionAmount);
+                                            cmd.Parameters.AddWithValue("@NationalFees", natFees);
+                                            cmd.Parameters.AddWithValue("@VAT", vat);
+                                            break;
                                         case "*164":
+                                            cmd = new SqlCommand("addTransCharge_bt", conn);
+                                            cmd.CommandType = CommandType.StoredProcedure;
+
+                                            cmd.Parameters.AddWithValue("@CIF", CIF);
+                                            cmd.Parameters.AddWithValue("@Acct", accountNumber);
+                                            cmd.Parameters.AddWithValue("@dateactive", rptDate);
+                                            cmd.Parameters.AddWithValue("@Branch", branch);
+                                            cmd.Parameters.AddWithValue("@trasncode", reportFields[2]);
+                                            cmd.Parameters.AddWithValue("@ProffSequence", reportFields[3]);
+                                            cmd.Parameters.AddWithValue("@CheckNumber", checkNumber);
+                                            cmd.Parameters.AddWithValue("@transAmt", transactionAmount);
+                                            cmd.Parameters.AddWithValue("@NationalFees", natFees);
+                                            cmd.Parameters.AddWithValue("@VAT", vat);
+                                            
+                                            break;
+                                        default:
+                                            cmd = null;
+                                            break;
+                                    }
+                                    if (cmd != null)
+                                    {
+
+                                        try
+                                        {
+                                            conn.Open();
+                                            cmd.ExecuteNonQuery();
+                                            conn.Close();
+                                            cmd.Parameters.Clear();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            if (printlog > 0)
                                             {
-                                                try
-                                                {
-                                                    cmd = new SqlCommand("addTransCharge_bt", conn);
-                                                    cmd.CommandType = CommandType.StoredProcedure;
-
-                                                    transAmt = Math.Round((Convert.ToDouble(reportFields[5])), 2);
-                                                    natFees = Math.Round((transAmt / VatValue), 2);
-                                                    vat = Math.Round((transAmt - natFees), 2);
-                                                    acct = reportFields[1];
-
-                                                    cmd.Parameters.AddWithValue("@CIF", reportFields[0]);
-                                                    cmd.Parameters.AddWithValue("@Acct", acct);
-                                                    cmd.Parameters.AddWithValue("@dateactive", rptDate);
-                                                    cmd.Parameters.AddWithValue("@Branch", branch);
-                                                    cmd.Parameters.AddWithValue("@trasncode", reportFields[2]);
-                                                    cmd.Parameters.AddWithValue("@ProffSequence", reportFields[3]);
-                                                    cmd.Parameters.AddWithValue("@checkNumber", reportFields[4]);
-                                                    cmd.Parameters.AddWithValue("@transAmt", reportFields[5]);
-                                                    cmd.Parameters.AddWithValue("@NationalFees", natFees);
-                                                    cmd.Parameters.AddWithValue("@VAT", vat);
-
-                                                    conn.Open();
-                                                    cmd.ExecuteNonQuery();
-                                                    conn.Close();
-                                                    cmd.Parameters.Clear();
-                                                }
-                                                catch(Exception ex)
-                                                {
-                                                    if (printlog > 0)
-                                                    {
-                                                        sb.Clear();
-                                                        sb.Append("Error in file " + file + "\n");
-                                                        sb.Append("============================================");
-                                                        sb.Append("CIF = " + reportFields[0] + "\n");
-                                                        sb.Append("Acct = " + acct + "\n");
-                                                        sb.Append("transcode = " + reportFields[2] + "\n");
-                                                        sb.Append("ProofSequence = " + reportFields[3] + "\n");
-                                                        sb.Append("CheckNumber = " + reportFields[4] + "\n");
-                                                        sb.Append("transAmt = " + reportFields[5] + "\n");
-                                                        sb.Append("================================================");
-                                                        sb.Append("\n");
-                                                        File.AppendAllText(logfilepath, sb.ToString());
-                                                    }
-                                                }
-                                                break;
+                                                sb.Clear();
+                                                sb.Append("Error in file " + file + "\n");
+                                                sb.Append("============================================");
+                                                sb.Append("CIF = " + CIF + "\n");
+                                                sb.Append("Acct = " + accountNumber + "\n");
+                                                sb.Append("transcode = " + transCode + "\n");
+                                                sb.Append("ProofSequence = " + proofSequence + "\n");
+                                                sb.Append("CheckNumber = " + checkNumber + "\n");
+                                                sb.Append("transAmt = " + transAmt + "\n");
+                                                sb.Append("================================================");
+                                                sb.Append("\n");
+                                                File.AppendAllText(logfilepath, sb.ToString());
+                                                conn.Close();
+                                                cmd.Parameters.Clear();
                                             }
+                                        }
                                     }
                                 }
                             }

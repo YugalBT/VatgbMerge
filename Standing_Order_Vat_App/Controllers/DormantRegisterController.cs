@@ -19,6 +19,7 @@ using System.Data;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Standing_Order_Vat_App.DAL.SKNANB_LIVE;
 using ClosedXML.Excel;
+using static Standing_Order_Vat_App.Common.Helper.Enumeration;
 
 namespace Standing_Order_Vat_App.Controllers
 {

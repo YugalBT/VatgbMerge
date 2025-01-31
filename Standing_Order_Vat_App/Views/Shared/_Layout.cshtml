@@ -1,4 +1,5 @@
-﻿@using static Standing_Order_Vat_App.MvcHelper.Enumration
+﻿@using static Standing_Order_Vat_App.Common.Helper.Enumeration
+@using static Standing_Order_Vat_App.MvcHelper.Enumration
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     var ucount = HttpContextAccessor.HttpContext.Session.GetString("ucount");
