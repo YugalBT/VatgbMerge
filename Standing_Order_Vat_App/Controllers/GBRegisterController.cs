@@ -2,7 +2,6 @@
 using Standing_Order_Vat_App.Common.Interfaces;
 using Standing_Order_Vat_App.Common.Services;
 using static Standing_Order_Vat_App.Common.Helper.Enumeration;
-using static Standing_Order_Vat_App.MvcHelper.Enumration;
 
 namespace Standing_Order_Vat_App.Controllers
 {

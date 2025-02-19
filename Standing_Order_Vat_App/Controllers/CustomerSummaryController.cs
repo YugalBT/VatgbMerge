@@ -23,7 +23,6 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.Net.Mail;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
-using static Standing_Order_Vat_App.MvcHelper.Enumration;
 using static Standing_Order_Vat_App.Common.Helper.Enumeration;
 
 namespace Standing_Order_Vat_App.Controllers

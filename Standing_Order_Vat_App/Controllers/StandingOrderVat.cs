@@ -25,7 +25,6 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Standing_Order_Vat_App.Common.Helper;
-using static Standing_Order_Vat_App.MvcHelper.Enumration;
 using static Standing_Order_Vat_App.Common.Helper.Enumeration;
 
 namespace Standing_Order_Vat_App.Controllers

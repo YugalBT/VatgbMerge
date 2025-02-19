@@ -17,7 +17,6 @@ using DocumentFormat.OpenXml.Drawing.Charts;
 using VATCustomServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using static Standing_Order_Vat_App.MvcHelper.Enumration;
 using Standing_Order_Vat_App.Common.Services;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;

@@ -12,7 +12,6 @@ using System.Diagnostics;
 using VATCustomServices;
 using X.PagedList;
 using static Standing_Order_Vat_App.Common.Helper.Enumeration;
-using static Standing_Order_Vat_App.MvcHelper.Enumration;
 
 namespace Standing_Order_Vat_App.Controllers
 {

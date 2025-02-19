@@ -13,7 +13,6 @@ using Syncfusion.DocIO;
 using Syncfusion.Pdf.Graphics;
 using Syncfusion.Pdf.Grid;
 using Syncfusion.Pdf;
-using static Standing_Order_Vat_App.MvcHelper.Enumration;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using System.Data;
 using DocumentFormat.OpenXml.Spreadsheet;

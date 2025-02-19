@@ -6,7 +6,6 @@ using Standing_Order_Vat_App.Common.ViewModels;
 using Standing_Order_Vat_App.Models;
 using VATCustomServices;
 using static Standing_Order_Vat_App.Common.Helper.Enumeration;
-using static Standing_Order_Vat_App.MvcHelper.Enumration;
 
 namespace Standing_Order_Vat_App.Controllers
 {
@@ -67,13 +66,13 @@ namespace Standing_Order_Vat_App.Controllers
             string ServiceFilePathmisc = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["ServiceFilePath"] + "MISC\\";
             string printLog = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["IsPrintLog"];
             string ErrorLogPath = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["ErrorLogPath"];
-
+            string ServiceFilePath = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppSettings")["ServiceFilePath"];
             VATServices vat = new VATServices();
             IGeneralResult<string> result = new GeneralResult<string>();
-            result =await vat.ProcessNewFiles(customService.month,vatValueConnectionString,connectioString,ServiceFilePathdda,Convert.ToInt32(printLog), ErrorLogPath, FolderEnum.dda);
-            result =await vat.ProcessNewFiles(customService.month,vatValueConnectionString,connectioString,ServiceFilePathlon,Convert.ToInt32(printLog), ErrorLogPath,FolderEnum.lon);
-            result =await vat.ProcessNewFiles(customService.month,vatValueConnectionString,connectioString,ServiceFilePathsav,Convert.ToInt32(printLog), ErrorLogPath, FolderEnum.sav);
-            result =await vat.ProcessNewFiles(customService.month, vatValueConnectionString, connectioString,ServiceFilePathmisc,Convert.ToInt32(printLog), ErrorLogPath, FolderEnum.misc);
+            result =await vat.ProcessNewFiles(customService.month,vatValueConnectionString,connectioString, ServiceFilePath, Convert.ToInt32(printLog), ErrorLogPath, FolderEnum.dda);
+            result =await vat.ProcessNewFiles(customService.month,vatValueConnectionString,connectioString, ServiceFilePath, Convert.ToInt32(printLog), ErrorLogPath,FolderEnum.lon);
+            result =await vat.ProcessNewFiles(customService.month,vatValueConnectionString,connectioString, ServiceFilePath, Convert.ToInt32(printLog), ErrorLogPath, FolderEnum.sav);
+            result =await vat.ProcessNewFiles(customService.month, vatValueConnectionString, connectioString, ServiceFilePath, Convert.ToInt32(printLog), ErrorLogPath, FolderEnum.misc);
 
             if (result.Successful == true)
             {
